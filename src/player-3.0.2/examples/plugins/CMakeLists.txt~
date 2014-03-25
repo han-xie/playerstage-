@@ -1,0 +1,4 @@
+ADD_SUBDIRECTORY (exampledriver)
+ADD_SUBDIRECTORY (exampleinterface)
+ADD_SUBDIRECTORY (opaquedriver-my)
+ADD_SUBDIRECTORY (multidriver-my)

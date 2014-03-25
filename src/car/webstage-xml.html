@@ -1,0 +1,285 @@
+<html>
+        <head>
+                <title>webstage v1.0</title>
+                <style type="text/css">
+			#map{
+			margin-left: 0PX;
+			height: 500px;
+			width: 500PX;
+			background-image: url('cave_compact.png');
+			background-repeat: no-repeat;
+			background-size: cover;
+			}
+			#car{
+			  width:20px;
+			  height:16px;
+			  display:block;
+			  left:20px;
+			}
+                </style>
+                <!--  link href="style.css" rel="stylesheet" type="text/css" /-->
+                <!--link href="car.js" rel="stylesheet" type="text/javascript" /-->
+
+        
+    <script type="text/javascript">
+        function $(id){return document.getElementById(id);}
+        
+        
+        var posex=1.0;
+        var posey=1.0;
+        var posea=1.0;
+        var time=1.0;
+        
+        var xmlHttp=null;
+        
+        var modelSizex=16.0;
+        var modelSizey=16.0;
+        
+        var paused=false;
+        
+        var model="cave";
+        var position=[];
+        var positionNum=0;
+
+        var timer=null;
+        var simtime=100;
+        
+		window.onload = function(){
+        newxmlHttpRequest();
+        getSimTreeXMl();
+        getmodelSize();
+        simulate();
+		paused=true;
+        }
+        
+   
+        
+        function newxmlHttpRequest(){
+		    try {
+			// Firefox, Opera 8.0+, Safari
+			 xmlHttp = new XMLHttpRequest();
+		    }
+		    catch (e) {
+			// Internet Explorer
+			 try {
+			    xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+			}
+			catch (e) {
+
+			    try {
+				xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+			    }
+			    catch (e) {
+				alert("your brower don not support AJAX！");
+				return false;
+			    }
+			}
+		    }
+        }
+        
+        function SimTreeXMl_Change(){
+		if (xmlHttp.readyState == 4) {
+			var text = xmlHttp.responseText;
+			var re1 = /Chr(13)/g; 
+        	var re2 = /Chr(10)/g; 
+        	text =text.replace(re1 ,"");
+        	text =text .replace(re2 ,"");
+			console.log(text);
+			document.getElementById('show').innerHTML +="over.";
+
+			try //Internet Explorer
+			  {
+			  xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+			  xmlDoc.async="false";
+			  xmlDoc.loadXML(text);
+			  }
+			catch(e)
+			  {
+			  try //Firefox, Mozilla, Opera, etc.
+			    {
+			    parser=new DOMParser();
+			    xmlDoc=parser.parseFromString(text,"text/xml");
+			    }
+			  catch(e) {alert(e.message)}
+			  }
+			x=xmlDoc.documentElement.childNodes;
+			for (i=0;i<x.length;i++)
+			{ 			
+			//console.log(x[i].nodeName);
+			if(x[i].nodeName == "Model"){
+			  if (x[i].getAttribute("Type")=="position")
+			  {   
+
+				position[positionNum]=x[i].getAttribute("Name");
+				document.getElementById('show').innerHTML += position[positionNum];
+				document.getElementById('show').innerHTML += ",";
+				positionNum +=1;
+				console.log("positionNum:"+positionNum);
+			  }
+			    if (x[i].getAttribute("Type")=="model")
+			  {
+			  model=x[i].getAttribute("Name");
+			  document.getElementById('show').innerHTML += model;
+			  document.getElementById('show').innerHTML += ",";
+			  //alert("test2");
+			  }
+			 }
+			}
+					   
+		}
+        }
+        
+        
+        function getSimTreeXMl(){
+                if(xmlHttp!=null){
+        			xmlHttp.onreadystatechange = SimTreeXMl_Change;
+        			xmlHttp.open("GET", "getTreeXML.php", false);
+				    //xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded"); 
+				    xmlHttp.send();
+				    //alert("simTreeXML post done!");
+        		}
+        }
+        
+        
+        function rotate(){
+        var element = document.getElementById("rotate");
+        var tposea =(posea)*57.4;
+			element.style.MozTransform = "rotate(" + tposea + "deg)";
+            element.style.webkitTransform ="rotate(" + tposea + "deg)";
+            element.style.msTransform = "rotate(" + tposea + "deg)";
+            element.style.OTransform = "rotate(" + tposea + "deg)";
+            element.style.transform = "rotate(" + tposea + "deg)";
+        }
+        
+        function move(){
+		var element = document.getElementById("rotate");
+				var tposex=posex +8;
+				tposex *=31.25;
+				//posex +=252;
+				var tposey = 8- posey;
+				tposey *=31.25;
+				element.style.left=tposex+"px";
+				element.style.top=tposey+"px";
+        }
+                
+                
+        function simulate(){
+        if(simtime == 0) simtime=100;
+            timer = setInterval(function(){
+                getPVANodeSim();
+                move();
+                rotate();
+            }, simtime);
+        }
+        
+        function endsimulate(){
+        clearInterval(timer);
+        }
+        
+        function pva_Change(){
+        			if (xmlHttp.readyState == 4) {
+					    //var str = xmlHttp.responseText;
+					    //document.getElementById('show').innerHTML =str;
+					    var obj = eval('('+ xmlHttp.responseText +')');
+					    //var obj = eval(({"id":"123","name":"elar","age":"21"}));
+					   // alert(obj.posex);
+						posex=parseFloat(obj.posex);
+						posey=parseFloat(obj.posey);
+						posea=parseFloat(obj.posea);
+						time=parseFloat(obj.time);
+					}
+        }
+        
+        function modelsize_Change(){
+                	if (xmlHttp.readyState == 4) {
+					    var obj = eval('('+ xmlHttp.responseText +')');
+						modelSizex=parseFloat(obj.modelSizex);
+						modelSizey=parseFloat(obj.modelSizey);
+					}
+        }
+        
+        function simtree_Change(){
+                	if (xmlHttp.readyState == 4) {
+					    var obj = eval('('+ xmlHttp.responseText +')');
+					    postion=obj.postion;
+						model=obj.model;
+					}
+        }
+        
+        function getsimtree(){
+        if(xmlHttp!=null){
+        xmlHttp.onreadystatechange = simtree_Change;
+        			xmlHttp.open("POST", "getTreeNode.php", true);
+				    xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded"); 
+				    xmlHttp.send("id=3");
+        }
+        }
+        
+        function getmodelSize(){
+        if(xmlHttp!=null){
+        xmlHttp.onreadystatechange = modelsize_Change;
+        			xmlHttp.open("POST", "getmodelsize.php", true);
+				    xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded"); 
+				    xmlHttp.send(model);
+        }
+        }
+        
+        function getPVANodeSim(){
+        if(xmlHttp!=null){				    
+                	xmlHttp.onreadystatechange = pva_Change;
+				    //var data = "id=123";
+				    xmlHttp.open("POST", "getPVANodeSim.php", true);
+				    xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded"); 
+				    xmlHttp.send(position[0]);
+        }
+        }
+
+        </script>
+        </head>
+        
+        <body>
+                <div id="map">
+                        <!--div id="rotate" style=" cursor:pointer; position:absolute; left:100px; top:100px"-->
+			<div id="rotate" style=" cursor:pointer;position:absolute;">
+                                <img id="car" src="car.PNG"/>
+                        </div>
+                </div>
+		<hr />
+		<input type="button" id="btn" value="start/pause" >    </input>
+		<!--  input type="button" id="reset" value="重新开始" -->
+		<input type="button" id="upSpeed" value="speedUp" >    </input>
+		<input type="button" id="downSpeed" value="speedDown" ></input><br />
+		<hr />
+		<div id="show"></div>
+
+		<script>
+		$('btn').onclick = function(){
+		if(paused){
+		endsimulate();
+		paused = false;
+		}else{
+		simulate();
+		paused=true;
+		}
+		};
+		/*$("reset").onclick = function(){
+				
+		};*/
+		$("upSpeed").onclick = function(){
+
+				if(simtime >=40){
+					endsimulate();
+					simtime -=30;
+					simulate();
+				}
+		};
+		$("downSpeed").onclick = function(){
+				endsimulate();
+				simtime +=30;
+				simulate();
+		};
+		</script>
+
+		
+        </body>
+</html>

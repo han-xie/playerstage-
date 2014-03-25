@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Untitled Page</title>
+     <script language="javascript" type="text/javascript">   
+
+
+  var   xmlDoc   =   new   ActiveXObject("Msxml.DOMDocument");   
+  var   bm_root;   
+  xmlDoc.async   =   false;   
+  xmlDoc.load("t4Test.xml"); 
+  bm_Root   =   xmlDoc.documentElement;   
+  tmp_Node   =   bm_Root.selectNodes("TreeNode")   
+  
+  var level=0;
+
+
+   for  (var  i=0;  i <bm_Root.childNodes.length;  i++)  
+  {  
+
+        if (tmp_Node.item(i).childNodes.length  >0) 
+        { 
+            ArrList = tmp_Node.item(i).attributes; // 得到一个属性列表
+              for(var j=0;j<ArrList.length;j++){
+                  //  这里进行属性的操作 ,下面给出 JS 操作 XML 的 API ,中间有段是操作节点属性的 ,你参考下.
+            }
+        } 
+        else 
+        { 
+            document.write(tmp_Node.item(i).attributes(0).text +'\t :\t '+tmp_Node.item(i).attributes(1).text +' <br/>');  
+        } 
+  }
+
+
+
+</script>
+</head>
+<body>
+
+</body>
+</html>

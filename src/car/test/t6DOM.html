@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map_canvas { height: 100% }
+    </style>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=APIKEYHERE&sensor=false">
+    </script>
+
+    <script type="text/javascript">  
+
+      // initialise map 
+      function initialize() {
+
+      // set starting latlong
+      var myLatlng = new google.maps.LatLng(22.2776, 114.173); 
+
+      // set initial map options        
+      var mapOptions = {
+        center: myLatlng,
+        zoom: 13,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+      // create the map                       
+      var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions); 
+
+      // listen for changes in map bounds - after map has stopped moving!!      
+      google.maps.event.addListener(map,'idle', function () {      
+        loadByBounds(map);          
+        });                 
+      }
+
+      // if the bounds have changed 
+      function loadByBounds(map) {  
+
+        var bounds = map.getBounds();       
+        var swPoint = bounds.getSouthWest();
+        var nePoint = bounds.getNorthEast();
+
+        // specific co ordinates
+        var swLat = swPoint.lat();
+        var swLng = swPoint.lng();
+        var neLat = nePoint.lat();
+        var neLng = nePoint.lng();               
+
+        var downUrl = "<?php echo site_url('hotmaps/get_properties_ajax'); ?>/"+swLat+"/"+neLat+"/"+swLng+"/"+neLng;
+
+        // load the 
+        loadXMLDoc(downUrl, map); 
+
+        // clear icons outside of bounding box
+
+        //....
+
+
+        }
+
+        // make the ajax request
+        function loadXMLDoc(downUrl, map){
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp=new XMLHttpRequest();
+              }
+            else {// code for IE6, IE5
+              xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+              }
+            xmlhttp.onreadystatechange=function() {
+              if (xmlhttp.readyState==4 && xmlhttp.status==200)
+                {
+
+                    var propertiesXml = xmlhttp.responseText; // WORKS FINE!!
+
+                    // remove whitespaces from start and end (.trim() doesnt work)
+                    propertiesXml = propertiesXml.replace(/^\s+|\s+$/g,'');                 
+
+                    // manually parse to XML DOM object 
+                    var parser = new DOMParser();                   
+                    var xmlDoc;                 
+                       try {
+                            xmlDoc = parser.parseFromString (propertiesXml, "text/xml");
+                        } catch (e) {
+                            alert ("XML parsing error.");
+                            return false;
+                        };
+
+                    //console.log(xmlDoc);
+
+                    // get each property
+                    var propertiesRows = xmlDoc.getElementsByTagName("property");   
+
+                    //alert(console.log(propertiesRows));   
+                    for (var i = 0; i < propertiesRows.length; i++) {
+
+                        var propertiesRow = propertiesRows[i];
+                        var xmlLat = propertiesRow.getElementsByTagName("lat")[0];
+                        var xmlLong = propertiesRow.getElementsByTagName("long")[0];
+                        var propertyLatLong = new google.maps.LatLng(parseFloat(xmlLat.firstChild.data),parseFloat(xmlLong.firstChild.data));           
+                        // create each marker
+                        createMarker(propertyLatLong, map);
+                    }
+                 }
+             }
+            xmlhttp.open("GET", downUrl, false);
+            xmlhttp.setRequestHeader("Content-type", "text/xml");
+            xmlhttp.send(); 
+        }   
+
+        // create new markers
+        function createMarker(propertyLatLong, map){             
+            var dynamicMarker = new google.maps.Marker({
+
+                map:map,
+                draggable:false,
+                position: propertyLatLong
+            });
+            debugger;           
+        }       
+    </script>
+  </head>
+  <body onload="initialize()">      
+    <div id="map_canvas" style="width:100%; height:100%"></div>
+  </body>
+</html>

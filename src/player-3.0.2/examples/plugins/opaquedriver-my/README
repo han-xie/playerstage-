@@ -1,0 +1,27 @@
+Building
+--------
+
+The opaque can be built by making a directory (anywhere on your system where
+you have write permissions will do), changing to that directory and executing
+CMake with the opaque's source directory as an argument. For opaque, if you
+have installed Player into /usr/local, you could do the following:
+
+$ cd ~
+$ mkdir opaquedriver
+$ cd opaquedriver
+$ ccmake /usr/local/share/player/opaques/plugins/opaquedriver/
+
+Use the configure option (press 'c' in the Linux ncurses-based UI, for opaque)
+until the generate option becomes available, then use that (press 'g' in the
+ncurses UI). Then use the standard method of compiling for your environment to
+compile (on Linux, this will probably be GNU Makefiles, so type 'make').
+
+Running
+-------
+
+The opaque creates a shared library (libopaquedriver.so on Unix-based
+systems), which is loaded by the server using the opaque.cfg configuration
+file. Copy this to the directory where you built the opaque and execute the
+Player server:
+
+$ player opaque.cfg

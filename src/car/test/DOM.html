@@ -1,0 +1,54 @@
+<html>
+<body>
+<script type="text/javascript">
+/*text="<bookstore>"
+text=text+"<book>";
+text=text+"<title>Harry Potter</title>";
+text=text+"<author>J K. Rowling</author>";
+text=text+"<year>2005</year>";
+text=text+"</book>";
+text=text+"</bookstore>";*/
+
+text="<ModelTree>"
+text=text+"<Model Name=\"cave\" Type=\"model\"/>";
+text=text+"<Model Name=\"r0\" Type=\"position\">";  
+text=text+"<Model Name=\"r0.ranger:0\" Type=\"ranger\"/>";
+text=text+"<Model Name=\"r0.laser:0\" Type=\"laser\"/>"; 
+text=text+" </Model>"; 
+text=text+"<Model Name=\"r1\" Type=\"position\">";  
+text=text+"<Model Name=\"r1.ranger:0\" Type=\"ranger\"/>";    
+text=text+"<Model Name=\"r1.laser:0\" Type=\"laser\"/>";    
+text=text+" </Model>"; 
+text=text+"</ModelTree>";
+
+try //Internet Explorer
+  {
+  xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+  xmlDoc.async="false";
+  xmlDoc.loadXML(text);
+  }
+catch(e)
+  {
+  try //Firefox, Mozilla, Opera, etc.
+    {
+    parser=new DOMParser();
+    xmlDoc=parser.parseFromString(text,"text/xml");
+    }
+  catch(e) {alert(e.message)}
+  }
+
+x=xmlDoc.documentElement.childNodes;
+for (i=0;i<x.length;i++)
+{ 
+  if (x[i].getAttribute("Type")=="position")
+  {
+	document.write(x[i].getAttribute("Name"));
+  }
+    if (x[i].getAttribute("Type")=="model")
+  {
+	document.write(x[i].getAttribute("Name"));
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<html>
+        <head>
+                <title>webstage v1.0</title>
+                <style type="text/css">
+					#map{
+						MARGIN-RIGHT: auto;
+						MARGIN-LEFT: auto; 
+						height: 500px;
+						width: 500PX;
+						background-image: url('cave_compact.png');
+						background-repeat: no-repeat;
+						background-size: cover;
+					}
+					#car {
+					  width:20px;
+					  height:15px;
+					  display:block;
+					}
+                </style>
+        </head>
+        <body>
+	
+                <div id="map">
+                       <div id="rotate" style=" cursor:pointer;position:relative;top:20px;left:10px;">
+                                <img id="car" src="car.png"/>
+                       </div>
+                </div>
+			<hr />
+			<input type="text" onblur="go(this.value)" />
+			<hr />
+			<div id="show"></div>
+		
+    	<script type="text/javascript">
+    	function go(x){
+				var element = document.getElementById("rotate");
+				element.style.left=x;
+				element.style.top=x;
+  		}
+        </script>
+        </body>
+</html>

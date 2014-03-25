@@ -1,0 +1,9 @@
+CMAKE_MINIMUM_REQUIRED (VERSION 2.4 FATAL_ERROR)
+PROJECT (playerplugin_opaques)
+
+# Include this CMake module to get most of the settings needed to build
+SET (CMAKE_MODULE_PATH "@CMAKE_INSTALL_PREFIX@/share/cmake/Modules")
+INCLUDE (UsePlayerPlugin)
+
+#PLAYER_ADD_PLUGIN_DRIVER (multidriver SOURCES multidriver.cc p_position.cc p_opaque.cc p_laser.cc p_blobfinder.cc background.cc)
+PLAYER_ADD_PLUGIN_DRIVER (multidriver SOURCES multidriver2.cc)

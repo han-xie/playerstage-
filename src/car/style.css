@@ -1,0 +1,12 @@
+#map{
+  margin:0 auto;
+  height:600px;
+  background-image:url('cave_compact.png');
+  background-repeat:no-repeat;
+}
+#car{
+  width:16px;
+  height:16px;
+  display:block;
+  left:20px;
+}

@@ -1,0 +1,13 @@
+# Desc: opaque plugin makefile
+# CVS: $Id$
+
+all: libmultidriver.dylib
+
+%.o: %.cc
+	$(CXX) `pkg-config --cflags playercore` -Wall -g3 -dynamiclib -c $<
+
+libmultidriver.dylib: multidriver.o
+	$(CXX) -bundle -flat_namespace -undefined suppress -o $@ $^
+
+clean:
+	rm -f *.o *.dylib

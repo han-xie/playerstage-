@@ -1,0 +1,14 @@
+<html>
+<head>
+<title>
+my test greedy snake v1.0
+</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+<link href="car.js" rel="stylesheet" type="text/javascript" />
+</head>
+<body>
+   <div id="main">
+     <img id="car" src="ghost.png">
+   </div>
+</body>
+</html>

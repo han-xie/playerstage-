@@ -1,0 +1,11 @@
+INCLUDE_DIRECTORIES (${PLAYERCORE_EXTRA_INCLUDE_DIRS})
+LINK_DIRECTORIES (${PLAYERCORE_EXTRA_LINK_DIRS})
+ADD_LIBRARY (opaquedriver SHARED opaquedriver.cc)
+TARGET_LINK_LIBRARIES (opaquedriver playercore)
+
+SET (opaqueCMakeLists_in ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt.opaque.in)
+SET (opaqueCMakeLists ${CMAKE_CURRENT_BINARY_DIR}/CMakeLists.txt.opaque)
+SET (opaqueDestDir share/${PROJECT_NAME_LOWER}/examples/plugins/opaquedriver)
+CONFIGURE_FILE (${opaqueCMakeLists_in} ${opaqueCMakeLists} @ONLY)
+INSTALL (FILES ${opaqueCMakeLists} DESTINATION ${opaqueDestDir} RENAME CMakeLists.txt COMPONENT examples)
+INSTALL (FILES opaquedriver.cc opaque.cfg README DESTINATION ${opaqueDestDir} COMPONENT examples)

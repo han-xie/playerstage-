@@ -1,0 +1,34 @@
+<html>
+<head>
+</head>
+    <script type="text/javascript">
+    	window.onload = function(){
+    	 var tc="{r0:{\"posex\":\"1.0\",\"posey\":\"1.1\"},r1:{\"posex\":\"2.0\",\"posey\":\"2.1\"}}";
+				var obj = eval('('+ tc +')');
+				var r0posex=parseFloat(obj.r0.posex);
+				var r1posey=parseFloat(obj.r1.posey);
+				document.getElementById('show').innerHTML += r0posex;
+				document.getElementById('show').innerHTML += ",";
+				document.getElementById('show').innerHTML += r1posey;
+				var testStr="ssss, ,\
+				, ,vvvvv";
+    			document.getElementById('show').innerHTML += ",";
+    			document.getElementById('show').innerHTML += testStr;
+    			
+    			testStr = testStr.replace(/[\r\n]/g, "");
+    			document.getElementById('show').innerHTML +=",";
+    			document.getElementById('show').innerHTML +=testStr;
+    			
+    			//var re1 = /Chr(13)/g; 
+        //var re2 = /Chr(10)/g; 
+        //strHtml =strHtml .replace(re1 ,"");
+        //strHtml =strHtml .replace(re2 ,"");
+        
+        
+    	}
+	</script>
+<body>
+		<div id="show"></div>
+</body>
+</html>
+
