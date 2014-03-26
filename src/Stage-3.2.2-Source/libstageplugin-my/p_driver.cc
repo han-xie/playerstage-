@@ -595,11 +595,11 @@ void StgDriver::Update(void)
 				{
 				case PLAYER_SIMULATION_CODE:
 				  // one round of FLTK's update loop.
-					if (globalMyupdateSign == 1) {
+					/*if (globalMyupdateSign == 1) {
 						globalMyupdateSign = 0;
 								world->Update();
-							}
-				  //Fl::wait();
+							}*/
+				  Fl::wait();
 					break;
 				case PLAYER_OPAQUE_CODE:
 					  Fl::wait();
