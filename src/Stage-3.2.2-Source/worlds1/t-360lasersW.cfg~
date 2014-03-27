@@ -5,7 +5,7 @@ driver
   #plugin "stageplugin"
   plugin "/home/keevi7c3l/sourceCode/build/build-Stage/libstageplugin-my/stagepluginmy.so"
 
-  worldfile "t-360lasers.world"	
+  worldfile "t-360lasersW.world"	
 )
 
 driver

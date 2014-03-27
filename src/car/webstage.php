@@ -60,7 +60,8 @@ $tfurl = $_GET['httpport'] ;
         
         //about display the background picture
         //var leftDis = 518;
-        var leftDis = 0;
+        var leftDis = -8;
+        var topDis = -8;
         var scale=30;
         
         var model="cave";
@@ -77,7 +78,7 @@ $tfurl = $_GET['httpport'] ;
         var simtime=100;
         
 		window.onload = function(){
-			getBKPicSize();
+			getBKPicSize(); // I am suspect this because the picture which havn't loaded can't get its size. 
         	newxmlHttpRequest();
         	getSimTreeNode();
         	getmodelSize();
@@ -116,7 +117,9 @@ $tfurl = $_GET['httpport'] ;
         		newNode.setAttribute("id","rotate"+i);
         		//newNode.setAttribute("style","cursor:pointer;position:absolute;top:20px;left:10px;");
         		//newNode.setAttribute("style","cursor:pointer;position:inherit;top:20px;left:10px;");
-        		newNode.setAttribute("style","cursor:pointer;position:relative;top:20px;left:10px;width:20px;height:15px;");
+                //newNode.setAttribute("style","cursor:pointer;position:absolute;top:20px;left:10px;width:14px;height:10px;");
+        		//newNode.setAttribute("style","cursor:pointer;position:inherit;top:20px;left:10px;width:20px;height:15px;");
+        		newNode.setAttribute("style","cursor:pointer;position:relative;top:0px;left:0px;width:20px;height:15px;");
         		var   newNodeNode=document.createElement("img");
         		newNodeNode.setAttribute("id","car");
         		newNodeNode.setAttribute("src","pic/car.png");
@@ -224,6 +227,7 @@ $tfurl = $_GET['httpport'] ;
 				tposex += leftDis;
 				var tposey = (modelSizey/2)- posey[i];
 				tposey *= scale;
+                tposey += topDis;
 				element.style.left=tposex+"px";
 				element.style.top=tposey+"px";
         }
