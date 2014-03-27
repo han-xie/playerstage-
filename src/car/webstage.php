@@ -13,8 +13,8 @@
 					.map {
 						width:480px;
 						height:480px;
-						MARGIN-RIGHT: auto;
-						MARGIN-LEFT: auto;
+						/*MARGIN-RIGHT: auto;
+						MARGIN-LEFT: auto;*/
 						background-image:url('pic/cave_compact.png');
 						-moz-background-size: 100% 100%;
 						-o-background-size: 100% 100%;
@@ -36,6 +36,7 @@
 
 <?php
 $tfurl = $_GET['httpport'] ;
+$imageUrl = "pic/cave_compact.png";
 ?>
 
     <script type="text/javascript">
@@ -91,6 +92,7 @@ $tfurl = $_GET['httpport'] ;
         
         function drawMap(){
           	var dmap = document.getElementById("map");
+            dmap.style.backgroundImage = "url("+"<?php echo $imageUrl ?>"+")";
 			dmap.style.width=scale*modelSizex;
 			dmap.style.height=scale*modelSizey;
 		}
@@ -103,7 +105,8 @@ $tfurl = $_GET['httpport'] ;
 
         function getBKPicSize(){
         		var image=new Image();
-				image.src="pic/cave_compact.png";
+				//image.src="pic/cave_compact.png";
+                image.src="<?php echo $imageUrl ?>";
 				picSizex = image.width;
 				picSizey = image.height;
 				console.log("picWidth="+picSizex);
