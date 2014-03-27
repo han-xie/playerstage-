@@ -13,8 +13,8 @@
 					.map {
 						width:480px;
 						height:480px;
-						/*MARGIN-RIGHT: auto;
-						MARGIN-LEFT: auto;*/
+						MARGIN-RIGHT: auto;
+						MARGIN-LEFT: auto;
 						background-image:url('pic/cave_compact.png');
 						-moz-background-size: 100% 100%;
 						-o-background-size: 100% 100%;
@@ -36,7 +36,8 @@
 
 <?php
 $tfurl = $_GET['httpport'] ;
-$imageUrl = "pic/cave_compact.png";
+//$imageUrl = "pic/cave_compact.png";
+$imageUrl = $_GET['map'];
 ?>
 
     <script type="text/javascript">
