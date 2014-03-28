@@ -9,6 +9,8 @@ if($_GET['conffilename']) $configfilename=$_GET['conffilename'];
 else {$configfilename = "multiLaser.test3.cfg";}
 if($_GET['serverport'])  $svport=$_GET['serverport'];
 else {$svport = "5000";}
+if($_GET['map'])  $mapname=$_GET['map'];
+else {$mapname = "cave_compact.png";}
 
 $envpath = "./";
 $configfilepath = $envpath;
@@ -19,6 +21,8 @@ $otherPara = "-g";
 $finalcommand = $commandhead;
 $finalcommand .=" ".$command." ".$configfilepath." ".$otherPara." -p ".$playerport." -h ".$httpport."\n";
 echo $finalcommand;
+$mappath = $envpath;
+$mappath .=$userlable."/".$mapname ;
 
 /**************************************************
 connect to server and send command using socket
@@ -50,5 +54,5 @@ socket_close ($socket ) ;
 jump to simulation url + send some data
 ************************************************/
 
-header("Location: http://localhost/car/webstage.php?httpport=$httpport");
+header("Location: http://localhost/car/webstage.php?httpport=$httpport&map=$mappath");
 ?> 
