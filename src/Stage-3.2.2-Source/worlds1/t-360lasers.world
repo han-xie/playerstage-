@@ -28,6 +28,7 @@ floorplan
   size [16.000 16.000 0.800]
   pose [0 0 0 0]
   bitmap "bitmaps/cave.png"
+  #bitmap "bitmaps/blank.png"
 )
 
 
@@ -40,7 +41,7 @@ pioneer2dx
      # ctrl "lasernoise"  # uncomment this line to run a laser noise generator
   )
  
-  ctrl "wander"
+  #ctrl "wander"
 
   # report error-free position in world coordinates
   localization "gps"
