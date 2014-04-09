@@ -83,7 +83,7 @@ multidriver::multidriver(ConfigFile* cf, int section) :
 			ifsrc = new InterfaceOpaque(player_addr, this, cf, section);
 			break;
 		default:
-			PRINT_ERR1(
+			printf(
 					"error: multi driver doesn't support interface type %d\n",
 					player_addr.interf);
 			this->SetError(-1);
@@ -91,13 +91,13 @@ multidriver::multidriver(ConfigFile* cf, int section) :
 		}
 		if (ifsrc) {
 			if (this->AddInterface(ifsrc->addr)) {
-				PRINT_ERR("AddInterface() failed");
+				printf("AddInterface() failed");
 				this->SetError(-2);
 				return;
 			}
 			devices.push_back(ifsrc);
 		} else {
-			PRINT_ERR3("No Stage source found for interface %d:%d:%d",
+			printf("No Stage source found for interface %d:%d:%d",
 					player_addr.robot, player_addr.interf, player_addr.index);
 			this->SetError(-3);
 			return;
@@ -215,7 +215,7 @@ int multidriver::ProcessMessage(QueuePointer & resp_queue, player_msghdr * hdr,
 	if (in) {
 		return (in->ProcessMessage(resp_queue, hdr, data));
 	} else {
-		PRINT_WARN3("can't find interface for device %d.%d.%d",
+		printf("can't find interface for device %d.%d.%d",
 				this->device_addr.robot, this->device_addr.interf,
 				this->device_addr.index);
 		return (-1);

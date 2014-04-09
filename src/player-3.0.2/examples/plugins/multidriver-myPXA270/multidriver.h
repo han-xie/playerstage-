@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #endif
 #include <string.h>
+#include <vector>
 #include <libplayercore/playercore.h>
 //#include "stage.hh"
 #include "../driverlib/background.h"
@@ -70,7 +71,7 @@ public:
 typedef struct {
 	int type;
 	//laser
-	int scan_id = 0;
+	int scan_id;
 	int aioPortMin;
 	int aioPortMax;
 	int dioPortMin;
@@ -168,6 +169,12 @@ typedef struct {
 	int type;
 	int scan_width;
 	int scan_height;
+	int hmin;
+	int hmax;
+	int smin;
+	int smax;
+	int imin;
+	int imax;
 } BlobfinderConf;
 class InterfaceOpaque: public Interface {
 public:
