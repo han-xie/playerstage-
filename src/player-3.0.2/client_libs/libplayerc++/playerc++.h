@@ -460,7 +460,6 @@ class PLAYERCC_EXPORT BlobfinderProxy : public ClientProxy
     void SetColorMode(int aM);
     void SetBrightness(int aB);
     void SetAutoGain(int aG);*/
-
 };
 
 /**
