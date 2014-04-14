@@ -145,6 +145,8 @@ typedef struct {
 		double max;
 	} range_bounds;
 	int scan_id;
+	//below is new laser configure
+	int portsType[DIOMAX + 1 + AIOMAX + 1 + RS422MAX + 1];
 } LaserConf;
 //define type of position2dconf
 #define POS2D8TOP 1
