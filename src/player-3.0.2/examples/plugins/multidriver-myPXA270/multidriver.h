@@ -153,6 +153,7 @@ typedef struct {
 #define POS2D8BUTTON 2
 #define POS2DOMNIDIR 3
 #define POS2D4TIRES 4
+#define POS2D8TIRES 5
 typedef struct {
 	int type;
 	int frontL;
