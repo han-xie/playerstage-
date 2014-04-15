@@ -145,7 +145,7 @@ void playerc_laser_putmsg(playerc_laser_t *device,
     for (i = 0; i < scan_data->ranges_count; i++)
     {
       r = scan_data->ranges[i];
-      assert(r >= 0);
+      //assert(r >= 0);
       device->ranges[i] = r;
       device->scan[i][0] = r;
       device->scan[i][1] = b;
