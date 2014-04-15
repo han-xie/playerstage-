@@ -9,7 +9,8 @@
 #include <vector>
 #include <libplayercore/playercore.h>
 //#include "stage.hh"
-#include "../driverlib/background.h"
+//#include "../driverlib/background.h"
+#include "background.h"
 #include "CYZXInter.h"
 
 #define VAR(V,init) __typeof(init) V=(init)
