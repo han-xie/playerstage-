@@ -139,20 +139,27 @@ void InterfaceLaser::Publish() {
 			if ((AioDioRS422(this->conf.portsType[i]) != DONTKNOW)
 					&& (AioDioRS422(this->conf.portsType[i]) != DIOOUT)) {
 				portsV[i] = (float) MFGetAD(i);
+			} else {
+				portsV[i] = 0;
 			}
 		} else if (i < (AIOMAX + 1 + DIOMAX + 1)) {
 			if ((AioDioRS422(this->conf.portsType[i]) != DONTKNOW)
 					&& (AioDioRS422(this->conf.portsType[i]) != DIOOUT)) {
 				portsV[i] = (float) MFGetDigiInput(i - AIOMAX - 1);
+			} else {
+				portsV[i] = 0;
 			}
 		} else {
 			if ((AioDioRS422(this->conf.portsType[i]) != DONTKNOW)
 					&& (AioDioRS422(this->conf.portsType[i]) != DIOOUT)) {
 				portsV[i] = (float) MFGetUltrasonic();
+			} else {
+				portsV[i] = 0;
 			}
 		}
 
 	}
+	portsV[this->conf.portsNum - 1] = 0;
 
 	player_laser_data_t pdata;
 	memset(&pdata, 0, sizeof(pdata));
