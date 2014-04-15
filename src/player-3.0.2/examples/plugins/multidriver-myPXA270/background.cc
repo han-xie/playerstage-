@@ -18,13 +18,13 @@ void MFComSend(const void *pBuffer, const int iLength){}
 //Digi. IO
 void MFDigiInit(int interval){}
 void MFSetPortDirect(unsigned int inData){}
-int MFGetDigiInput(int inID){return 0;}
+int MFGetDigiInput(int inID){return 1;}
 void MFDigiOutput(int inID,int inVal){}
 
 //AD
 void MFADInit(int interval){}
 void MFADEnable(int inID){}
-int MFGetAD(int inID){return 0;}
+int MFGetAD(int inID){return 1;}
 
 //Servo
 void MFServoInit(int interval){}
