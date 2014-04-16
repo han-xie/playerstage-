@@ -11,7 +11,7 @@ InterfacePosition2d::InterfacePosition2d(player_devaddr_t addr,
 	this->conf.servoFL = cf->ReadInt(section, "servofl", 6);
 	this->conf.servoRR = cf->ReadInt(section, "servorr", 7);
 	this->conf.servoRL = cf->ReadInt(section, "servorl", 8);
-	this->conf.rationSpeedToServo = 2000;
+	this->conf.rationSpeedToServo = 400;
 	this->conf.maxSpeed = 1023;
 	this->conf.aToAngle = 57.4;
 	std::string pos2dType = "POS2D4TIRES";
@@ -40,8 +40,17 @@ int InterfacePosition2d::ProcessMessage(QueuePointer &resp_queue,
 			//mod->SetSpeed(pcmd->vel.px, pcmd->vel.py, pcmd->vel.pa);
 			double speed = pcmd->vel.px;
 			double turn = pcmd->vel.pa;
-			double frontLSpeed = speed - turn;
-			double rearLSpeed = speed - turn;
+			double trsts;
+			if ((turn > 0.7 && turn < 0.8) || (turn > -0.8 && turn < -0.7)) {
+				trsts = this->conf.rationSpeedToServo;
+				this->conf.rationSpeedToServo = 560;
+			} else if ((turn > 1.5 && turn < 1.6)
+					|| (turn > -1.6 && turn < -1.5)) {
+				trsts = this->conf.rationSpeedToServo;
+				this->conf.rationSpeedToServo = 258;
+			}
+			double frontLSpeed = -speed + turn;
+			double rearLSpeed = -speed + turn;
 			double frontRSpeed = speed + turn;
 			double rearRSpeed = speed + turn;
 			if ((int) frontLSpeed > this->conf.maxSpeed)
@@ -54,14 +63,20 @@ int InterfacePosition2d::ProcessMessage(QueuePointer &resp_queue,
 				frontRSpeed = rearRSpeed = -this->conf.maxSpeed;
 
 			MFSetServoRotaSpd(this->conf.frontL,
-					((int) frontLSpeed) * this->conf.rationSpeedToServo);
+					(int) (frontLSpeed * this->conf.rationSpeedToServo));
+			//printf("%d\n",(int) (frontLSpeed * this->conf.rationSpeedToServo));
 			MFSetServoRotaSpd(this->conf.rearL,
-					((int) rearLSpeed) * this->conf.rationSpeedToServo);
+					(int) (rearLSpeed * this->conf.rationSpeedToServo));
+			//printf("%d\n",(int) (rearLSpeed * this->conf.rationSpeedToServo));
 			MFSetServoRotaSpd(this->conf.frontR,
-					((int) frontRSpeed) * this->conf.rationSpeedToServo);
+					(int) (frontRSpeed * this->conf.rationSpeedToServo));
+			//printf("%d\n",(int) (frontRSpeed * this->conf.rationSpeedToServo));
 			MFSetServoRotaSpd(this->conf.rearR,
-					((int) rearRSpeed) * this->conf.rationSpeedToServo);
+					(int) (rearRSpeed * this->conf.rationSpeedToServo));
+			//printf("%d\n",(int) (rearRSpeed * this->conf.rationSpeedToServo));
 			MFServoAction();
+
+			this->conf.rationSpeedToServo = trsts;
 
 			return 0;
 		} else if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_CMD,
