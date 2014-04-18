@@ -53,14 +53,17 @@ int InterfacePosition2d::ProcessMessage(QueuePointer &resp_queue,
 				trsts = this->conf.rationSpeedToServo;
 				this->conf.rationSpeedToServo = 258;
 			}
+			else this->conf.rationSpeedToServo = 1000;
 			double frontLSpeed = speed + turn;
 			double rearLSpeed = speed + turn;
 			double frontRSpeed = -speed + turn;
 			double rearRSpeed = -speed + turn;
 			double rsfl, rsrl;
 			double rsfr, rsrr;
+			printf(" %f %f\n",frontLSpeed,frontRSpeed);
 			rsfl = rsrl = frontLSpeed * this->conf.rationSpeedToServo;
 			rsfr = rsrr =frontRSpeed * this->conf.rationSpeedToServo;
+			printf(" %f %f\n",rsfl,rsfr);
 			if ((int) (frontLSpeed * this->conf.rationSpeedToServo)
 					> this->conf.maxSpeed)
 				rsfl = rsrl = this->conf.maxSpeed;
