@@ -169,6 +169,8 @@ typedef struct {
 	int rationSpeedToServo;
 	int maxSpeed;
 	int aToAngle;
+	int id[8];
+	int speedAngle[8];
 } Position2dConf;
 typedef struct {
 	int type;

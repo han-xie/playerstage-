@@ -8,12 +8,15 @@
 #include <iostream>
 #include <libplayerc++/playerc++.h>
 #include "CYZXInter.h"
+#include "args.h"
+
 
 int main(int argc, char *argv[]) {
 	using namespace PlayerCc;
 
-	PlayerClient robot("192.168.0.111", 6666);
-	OpaqueProxy opaquep(&robot, 0);
+	parse_args(argc, argv);
+	PlayerClient robot(gHostname, gPort);
+	OpaqueProxy opaquep(&robot, gIndex);
 
 	CYZXInter cyzxic(&robot, &opaquep);
 
@@ -25,21 +28,21 @@ int main(int argc, char *argv[]) {
 		switch (t) {
 		case 1: {
 
-			cyzxic.pos2dForward(300);
+			cyzxic.pos2dForward(500);
 			break;
 		}
 		case 2: {
 
-			cyzxic.pos2dBackward(300);
+			cyzxic.pos2dBackward(500);
 			break;
 		}
 		case 3: {
-			cyzxic.pos2dTurnLeft(300);
+			cyzxic.pos2dTurnLeft(500);
 			break;
 		}
 		case 4: {
 
-			cyzxic.pos2dTurnRight(300);
+			cyzxic.pos2dTurnRight(500);
 			break;
 		}
 		case 5: {

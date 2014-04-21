@@ -1505,6 +1505,8 @@ class PLAYERCC_EXPORT OpaqueProxy : public ClientProxy
     /// Send a request
     int SendReq(player_opaque_data_t* aRequest);
 
+    void newSizeFormDevice(int size);
+    void newFormDevice(int size);
 };
 
 /**

@@ -115,6 +115,39 @@ int InterfaceLaser::ProcessMessage(QueuePointer & resp_queue,
 	return -1;
 }
 
+static int deaperDealAIO(int t) {
+		int dis = 1;
+		if (t > 500) {
+			return 1;
+		} else if (t <= 500 && t > 470) {
+			return 2;
+		} else if (t <= 470 && t > 400) {
+			return 5;
+		} else if (t <= 400 && t > 350) {
+			return 6;
+		} else if (t <= 350 && t > 320) {
+			return 7;
+		} else if (t <= 320 && t > 230) {
+			return 10;
+		} else if (t <= 235 && t > 115) {
+			return (20 - (t - 115) / 12);
+		} else if (t <= 115 && t > 72) {
+			return (30 - (t - 72) / 4);
+		} else if (t <= 72 && t > 52) {
+			return (40 - (t - 52) / 2);
+		} else if (t <= 52 && t > 42) {
+			return (92 - t);
+		} else if (t <= 42 && t > 33) {
+			return (60 - (10 * t - 330) / 9);
+		} else if (t <= 33 && t > 29) {
+			return (70 - (10 * t - 290) / 4);
+		} else if (t <= 29 && t > 23) {
+			return (80 - (10 * t - 230) / 6);
+		} else
+			return 80;
+		return dis;
+}
+
 void InterfaceLaser::Publish() {
 	/*float portsV[DIOMAX + 1];
 	 if (AioDioRS422(this->conf.type) == AIO) {
@@ -139,6 +172,9 @@ void InterfaceLaser::Publish() {
 			if ((AioDioRS422(this->conf.portsType[i]) != DONTKNOW)
 					&& (AioDioRS422(this->conf.portsType[i]) != DIOOUT)) {
 				portsV[i] = (float) MFGetAD(i);
+				if(this->conf.portsType[i]==infrDistSen){
+					portsV[i]=(float) deaperDealAIO((int)portsV[i]);
+				}
 			} else {
 				portsV[i] = 0;
 			}
@@ -159,7 +195,7 @@ void InterfaceLaser::Publish() {
 		}
 
 	}
-	portsV[this->conf.portsNum - 1] = 0;
+	portsV[this->conf.portsNum - 1] = portsV[this->conf.portsNum - 2];
 
 	player_laser_data_t pdata;
 	memset(&pdata, 0, sizeof(pdata));
@@ -213,7 +249,7 @@ int InterfaceLaser::AioDioRS422(int type) {
 }
 
 int InterfaceLaser::StringToType(const char *p) {
-	if (strcmp(p, "infroProxSen") == 0)
+	if (strcmp(p, "infrProxSen") == 0)
 		return infrProxSen;
 	else if (strcmp(p, "colliSen") == 0)
 		return colliSen;

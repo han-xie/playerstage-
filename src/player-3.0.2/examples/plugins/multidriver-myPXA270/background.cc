@@ -7,7 +7,7 @@ void MF2X4LCD(const char*item,int insize){}
 
 //Ultrasonic
 void MFUSonicEnable(){}
-int MFGetUltrasonic(){return 0;}
+int MFGetUltrasonic(){return 500;}
 
 //Delay
 void DelayMS(int inMS){}

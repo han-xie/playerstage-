@@ -4,6 +4,22 @@ InterfaceOpaque::InterfaceOpaque(player_devaddr_t addr, multidriver* driver,
 		ConfigFile* cf, int section) :
 		Interface(addr, driver, cf, section) {
 	this->Interface::PublishSign = cf->ReadInt(section,"publish",1);
+	this->conf.frontL = cf->ReadInt(section, "frontL", 1);
+	this->conf.frontR = cf->ReadInt(section, "frontR", 2);
+	this->conf.rearL = cf->ReadInt(section, "rearL", 3);
+	this->conf.rearR = cf->ReadInt(section, "rearR", 4);
+	this->conf.servoFR = cf->ReadInt(section, "servofr", 5);
+	this->conf.servoFL = cf->ReadInt(section, "servofl", 6);
+	this->conf.servoRR = cf->ReadInt(section, "servorr", 7);
+	this->conf.servoRL = cf->ReadInt(section, "servorl", 8);
+	MFSetServoMode(this->conf.frontL, 1);
+	MFSetServoMode(this->conf.frontR, 1);
+	MFSetServoMode(this->conf.rearL, 1);
+	MFSetServoMode(this->conf.rearR, 1);
+	MFSetServoMode(this->conf.servoFR, 0);
+	MFSetServoMode(this->conf.servoFL, 0);
+	MFSetServoMode(this->conf.servoRR, 0);
+	MFSetServoMode(this->conf.servoRL, 0);
 }
 
 int InterfaceOpaque::ProcessMessage(QueuePointer &resp_queue,
@@ -517,9 +533,9 @@ int InterfaceOpaque::dealOpaquePosition2d(QueuePointer & resp_queue,
 		myOpaqueSt4 *popa = (myOpaqueSt4 *) opaquedata->data;
 
 		MFSetServoRotaSpd(this->conf.frontL, popa->p1);
-		MFSetServoRotaSpd(this->conf.frontR, popa->p2);
+		MFSetServoRotaSpd(this->conf.frontR, -popa->p2);
 		MFSetServoRotaSpd(this->conf.rearL, popa->p3);
-		MFSetServoRotaSpd(this->conf.rearR, popa->p4);
+		MFSetServoRotaSpd(this->conf.rearR, -popa->p4);
 		MFServoAction();
 
 		break;
@@ -529,9 +545,9 @@ int InterfaceOpaque::dealOpaquePosition2d(QueuePointer & resp_queue,
 		myOpaqueSt4 *popa = (myOpaqueSt4 *) opaquedata->data;
 
 		MFSetServoRotaSpd(this->conf.frontL, -(popa->p1));
-		MFSetServoRotaSpd(this->conf.frontR, -(popa->p2));
+		MFSetServoRotaSpd(this->conf.frontR, (popa->p2));
 		MFSetServoRotaSpd(this->conf.rearL, -(popa->p3));
-		MFSetServoRotaSpd(this->conf.rearR, -(popa->p4));
+		MFSetServoRotaSpd(this->conf.rearR, (popa->p4));
 		MFServoAction();
 		break;
 	}
@@ -539,9 +555,9 @@ int InterfaceOpaque::dealOpaquePosition2d(QueuePointer & resp_queue,
 		myOpaqueSt4 *popa = (myOpaqueSt4 *) opaquedata->data;
 
 		MFSetServoRotaSpd(this->conf.frontL, -(popa->p1));
-		MFSetServoRotaSpd(this->conf.frontR, (popa->p2));
+		MFSetServoRotaSpd(this->conf.frontR, -(popa->p2));
 		MFSetServoRotaSpd(this->conf.rearL, -(popa->p3));
-		MFSetServoRotaSpd(this->conf.rearR, (popa->p4));
+		MFSetServoRotaSpd(this->conf.rearR, -(popa->p4));
 		MFServoAction();
 		break;
 	}
@@ -550,9 +566,9 @@ int InterfaceOpaque::dealOpaquePosition2d(QueuePointer & resp_queue,
 		myOpaqueSt4 *popa = (myOpaqueSt4 *) opaquedata->data;
 
 		MFSetServoRotaSpd(this->conf.frontL, (popa->p1));
-		MFSetServoRotaSpd(this->conf.frontR, -(popa->p2));
+		MFSetServoRotaSpd(this->conf.frontR, (popa->p2));
 		MFSetServoRotaSpd(this->conf.rearL, (popa->p3));
-		MFSetServoRotaSpd(this->conf.rearR, -(popa->p4));
+		MFSetServoRotaSpd(this->conf.rearR, (popa->p4));
 		MFServoAction();
 
 		break;

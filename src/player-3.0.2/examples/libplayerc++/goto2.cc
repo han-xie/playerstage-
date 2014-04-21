@@ -219,7 +219,7 @@ int main(int argc, char **argv) {
 		parse_args(argc, argv);
 
 		// Connect to Player server
-		robot = new PlayerClient(gHostname, 7001);
+		robot = new PlayerClient(gHostname,gPort);
 		pp = new Position2dProxy(robot, gIndex);
 		//pp2=new Position2dProxy(robot,1);
 

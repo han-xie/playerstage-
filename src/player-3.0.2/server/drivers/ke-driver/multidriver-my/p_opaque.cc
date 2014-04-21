@@ -3,6 +3,14 @@
 InterfaceOpaque::InterfaceOpaque(player_devaddr_t addr, multidriver* driver,
 		ConfigFile* cf, int section) :
 		Interface(addr, driver, cf, section) {
+	this->conf.frontL = cf->ReadInt(section, "frontL", 1);
+	this->conf.frontR = cf->ReadInt(section, "frontR", 2);
+	this->conf.rearL = cf->ReadInt(section, "rearL", 3);
+	this->conf.rearR = cf->ReadInt(section, "rearR", 4);
+	this->conf.servoFR = cf->ReadInt(section, "servofr", 5);
+	this->conf.servoFL = cf->ReadInt(section, "servofl", 6);
+	this->conf.servoRR = cf->ReadInt(section, "servorr", 7);
+	this->conf.servoRL = cf->ReadInt(section, "servorl", 8);
 	this->Interface::PublishSign = cf->ReadInt(section,"publish",1);
 }
 

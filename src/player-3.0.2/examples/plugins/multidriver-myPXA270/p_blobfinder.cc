@@ -34,6 +34,11 @@ InterfaceBlobfinder::InterfaceBlobfinder(player_devaddr_t addr,
 	MFCapSetH(this->conf.hmax, this->conf.hmin);
 	MFCapSetS(this->conf.smax, this->conf.smin);
 	MFCapSetI(this->conf.imax, this->conf.imin);
+#ifndef PXA270
+			printf(" %d %d\n", this->conf.hmax, this->conf.hmin);
+			printf(" %d %d\n", this->conf.smax, this->conf.smin);
+			printf(" %d %d\n", this->conf.imax, this->conf.imin);
+#endif
 }
 
 int InterfaceBlobfinder::ProcessMessage(QueuePointer& resp_queue,

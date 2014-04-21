@@ -8,12 +8,14 @@
 #include <iostream>
 #include <libplayerc++/playerc++.h>
 #include "CYZXInter.h"
-
+#include "args.h"
 int main(int argc, char *argv[]) {
 	using namespace PlayerCc;
 
-	PlayerClient robot("192.168.0.111", 6666);
-	OpaqueProxy opaquep(&robot, 0);
+
+	parse_args(argc, argv);
+	PlayerClient robot(gHostname, gPort);
+	OpaqueProxy opaquep(&robot, gIndex);
 
 	CYZXInter cyzxic(&robot, &opaquep);
 
@@ -32,7 +34,7 @@ int main(int argc, char *argv[]) {
 			break;
 		}
 		case 3: {
-			cyzxic.bkLCDdisp("hello");
+			cyzxic.bkLCDdisp("hello test");
 			break;
 		}
 		case 4: {
