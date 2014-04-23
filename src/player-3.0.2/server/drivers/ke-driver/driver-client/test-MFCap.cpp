@@ -8,12 +8,16 @@
 #include <iostream>
 #include <libplayerc++/playerc++.h>
 #include "CYZXInter.h"
+#include "args.h"
+
 
 int main(int argc, char *argv[]) {
 	using namespace PlayerCc;
 
-	PlayerClient robot("192.168.0.111", 6666);
-	OpaqueProxy opaquep(&robot, 0);
+		parse_args(argc, argv);
+	PlayerClient robot(gHostname, gPort);
+	OpaqueProxy opaquep(&robot, gIndex);
+
 
 	CYZXInter cyzxic(&robot, &opaquep);
 
@@ -24,9 +28,10 @@ int main(int argc, char *argv[]) {
 	std::cout << "capsets\n";
 	cyzxic.capSetS(255, 60);
 	sleep(2);
-
-	for (int i = 0; i < 10; i++) {
-		std::cout<<"i\n";
+ 
+char i;
+	for (;;) {
+		
 		int mfcapx = cyzxic.capGetCenterX();
 		int mfcapy = cyzxic.capGetCenterY();
 		int mfcaps = cyzxic.capGetSum();

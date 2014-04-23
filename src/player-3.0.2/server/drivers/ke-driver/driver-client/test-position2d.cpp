@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 	int pos, id , speed;
 	while (1) {
 		int t;
-		std::cout << "choose one  0-exit 1-pos 2-speed:\n";
+		std::cout << "choose one  0-exit 1-pos 2-speed 3-pos2dSet4Tires:\n";
 		std::cin >> t;
 		switch (t) {
 		case 0:{
@@ -55,6 +55,18 @@ int main(int argc, char *argv[]) {
 			cyzxic.bkMFServoAction();
 			break;
 		}
+case 3:{
+int id1,id2,id3,id4;
+std::cout<<"4 id"<<std::endl;
+std::cin >>id1;
+std::cin>>id2;
+std::cin>>id3;
+std::cin>>id4;
+cyzxic.pos2dSet4Tires(id1,id2,id3,id4,400,400,400,400);
+sleep(2);
+cyzxic.pos2dSet4Tires(id1,id2,id3,id4,0,0,0,0);
+std::cout<<"stop"<<std::endl;
+}
 		}
 
 	}
