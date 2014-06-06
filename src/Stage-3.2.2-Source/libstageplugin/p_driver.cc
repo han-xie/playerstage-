@@ -266,13 +266,13 @@ InterfaceModel::InterfaceModel(  player_devaddr_t addr,
 // pre-Setup() setup.
 
 // configure the underlying driver to queue incoming commands and use a very long queue.
-int initialtimes=0;
+//int initialtimes=0;
 StgDriver::StgDriver(ConfigFile* cf, int section)
 	: Driver(cf, section, false, 4096 ),
 		devices()
 {
-	initialtimes++;
-printf("---init times:%d\n",initialtimes);
+//	initialtimes++;
+//printf("---init times:%d\n",initialtimes);
   // init the array of device ids
 
   int device_count = cf->GetTupleCount( section, "provides" );
