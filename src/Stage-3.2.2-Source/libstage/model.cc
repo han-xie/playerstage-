@@ -775,6 +775,7 @@ void Model::AppendTouchingModels( ModelPtrSet& touchers )
   blockgroup.AppendTouchingModels( touchers );
 }
 
+// I think its can be used in colliSen
 Model* Model::TestCollision()
 {
   //printf( "mod %s test collision...\n", token );  
