@@ -200,10 +200,12 @@ public:
 	virtual void Publish(void);
 	virtual int ProcessMessage(QueuePointer & resp_queue, player_msghdr_t* hdr,
 			void* data);
+	virtual bool testCollision();
 private:
 	Pos2dConf conf;
 	player_devaddr_t require_addr;
 	Device* require_dev;
+	//bool collisionS;
 };
 
 class InterfaceGripper: public InterfaceModel {
