@@ -159,11 +159,12 @@ void InterfaceLaser::Publish(void) {
 				pdata.ranges[i] = 0;
 			}
 		}else if(strcmp(cyzxlc[i].type.data(),"colliSensor")==0){
-			if(pdata.ranges[i] <= cyzxlc[i].range_max && pdata.ranges[i] >= cyzxlc[i].range_min){
+			/*if(pdata.ranges[i] <= cyzxlc[i].range_max && pdata.ranges[i] >= cyzxlc[i].range_min){
 				pdata.ranges[i]=1;
 			}else{
 				pdata.ranges[i] = 0;
-			}
+			}*/
+
 		}else if(strcmp(cyzxlc[i].type.data(),"hallSensor")==0){
 			if(pdata.ranges[i] <= cyzxlc[i].range_max && pdata.ranges[i] >= cyzxlc[i].range_min){
 				pdata.ranges[i]=1;
