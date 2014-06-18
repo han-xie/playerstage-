@@ -288,7 +288,8 @@ int InterfacePosition::ProcessMessage(QueuePointer &resp_queue,
 			hdr->type, hdr->subtype);
 	return (-1);
 }
-
+bool InterfacePosition::testCollision(){
+}
 void InterfacePosition::Publish(void) {
 	//puts( "publishing position data" );
 
