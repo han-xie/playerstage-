@@ -48,7 +48,7 @@ zone
   color "red"
   pose [ 4.000 4.000 0 0 ]
   name "sink"
-  #ctrl "sink"
+  ctrl "sink"
   bitmap "bitmaps/ghost.png"
 )
 

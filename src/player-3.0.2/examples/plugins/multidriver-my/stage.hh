@@ -780,7 +780,7 @@ namespace Stg
 	 std::set<Model*> models;
 
 	 /** pointers to the models that make up the world, indexed by name. */
-	 std::map<std::string, Model*> models_by_name; 		
+	 std::map<std::string, Model*> models_by_name;
 
 	 /** pointers to the models that make up the world, indexed by worldfile entry index */
 	 std::map<int,Model*> models_by_wfentity;
