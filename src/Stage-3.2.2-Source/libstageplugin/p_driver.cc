@@ -143,6 +143,16 @@ The stage plugin driver provides the following device interfaces:
 //  - PLAYER_BLOBFINDER_SET_IMAGER_PARAMS_REQ
 
 // CODE ------------------------------------------------------------
+// C++ libs
+/*#include <cmath>
+#include <iostream>
+#include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <queue>
+#include <algorithm>*/
+
 
 #include <unistd.h>
 #include <string.h>
@@ -607,6 +617,13 @@ void StgDriver::Update(void)
 					}
 				}
 		}
+
+	/*
+	std::map<std::string, Model*>::iterator it;
+	for(it=this->StgDriver::world->World::models_by_name.begin();it!=this->StgDriver::world->models_by_name.end();++it)
+	        std::cout<<"string: "<<it->first <<" value: "<<it->second<<std::endl;
+	        */
+
 }
 
 
