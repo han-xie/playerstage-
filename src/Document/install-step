@@ -1,0 +1,3 @@
+cd /var/www/car
+./server 5000
+http://127.0.0.1/car/simulation.php?conffilename=t-360lasersW-wander.cfg&userid=anonymous&serverport=5000

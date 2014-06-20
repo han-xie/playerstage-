@@ -1,0 +1,74 @@
+-----------------------------------------------------------------------------------
+set(CMAKE_VERBOSE_MAKEFILE on)
+
+-------------webstage-------------------------------------------------------------
+gcc -g webstage-speedup-url.cc -o webstage confederate.o parser.o puppet.o req_model.o req_sim.o websim.o -lstage -I/usr/local/include/Stage-3.2 -levent -lxml2 -L/usr/lib/i386-linux-gnu -lglib-2.0
+
+
+gcc -g -c confederate.cc -fmax-errors=1
+gcc -g -c parser.cc -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include/
+gcc -g -c puppet.cc
+gcc -g -c req_model.cc -I/usr/include/libxml2/
+gcc -g -c req_sim.cc
+gcc -g -c websim.cc -I/usr/include/libxml2/
+-------------------------two below is isolate with backgroud.h of Beijing UPTECH---------------------------------
+arm-linux-g++ -Wall -D_DEBUG -D__LINUX__ -DRS485  -c -o main.o main.cpp
+arm-linux-g++ -L ./Lib -lpthread -lmsr -lmad -o MultiFlexNG main.o serial_linux.o speechrecogn.o voice.o capture.o drv-v4l.o grab-ng.o struct-v4l.o struct-dump.o command.o TCPLin.o background.o mp3.o sound.o rs422.o UDPBasic.o
+
+---------plugin driver run on RAM----------------------------------------------------------------
+arm-linux-g++ -Wall -D_DEBUG -D__LINUX__ -DRS485 -I/usr/local/include/player-3.0  -c CDS55.cpp -o CDS55.o 
+arm-linux-g++ -Wall -Wextra -nostartfiles -shared -rdynamic -L../upt-provide-function/Lib -lpthread -lmsr -lmad -L/home/keevi7c3l/src/player-3.0.2/build/player_install/lib -lplayercore -lplayerc++  -o CDS55.so CDS55.o ../upt-provide-function/serial_linux.o ../upt-provide-function/speechrecogn.o ../upt-provide-function/voice.o ../upt-provide-function/capture.o ../upt-provide-function/drv-v4l.o ../upt-provide-function/grab-ng.o ../upt-provide-function/struct-v4l.o ../upt-provide-function/struct-dump.o ../upt-provide-function/command.o ../upt-provide-function/TCPLin.o ../upt-provide-function/background.o ../upt-provide-function/mp3.o ../upt-provide-function/sound.o ../upt-provide-function/rs422.o ../upt-provide-function/UDPBasic.o
+
+-----------------pluging driver control progrm -----------------------------------------------------
+g++ -c CYZXInter.cpp  -I/usr/local/include/player-3.0/ -o CYZXInter.o
+g++  test-dio-10commands.cpp -I/usr/local/include/player-3.0/ -L/usr/lib/ -lplayercore -lplayerc++  CYZXInter.o -o  test-dio-10commands
+
+g++  grip.cc -I/usr/local/include/player-3.0/ -L/usr/lib/ -lplayercore -lplayerc++  -o  grip
+
+------------------compile test pose/rot - choose -----------------------------------------------------
+arm-linux-g++ -Wall -D_DEBUG -D__LINUX__ -DRS485  -c main-choose.cpp -o main-choose.o 
+arm-linux-g++  -L ../upt-provide-function/Lib -lpthread -lmsr -lmad -o main-choose main-choose.o ../upt-provide-function/serial_linux.o ../upt-provide-function/speechrecogn.o ../upt-provide-function/voice.o ../upt-provide-function/capture.o ../upt-provide-function/drv-v4l.o ../upt-provide-function/grab-ng.o ../upt-provide-function/struct-v4l.o ../upt-provide-function/struct-dump.o ../upt-provide-function/command.o ../upt-provide-function/TCPLin.o ../upt-provide-function/background.o ../upt-provide-function/mp3.o ../upt-provide-function/sound.o ../upt-provide-function/rs422.o ../upt-provide-function/UDPBasic.o
+
+arm-linux-g++ -Wall -D_DEBUG -D__LINUX__ -DRS485  -c my-position2d-pos.cpp -o my-position2d-pos.o 
+arm-linux-g++  -L ../Lib -lpthread -lmsr -lmad -o my-position2d-pos my-position2d-pos.o ../serial_linux.o ../speechrecogn.o ../voice.o ../capture.o ../drv-v4l.o ../grab-ng.o ../struct-v4l.o ../struct-dump.o ../command.o ../TCPLin.o ../background.o ../mp3.o ../sound.o ../rs422.o ../UDPBasic.o
+-------------------------------------------------------------------------------------------------------
+gcc webstage.cc -o webstage confederate.o parser.o puppet.o req_model.o req_sim.o websim.o -lstage -I/usr/local/include/Stage-3.2 -levent -lxml2 -L/usr/lib/i386-linux-gnu -lglib-2.0
+
+g++ laserobstacleavoid.cc -I/usr/local/include/player-3.0/ -L/usr/lib/ -lplayercore -lplayerc++ -o laserobstacleavoid
+
+g++ -Wall -Wextra -nostartfiles -shared -rdynamic -o CustomDriver.so
+
+-----------------------------------------------------------------------------
+? why wrong ? can't find the driver when using the *.o files in northstar
+
+[root@(none) test]#player multi.cfg
+Registering driver
+Player v.3.0.2
+
+* Part of the Player/Stage/Gazebo Project [http://playerstage.sourceforge.net].
+* Copyright (C) 2000 - 2009 Brian Gerkey, Richard Vaughan, Andrew Howard,
+* Nate Koenig, and contributors. Released under the GNU General Public License.
+* Player comes with ABSOLUTELY NO WARRANTY.  This is free software, and you
+* are welcome to redistribute it under certain conditions; see COPYING
+* for details.
+
+error   : Failed to load plugin libmultidriver.
+error   : libtool reports error: file not found
+error   : plugin search path: /mnt/yaffs/test:.:/home/john/ljj_player/new_player/build/player_install/lib/
+error   : failed to load plugin: libmultidriver
+error   : failed to parse config file multi.cfg driver blocks
+[root@(none) test]#mv libmultidriver.so-copy libmultidriver.so
+------------------------------------------------------------------------------------------------------
+multi.cfg 
+driver
+(
+  name "multidriver"
+  plugin "libmultidriver"
+  provides ["aio:0" "dio:0" "position2d:0" "opaque:0"]
+  frontL 10
+  frontR 11
+  rearL  8
+  rearR  9
+)
+
+
