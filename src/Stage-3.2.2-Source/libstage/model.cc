@@ -213,6 +213,7 @@ void Pose::Save( Worldfile* wf, int section, const char* keyword )
 
 Model::Visibility::Visibility() : 
   blob_return( true ),
+  hall_return(true),
   fiducial_key( 0 ),
   fiducial_return( 0 ),
   gripper_return( false ),
@@ -226,7 +227,8 @@ static const double DEFAULT_FRICTION = 0.0;
 
 void Model::Visibility::Load( Worldfile* wf, int wf_entity )
 {
-  blob_return = wf->ReadInt( wf_entity, "blob_return", blob_return);    
+  blob_return = wf->ReadInt( wf_entity, "blob_return", blob_return);
+  hall_return = wf->ReadInt( wf_entity, "hall_return", hall_return);
   fiducial_key = wf->ReadInt( wf_entity, "fiducial_key", fiducial_key);
   fiducial_return = wf->ReadInt( wf_entity, "fiducial_return", fiducial_return);
   gripper_return = wf->ReadInt( wf_entity, "gripper_return", gripper_return);    

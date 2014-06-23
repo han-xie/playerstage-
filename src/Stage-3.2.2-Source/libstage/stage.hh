@@ -1862,6 +1862,7 @@ namespace Stg
 	 {
 	 public:
 		bool blob_return;
+		bool hall_return;
 		int fiducial_key;
 		int fiducial_return;
 		bool gripper_return;
@@ -2204,6 +2205,7 @@ namespace Stg
 	 void SetLaserReturn( stg_laser_return_t val );
 	 void SetObstacleReturn( int val );
 	 void SetBlobReturn( int val );
+	 void SetHallReturn(int val);
 	 void SetRangerReturn( int val );
 	 void SetBoundary( int val );
 	 void SetGuiNose( int val );
@@ -2388,6 +2390,72 @@ namespace Stg
 	 void RemoveAllColors();
   };
 
+
+
+  class ModelHallfinder : public Model
+    {
+    public:
+  	 /** Sample data */
+  	 class Hall
+  	 {
+  	 public:
+  		Color color;
+  		uint32_t left, top, right, bottom;
+  		stg_meters_t range;
+  	 };
+
+  	 class Vis : public Visualizer
+  	 {
+  	 private:
+  		//static Option showArea;
+  	 public:
+  		Vis( World* world );
+  		virtual ~Vis( void ){}
+  		virtual void Visualize( Model* mod, Camera* cam );
+  	 } vis;
+
+    private:
+  	 std::vector<Hall> halls;
+  	 std::vector<Color> colors;
+
+  	 // predicate for ray tracing
+  	 static bool BlockMatcher( Block* testblock, Model* finder );
+
+    public:
+  	 stg_radians_t fov;
+  	 stg_radians_t pan;
+  	 stg_meters_t range;
+  	 unsigned int scan_height;
+  	 unsigned int scan_width;
+
+  	 // constructor
+  	 ModelHallfinder( World* world,
+  							Model* parent,
+  							const std::string& type );
+  	 // destructor
+  	 ~ModelHallfinder();
+
+  	 virtual void Startup();
+  	 virtual void Shutdown();
+  	 virtual void Update();
+  	 virtual void Load();
+
+  	 Hall* GetHalls( unsigned int* count )
+  	 {
+  		if( count ) *count = halls.size();
+  		return &halls[0];
+  	 }
+
+  	 /** Start finding halls with this color.*/
+  	 void AddColor( Color col );
+
+  	 /** Stop tracking halls with this color */
+  	 void RemoveColor( Color col );
+
+  	 /** Stop tracking all colors. Call this to clear the defaults, then
+  		  add colors individually with AddColor(); */
+  	 void RemoveAllColors();
+    };
 
 
 

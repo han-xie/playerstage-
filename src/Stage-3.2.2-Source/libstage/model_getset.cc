@@ -80,6 +80,12 @@ void Model::SetBlobReturn( int val )
   CallCallbacks( &vis.blob_return );
 }
 
+void Model::SetHallReturn( int val )
+{
+  vis.hall_return = val;
+  CallCallbacks( &vis.hall_return );
+}
+
 void Model::SetRangerReturn( int val )
 {
   vis.ranger_return = val;
