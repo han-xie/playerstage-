@@ -1,0 +1,7 @@
+----debug how laser get its range-------------
+gdb player
+	//void ModelLaser::Update(void)
+b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstage/model_laser.cc:329
+r test-laser-wander.cfg
+
+b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstage/world.cc:656
