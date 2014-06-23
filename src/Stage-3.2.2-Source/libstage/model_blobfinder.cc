@@ -111,7 +111,7 @@ static bool blob_match( Model* candidate,
 								const void* dummy )
 { 
   (void)dummy; // avoid warning about unused var
-
+  if(candidate->vis.blob_return==false) return false;
   return( ! finder->IsRelated( candidate ));
 }	
 
