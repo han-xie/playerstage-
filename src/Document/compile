@@ -22,6 +22,7 @@ arm-linux-g++ -Wall -Wextra -nostartfiles -shared -rdynamic -L../upt-provide-fun
 -----------------pluging driver control progrm -----------------------------------------------------
 g++ -c CYZXInter.cpp  -I/usr/local/include/player-3.0/ -o CYZXInter.o
 g++  test-dio-10commands.cpp -I/usr/local/include/player-3.0/ -L/usr/lib/ -lplayercore -lplayerc++  CYZXInter.o -o  test-dio-10commands
+g++ test-blobfinder.cc -I/usr/local/include/player-3.0/ -L/usr/lib/ -lboost_signals -lplayercore -lplayerc++  -o test-blobfinder
 
 g++  grip.cc -I/usr/local/include/player-3.0/ -L/usr/lib/ -lplayercore -lplayerc++  -o  grip
 
