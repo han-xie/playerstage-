@@ -3,7 +3,7 @@ resolution     0.02
 include "pioneer.inc"
 include "irobot.inc"
 include "map.inc"
-include "sick.inc"
+include "sick-blobfinder.inc"
 
 window
 ( 
@@ -45,11 +45,11 @@ puck( pose [-8.959 2.752 0 -101.643 ] color "yellow" )
 #
 define trickedoutpioneer pioneer2dx
 (
-	ranger( alwayson 0 )
+	#ranger( alwayson 0 )
 
   sicklaser( pose [0.030 0 0 0 ]  alwayson 1 )
 
-  fiducial( range_max 8 range_max_id 5 ) 
+  fiducial( range_max 2 range_max_id 5 ) 
 
   fiducial_return 17
   gripper_return 0
@@ -67,6 +67,7 @@ trickedoutpioneer
   gripper( pose [0.23 0.000 -0.20 0.000] color "gray" )
 
   blobfinder( 
+	range 1
         colors_count 6 
         colors [ "red" "blue" "green" "cyan" "yellow" "magenta" ]  
 		  alwayson 1
