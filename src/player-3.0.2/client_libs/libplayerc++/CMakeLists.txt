@@ -174,6 +174,7 @@ IF (BUILD_PLAYERCC)
                         audioproxy.cc
                         blackboardproxy.cc
                         blobfinderproxy.cc
+                        hallsensorproxy.cc
                         bumperproxy.cc
                         cameraproxy.cc
                         dioproxy.cc

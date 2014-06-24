@@ -2392,7 +2392,7 @@ namespace Stg
 
 
 
-  class ModelHallfinder : public Model
+  class ModelHallsensor : public Model
     {
     public:
   	 /** Sample data */
@@ -2429,11 +2429,11 @@ namespace Stg
   	 unsigned int scan_width;
 
   	 // constructor
-  	 ModelHallfinder( World* world,
+  	 ModelHallsensor( World* world,
   							Model* parent,
   							const std::string& type );
   	 // destructor
-  	 ~ModelHallfinder();
+  	 ~ModelHallsensor();
 
   	 virtual void Startup();
   	 virtual void Shutdown();
@@ -2456,6 +2456,8 @@ namespace Stg
   		  add colors individually with AddColor(); */
   	 void RemoveAllColors();
     };
+
+
 
 
 

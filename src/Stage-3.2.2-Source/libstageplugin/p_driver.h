@@ -292,6 +292,19 @@ public:
 	virtual void Publish(void);
 };
 
+class InterfaceHallsensor: public InterfaceModel {
+public:
+	InterfaceHallsensor(player_devaddr_t addr, StgDriver* driver,
+			ConfigFile* cf, int section);
+	virtual ~InterfaceHallsensor(void) { /* TODO: clean up*/
+	}
+	;
+
+	virtual int ProcessMessage(QueuePointer & resp_queue, player_msghdr * hdr,
+			void * data);
+	virtual void Publish(void);
+};
+
 class InterfacePtz: public InterfaceModel {
 public:
 	InterfacePtz(player_devaddr_t addr, StgDriver* driver, ConfigFile* cf,

@@ -1324,6 +1324,38 @@ PLAYERC_EXPORT int playerc_blobfinder_unsubscribe(playerc_blobfinder_t *device);
 /**************************************************************************/
 
 
+typedef player_hallsensor_hall_t playerc_hallsensor_hall_t;
+
+/** @brief Blobfinder device data. */
+typedef struct
+{
+  /** Device info; must be at the start of all device structures. */
+  playerc_device_t info;
+
+  /** Image dimensions (pixels). */
+  unsigned int width, height;
+
+  /** A list of detected halls. */
+  unsigned int halls_count;
+  playerc_hallsensor_hall_t *halls;
+
+} playerc_hallsensor_t;
+
+
+/** @brief Create a hallsensor proxy. */
+PLAYERC_EXPORT playerc_hallsensor_t *playerc_hallsensor_create(playerc_client_t *client, int index);
+
+/** @brief Destroy a hallsensor proxy. */
+PLAYERC_EXPORT void playerc_hallsensor_destroy(playerc_hallsensor_t *device);
+
+/** @brief Subscribe to the hallsensor device. */
+PLAYERC_EXPORT int playerc_hallsensor_subscribe(playerc_hallsensor_t *device, int access);
+
+/** @brief Un-subscribe from the hallsensor device. */
+PLAYERC_EXPORT int playerc_hallsensor_unsubscribe(playerc_hallsensor_t *device);
+
+
+
 /**************************************************************************/
 /** @ingroup playerc_proxies
  * @defgroup playerc_proxy_bumper bumper

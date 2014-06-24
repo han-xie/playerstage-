@@ -3,7 +3,7 @@ resolution     0.02
 include "pioneer.inc"
 include "irobot.inc"
 include "map.inc"
-include "sick.inc"
+include "sick-hall.inc"
 
 window
 ( 
@@ -41,12 +41,13 @@ pose [-9.77 3.17 0 -105.501 ]
 color "red"   
 size [ 0.080 0.080 0.100 ]  
 gripper_return 1 
+hall_return 0
 blob_return 0
 laser_reurn 0
 )
 puck( pose [-9.045 2.624 0 -37.717 ] color "blue" )
 puck( pose [-8.959 2.752 0 -101.643 ] color "yellow" 
-blob_return 0)
+hall_return 0)
 
 
 # extend the pioneer2dx definition from pioneer.inc
@@ -74,7 +75,7 @@ trickedoutpioneer
 
   gripper( pose [0.23 0.000 -0.20 0.000] color "gray" )
 
-  blobfinder( 
+  hallsensor( 
         colors_count 6 
         colors [ "red" "blue" "green" "cyan" "yellow" "magenta" ]  
 		  alwayson 1

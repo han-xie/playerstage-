@@ -21,6 +21,7 @@ SET (playercSrcs    playerc.h
                     dev_blinkenlight.c
                     dev_bumper.c
                     dev_blobfinder.c
+                    dev_hallsensor.c
                     dev_camera.c
                     dev_dio.c
                     dev_fiducial.c

@@ -24,6 +24,7 @@ void Stg::RegisterModels()
   Register( "actuator", Creator<ModelActuator> );
   Register( "blinkenlight", Creator<ModelBlinkenlight> );
   Register( "blobfinder", Creator<ModelBlobfinder> );
+  Register( "hallsensor", Creator<ModelHallsensor> );
   Register( "camera", Creator<ModelCamera> );
   Register( "fiducial", Creator<ModelFiducial> );
   Register( "gripper", Creator<ModelGripper> );
