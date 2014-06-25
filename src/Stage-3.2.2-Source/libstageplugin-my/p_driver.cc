@@ -318,7 +318,8 @@ StgDriver::StgDriver(ConfigFile* cf, int section) :
 			break;
 
 		case PLAYER_OPAQUE_CODE:
-			ifsrc = new InterfaceOpaque(player_addr, this, cf, section);
+			//ifsrc = new InterfaceOpaque(player_addr, this, cf, section);
+			ifsrc = new InterfaceSimulation(player_addr, this, cf, section);
 			break;
 
 		case PLAYER_SONAR_CODE:
