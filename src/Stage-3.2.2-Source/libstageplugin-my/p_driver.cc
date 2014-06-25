@@ -293,6 +293,10 @@ StgDriver::StgDriver(ConfigFile* cf, int section) :
 			ifsrc = new InterfaceBlobfinder(player_addr, this, cf, section);
 			break;
 
+	 	case PLAYER_HALLSENSOR_CODE:
+	 	  ifsrc = new InterfaceHallsensor( player_addr,  this, cf, section );
+	 	  break;
+
 			// case PLAYER_DIO_CODE:
 			// 	ifsrc = new InterfaceDio(player_addr, this, cf, section);
 			// 	break;
