@@ -2555,6 +2555,8 @@ namespace Stg
 	 
 	 /** Set the user-tweakable configuration of the laser */
 	 void SetConfig( Config& cfg );  
+
+	 void openHiddenModel();
   };
   
 

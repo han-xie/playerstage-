@@ -45,7 +45,8 @@ SET (interfaceFiles interfaces/001_player.def
                     interfaces/062_ranger.def
                     interfaces/063_vectormap.def
                     interfaces/064_blackboard.def
-                    interfaces/065_stereo.def)
+                    interfaces/065_stereo.def
+                    interfaces/066_hallsensor.def)
 
 INCLUDE (${PLAYER_CMAKE_DIR}/internal/ProcessInterfaces.cmake)
 

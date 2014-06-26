@@ -38,6 +38,8 @@
 #include "p_driver.h"
 using namespace Stg;
 
+extern int hallscount;
+
 InterfaceHallsensor::InterfaceHallsensor( player_devaddr_t addr,
 				StgDriver* driver,
 				ConfigFile* cf,
@@ -58,6 +60,10 @@ void InterfaceHallsensor::Publish( void )
   uint32_t bcount = 0;
   const ModelHallsensor::Hall* halls = hallmod->GetHalls( &bcount );
   
+  if(bcount > 0)
+	  hallscount=bcount;
+  else hallscount = 0;
+
   if ( bcount > 0 )
   {
 	  // and set the image width * height

@@ -50,7 +50,8 @@ SET (CMAKE_CXX_FLAGS_PROFILE " -O3 -ggdb -pg -Wl,--no-as-needed " CACHE INTERNAL
 #####################################
 # Set the default build type
 IF (NOT CMAKE_BUILD_TYPE)
-  SET (CMAKE_BUILD_TYPE "release" CACHE STRING 
+  #SET (CMAKE_BUILD_TYPE "release" CACHE STRING 
+  SET (CMAKE_BUILD_TYPE "debug" CACHE STRING 
     "Choose the type of build, options are: release (default) debug profile" FORCE)
 ENDIF (NOT CMAKE_BUILD_TYPE)
 STRING(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE)

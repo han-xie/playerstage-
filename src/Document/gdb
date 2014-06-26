@@ -5,3 +5,5 @@ b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstage/model_lase
 r test-laser-wander.cfg
 
 b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstage/world.cc:656
+b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstageplugin/p_driver.cc:288
+b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstageplugin-my/p_driver.cc:261

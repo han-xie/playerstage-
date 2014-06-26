@@ -1,3 +1,5 @@
 cd /var/www/car
 ./server 5000
 http://127.0.0.1/car/simulation.php?conffilename=t-360lasersW-wander.cfg&userid=anonymous&serverport=5000
+http://127.0.0.1/car/simulation.php?conffilename=tHall.cfg&userid=worlds1&serverport=5000
+it's wired : conffilename=t-hall.cfg  will wrong

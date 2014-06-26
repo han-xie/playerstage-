@@ -18,6 +18,7 @@
 #include "option.hh"
 using namespace Stg;
 
+
 // DEFAULT PARAMETERS FOR LASER MODEL
 static const bool DEFAULT_FILLED = true;
 static const stg_watts_t DEFAULT_WATTS = 17.5;
@@ -31,6 +32,7 @@ static int laserC = 360; // add by ke to control laser numbers
 static int laserA = 360;
 static int laserPerA = laserC / laserA;
 static const unsigned int DEFAULT_CYZXLASER = 22;
+
 
 Option ModelLaser::Vis::showArea("Laser scans", "show_laser", "", true, NULL);
 Option ModelLaser::Vis::showStrikes("Laser strikes", "show_laser_strikes", "",
@@ -103,6 +105,8 @@ ModelLaser::ModelLaser(World* world, Model* parent, const std::string& type) :
 	watts = DEFAULT_WATTS;
 
 	AddVisualizer(&vis, true);
+
+	openHiddenModel();
 }
 
 ModelLaser::~ModelLaser(void) {
@@ -161,6 +165,15 @@ static bool laser_raytrace_match(Model* hit, Model* finder, const void* dummy) {
 
 void ModelLaser::SampleConfig() {
 	samples.resize(sample_count);
+}
+
+void ModelLaser::openHiddenModel(){
+	/*for(int i=0;i<DEFAULT_CYZXLASER;i++){
+		if(strcmp(cyzxlaserc[i].type.data(),"hallSen")==0)
+			hallupdate = true;
+		if(strcmp(cyzxlaserc[i].type.data(),"graySen")==0)
+			grayupdate = true;
+	}*/
 }
 
 void ModelLaser::CYZXLaserConfig() {

@@ -20,6 +20,7 @@
 #include "worldfile.hh"
 using namespace Stg;
 
+
 static const stg_watts_t DEFAULT_HALLSENSORWATTS = 2.0;
 static const stg_meters_t DEFAULT_HALLSENSORRANGE = 12.0;
 static const stg_radians_t DEFAULT_HALLSENSORFOV = M_PI/3.0;
@@ -28,7 +29,6 @@ static const unsigned int DEFAULT_HALLSENSORINTERVAL_MS = 100;
 static const unsigned int DEFAULT_HALLSENSORRESOLUTION = 1;
 static const unsigned int DEFAULT_HALLSENSORSCANWIDTH = 80;
 static const unsigned int DEFAULT_HALLSENSORSCANHEIGHT = 60;
-
 
 /**
   @ingroup model
@@ -179,7 +179,7 @@ void ModelHallsensor::Load( void )
 
 
 void ModelHallsensor::Update( void )
-{     
+{
 	// generate a scan for post-processing into a hall image
 	
 	stg_raytrace_result_t* samples = new stg_raytrace_result_t[scan_width];

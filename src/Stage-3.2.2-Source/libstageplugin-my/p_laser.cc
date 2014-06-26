@@ -40,6 +40,8 @@
 using namespace Stg;
 #include <string.h>
 
+extern uint32_t hallscount;
+
 //extern OpaqueModel opaquem;
 
 InterfaceLaser::InterfaceLaser(player_devaddr_t addr, StgDriver* driver,
@@ -152,40 +154,37 @@ void InterfaceLaser::Publish(void) {
 		pdata.ranges[i] = stg1;
 		pdata.intensity[i] = (uint8_t) d1;
 
-		if(strcmp(cyzxlc[i].type.data(),"infrProxSensor")==0){
+		if(strcmp(cyzxlc[i].type.data(),"infrProxSen")==0){
 			if(pdata.ranges[i] <= cyzxlc[i].range_max && pdata.ranges[i] >= cyzxlc[i].range_min){
 				pdata.ranges[i]=1;
 			}else{
 				pdata.ranges[i] = 0;
 			}
-		}else if(strcmp(cyzxlc[i].type.data(),"colliSensor")==0){
-			/*if(pdata.ranges[i] <= cyzxlc[i].range_max && pdata.ranges[i] >= cyzxlc[i].range_min){
-				pdata.ranges[i]=1;
-			}else{
-				pdata.ranges[i] = 0;
-			}*/
-
-		}else if(strcmp(cyzxlc[i].type.data(),"hallSensor")==0){
+		}else if(strcmp(cyzxlc[i].type.data(),"colliSen")==0){
 			if(pdata.ranges[i] <= cyzxlc[i].range_max && pdata.ranges[i] >= cyzxlc[i].range_min){
 				pdata.ranges[i]=1;
 			}else{
 				pdata.ranges[i] = 0;
 			}
-		}else if (strcmp(cyzxlc[i].type.data(),"soundSensor")==0 ) {
 
-		} else if (strcmp(cyzxlc[i].type.data(),"gestSensor")==0 ) {
+		}else if(strcmp(cyzxlc[i].type.data(),"hallSen")==0){
+			if(hallscount > 0) pdata.ranges[i]=1;
+			else pdata.ranges[i]=0;
+		}else if (strcmp(cyzxlc[i].type.data(),"soundSen")==0 ) {
 
-		} else if (strcmp(cyzxlc[i].type.data(),"doutSensor")==0 ) {
+		} else if (strcmp(cyzxlc[i].type.data(),"gestSen")==0 ) {
 
-		} else if (strcmp(cyzxlc[i].type.data(),"infrDistSensor")==0 ) {
+		} else if (strcmp(cyzxlc[i].type.data(),"dout")==0 ) {
 
-		} else if (strcmp(cyzxlc[i].type.data(),"tempSensor")==0 ) {
+		} else if (strcmp(cyzxlc[i].type.data(),"infrDistSen")==0 ) {
 
-		} else if (strcmp(cyzxlc[i].type.data(),"graySensor")==0 ) {
+		} else if (strcmp(cyzxlc[i].type.data(),"tempSen")==0 ) {
 
-		} else if (strcmp(cyzxlc[i].type.data(),"lightSensor")==0 ) {
+		} else if (strcmp(cyzxlc[i].type.data(),"graySen")==0 ) {
 
-		} else if (strcmp(cyzxlc[i].type.data(),"RS422Sensor")==0 ) {
+		} else if (strcmp(cyzxlc[i].type.data(),"lightSen")==0 ) {
+
+		} else if (strcmp(cyzxlc[i].type.data(),"RS422Sen")==0 ) {
 
 		}
 	}

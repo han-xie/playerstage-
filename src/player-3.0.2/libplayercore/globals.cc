@@ -74,6 +74,13 @@ PLAYERCORE_EXPORT bool player_quiet_startup;
 PLAYERCORE_EXPORT bool usegui;
 PLAYERCORE_EXPORT int http;
 
+//below global var use to control some hidden model
+PLAYERCORE_EXPORT bool hallupdate;
+PLAYERCORE_EXPORT uint32_t hallscount;
+PLAYERCORE_EXPORT bool grayupdate;
+PLAYERCORE_EXPORT uint32_t grayscount;
+
+
 // global access to the cmdline arguments
 int player_argc;
 char** player_argv;

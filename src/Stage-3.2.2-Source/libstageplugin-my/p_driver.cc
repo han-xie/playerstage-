@@ -164,6 +164,10 @@ extern bool player_quiet_startup;
 extern bool player_quit;
 //OpaqueModel opaquem;
 int globalMyupdateSign = 0;
+extern bool hallupdate;
+extern bool grayupdate;
+extern uint32_t hallscount;
+extern uint32_t grayscount;
 
 // init static vars
 World* StgDriver::world = NULL;
@@ -398,6 +402,12 @@ StgDriver::StgDriver(ConfigFile* cf, int section) :
 		}
 	}
 	//puts( "  Stage driver loaded successfully." );
+
+	//default disable those hidden model
+	hallupdate = false;
+	grayupdate = false;
+	hallscount = 0;
+	grayscount = 0;
 }
 
 Model* StgDriver::LocateModel(char* basename, player_devaddr_t* addr,
