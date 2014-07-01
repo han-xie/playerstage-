@@ -132,6 +132,7 @@ void ModelLaser::Load(void) {
 
 	CYZXLaserConfig();
 
+	LoadFixModel();
 }
 
 ModelLaser::Config ModelLaser::GetConfig() {
@@ -174,6 +175,12 @@ void ModelLaser::openHiddenModel(){
 		if(strcmp(cyzxlaserc[i].type.data(),"graySen")==0)
 			grayupdate = true;
 	}*/
+}
+void ModelLaser::LoadFixModel(){
+	//load temperature model
+	tempModel.x=wf->ReadTupleFloat(wf_entity, "temperaturesource", 0, 0);
+	tempModel.y=wf->ReadTupleFloat(wf_entity, "temperaturesource", 1, 0);
+	tempModel.z=wf->ReadTupleFloat(wf_entity, "temperaturesource", 2, 0);
 }
 
 void ModelLaser::CYZXLaserConfig() {
@@ -423,6 +430,14 @@ ModelLaser::Sample* ModelLaser::GetSamples(uint32_t* count) {
 	if (count)
 		*count = sample_count;
 	return &samples[0];
+}
+
+ModelLaser::FixModel ModelLaser::GetTempModelPos(){
+	FixModel temp;
+	temp.x=tempModel.x;
+	temp.y=tempModel.y;
+	temp.z=tempModel.z;
+	return temp;
 }
 
 ModelLaser::CYZXLaser* ModelLaser::GetCYZXLaserConf(uint32_t* count) {

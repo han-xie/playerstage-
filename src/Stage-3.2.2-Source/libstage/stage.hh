@@ -2549,6 +2549,13 @@ namespace Stg
 		 double angle_to;
 		 std::string type;
 	 };
+
+	 class FixModel{
+	 public:
+		 stg_meters_t x;
+		 stg_meters_t y;
+		 stg_meters_t z;
+	 };
 		
 	 /** Convenience object for setting parameters using SetConfig/GetConfig */
 	 class Config
@@ -2583,6 +2590,7 @@ namespace Stg
 
 	 std::vector<Sample> samples;
 	 std::vector<CYZXLaser> cyzxlaserc;
+	 FixModel tempModel;
 
 	 stg_meters_t range_max;
 	 stg_meters_t range_min;
@@ -2592,6 +2600,8 @@ namespace Stg
 	 // set up data buffers after the config changes
 	 void SampleConfig();
 	 void CYZXLaserConfig();
+	 void LoadFixModel();/*it's very bad to do like this,
+	                       actually I should add a model for temperature and so on .*/
 
   public:
 	 // constructor
@@ -2618,6 +2628,7 @@ namespace Stg
 	 
 	 /** Get the user-tweakable configuration of the laser */
 	 Config GetConfig( );
+	 FixModel GetTempModelPos();
 	 
 	 /** Set the user-tweakable configuration of the laser */
 	 void SetConfig( Config& cfg );  

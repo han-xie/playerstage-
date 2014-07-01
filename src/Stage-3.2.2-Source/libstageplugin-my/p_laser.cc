@@ -39,8 +39,10 @@
 #include "p_driver.h"
 using namespace Stg;
 #include <string.h>
+#include <math.h>
 
 extern uint32_t hallscount;
+extern uint32_t soundcount;
 
 //extern OpaqueModel opaquem;
 
@@ -171,7 +173,8 @@ void InterfaceLaser::Publish(void) {
 			if(hallscount > 0) pdata.ranges[i]=1;
 			else pdata.ranges[i]=0;
 		}else if (strcmp(cyzxlc[i].type.data(),"soundSen")==0 ) {
-
+			if(soundcount > 0) pdata.ranges[i]=1;
+			else pdata.ranges[i]=0;
 		} else if (strcmp(cyzxlc[i].type.data(),"gestSen")==0 ) {
 
 		} else if (strcmp(cyzxlc[i].type.data(),"dout")==0 ) {
@@ -179,7 +182,15 @@ void InterfaceLaser::Publish(void) {
 		} else if (strcmp(cyzxlc[i].type.data(),"infrDistSen")==0 ) {
 
 		} else if (strcmp(cyzxlc[i].type.data(),"tempSen")==0 ) {
-
+			ModelLaser::FixModel temp=mod->GetTempModelPos();
+			Model* pos=mod->Parent();
+			if(pos!=NULL){
+				Stg::Pose sp = pos->GetPose();
+				pdata.ranges[i]=sqrt(pow(sp.x-temp.x,2)+pow(sp.y-temp.y,2));
+			}
+			else{
+				pdata.ranges[i]=0;
+			}
 		} else if (strcmp(cyzxlc[i].type.data(),"graySen")==0 ) {
 
 		} else if (strcmp(cyzxlc[i].type.data(),"lightSen")==0 ) {
