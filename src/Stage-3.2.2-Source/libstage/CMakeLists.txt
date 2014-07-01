@@ -17,6 +17,7 @@ set( stageSrcs
 	model_blinkenlight.cc
 	model_blobfinder.cc
 	model_hallsensor.cc
+	model_graysensor.cc
 	model_callbacks.cc
 	model_camera.cc
 	model_draw.cc

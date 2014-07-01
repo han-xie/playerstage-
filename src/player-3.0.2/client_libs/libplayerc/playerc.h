@@ -1355,6 +1355,37 @@ PLAYERC_EXPORT int playerc_hallsensor_subscribe(playerc_hallsensor_t *device, in
 PLAYERC_EXPORT int playerc_hallsensor_unsubscribe(playerc_hallsensor_t *device);
 
 
+typedef player_graysensor_gray_t playerc_graysensor_gray_t;
+
+/** @brief Blobfinder device data. */
+typedef struct
+{
+  /** Device info; must be at the start of all device structures. */
+  playerc_device_t info;
+
+  /** Image dimensions (pixels). */
+  unsigned int width, height;
+
+  /** A list of detected grays. */
+  unsigned int grays_count;
+  playerc_graysensor_gray_t *grays;
+
+} playerc_graysensor_t;
+
+
+/** @brief Create a graysensor proxy. */
+PLAYERC_EXPORT playerc_graysensor_t *playerc_graysensor_create(playerc_client_t *client, int index);
+
+/** @brief Destroy a graysensor proxy. */
+PLAYERC_EXPORT void playerc_graysensor_destroy(playerc_graysensor_t *device);
+
+/** @brief Subscribe to the graysensor device. */
+PLAYERC_EXPORT int playerc_graysensor_subscribe(playerc_graysensor_t *device, int access);
+
+/** @brief Un-subscribe from the graysensor device. */
+PLAYERC_EXPORT int playerc_graysensor_unsubscribe(playerc_graysensor_t *device);
+
+
 
 /**************************************************************************/
 /** @ingroup playerc_proxies

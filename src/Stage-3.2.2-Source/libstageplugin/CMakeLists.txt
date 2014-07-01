@@ -9,6 +9,7 @@ set( stagepluginSrcs
 	     p_actarray.cc
 	     p_blobfinder.cc
 	     p_hallsensor.cc
+	     p_graysensor.cc
 		 p_gripper.cc
 	     p_simulation.cc
 	     p_opaque.cc

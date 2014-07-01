@@ -508,6 +508,52 @@ class PLAYERCC_EXPORT HallsensorProxy : public ClientProxy
     void SetAutoGain(int aG);*/
 };
 
+class PLAYERCC_EXPORT GraysensorProxy : public ClientProxy
+{
+  private:
+
+    void Subscribe(uint32_t aIndex);
+    void Unsubscribe();
+
+    // libplayerc data structure
+    playerc_graysensor_t *mDevice;
+
+  public:
+    /// default contsructor
+    GraysensorProxy(PlayerClient *aPc, uint32_t aIndex=0);
+    /// destructor
+    ~GraysensorProxy();
+
+    /// returns the number of grays
+    uint32_t GetCount() const { return GetVar(mDevice->grays_count); };
+    /// returns a gray
+    playerc_graysensor_gray_t GetGray(uint32_t aIndex) const
+      { return GetVar(mDevice->grays[aIndex]);};
+
+    /// get the width of the image
+    uint32_t GetWidth() const { return GetVar(mDevice->width); };
+    /// get the height of the image
+    uint32_t GetHeight() const { return GetVar(mDevice->height); };
+
+    /// Graysensor data access operator.
+    ///    This operator provides an alternate way of access the actuator data.
+    ///    For example, given a @p GraysensorProxy named @p bp, the following
+    ///    expressions are equivalent: @p bp.GetGray[0] and @p bp[0].
+    playerc_graysensor_gray_t operator [](uint32_t aIndex) const
+      { return(GetGray(aIndex)); }
+
+/*
+    /// Set the color to be tracked
+    void SetTrackingColor(uint32_t aReMin=0,   uint32_t aReMax=255, uint32_t aGrMin=0,
+                          uint32_t aGrMax=255, uint32_t aBlMin=0,   uint32_t aBlMax=255);
+    void SetImagerParams(int aContrast, int aBrightness,
+                         int aAutogain, int aColormode);
+    void SetContrast(int aC);
+    void SetColorMode(int aM);
+    void SetBrightness(int aB);
+    void SetAutoGain(int aG);*/
+};
+
 /**
 The @p BumperProxy class is used to read from a @ref
 interface_bumper device.
@@ -2680,6 +2726,7 @@ namespace std
   //PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::BlinkenLightProxy& c);
   PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::BlobfinderProxy& c);
   PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::HallsensorProxy& c);
+  PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::GraysensorProxy& c);
   PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::BumperProxy& c);
   PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::CameraProxy& c);
   PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::DioProxy& c);

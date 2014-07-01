@@ -3,6 +3,7 @@
 #	modified:   Stage-3.2.2-Source/libstage/CMakeLists.txt
 #	modified:   Stage-3.2.2-Source/libstage/stage.hh
 #	modified:   Stage-3.2.2-Source/libstage/typetable.cc
+#	modified:   Stage-3.2.2-Source/libstage/model.cc
 #	modified:   Stage-3.2.2-Source/libstageplugin/CMakeLists.txt
 #	modified:   Stage-3.2.2-Source/libstageplugin/p_driver.cc
 #	modified:   Stage-3.2.2-Source/libstageplugin/p_driver.h
@@ -12,6 +13,7 @@
 #	modified:   player-3.0.2/client_libs/libplayerc++/playerc++.h
 #	modified:   player-3.0.2/client_libs/libplayerc/CMakeLists.txt
 #	modified:   player-3.0.2/client_libs/libplayerc/playerc.h
+#	modified:   player-3.0.2/libplayerinterface/CMakeLists.txt
 
 #
 # Untracked files:
@@ -22,7 +24,5 @@
 #	Stage-3.2.2-Source/worlds1/sick-hall.inc
 #	player-3.0.2/client_libs/libplayerc++/hallsensorproxy.cc
 #	player-3.0.2/client_libs/libplayerc/dev_hallsensor.c
-#	player-3.0.2/examples/libplayerc++/test-hallsensor
-#	player-3.0.2/examples/libplayerc++/test-hallsensor.cc
 #	player-3.0.2/libplayerinterface/interfaces/066_hallsensor.def
 

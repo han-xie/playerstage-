@@ -1863,6 +1863,7 @@ namespace Stg
 	 public:
 		bool blob_return;
 		bool hall_return;
+		bool gray_return;
 		int fiducial_key;
 		int fiducial_return;
 		bool gripper_return;
@@ -2206,6 +2207,7 @@ namespace Stg
 	 void SetObstacleReturn( int val );
 	 void SetBlobReturn( int val );
 	 void SetHallReturn(int val);
+	 void SetGrayReturn(int val);
 	 void SetRangerReturn( int val );
 	 void SetBoundary( int val );
 	 void SetGuiNose( int val );
@@ -2459,6 +2461,70 @@ namespace Stg
 
 
 
+  class ModelGraysensor : public Model
+    {
+    public:
+  	 /** Sample data */
+  	 class Gray
+  	 {
+  	 public:
+  		Color color;
+  		uint32_t left, top, right, bottom;
+  		stg_meters_t range;
+  	 };
+
+  	 class Vis : public Visualizer
+  	 {
+  	 private:
+  		//static Option showArea;
+  	 public:
+  		Vis( World* world );
+  		virtual ~Vis( void ){}
+  		virtual void Visualize( Model* mod, Camera* cam );
+  	 } vis;
+
+    private:
+  	 std::vector<Gray> grays;
+  	 std::vector<Color> colors;
+
+  	 // predicate for ray tracing
+  	 static bool BlockMatcher( Block* testblock, Model* finder );
+
+    public:
+  	 stg_radians_t fov;
+  	 stg_radians_t pan;
+  	 stg_meters_t range;
+  	 unsigned int scan_height;
+  	 unsigned int scan_width;
+
+  	 // constructor
+  	 ModelGraysensor( World* world,
+  							Model* parent,
+  							const std::string& type );
+  	 // destructor
+  	 ~ModelGraysensor();
+
+  	 virtual void Startup();
+  	 virtual void Shutdown();
+  	 virtual void Update();
+  	 virtual void Load();
+
+  	 Gray* GetGrays( unsigned int* count )
+  	 {
+  		if( count ) *count = grays.size();
+  		return &grays[0];
+  	 }
+
+  	 /** Start finding grays with this color.*/
+  	 void AddColor( Color col );
+
+  	 /** Stop tracking grays with this color */
+  	 void RemoveColor( Color col );
+
+  	 /** Stop tracking all colors. Call this to clear the defaults, then
+  		  add colors individually with AddColor(); */
+  	 void RemoveAllColors();
+    };
 
 
   // LASER MODEL --------------------------------------------------------
