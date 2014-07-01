@@ -301,6 +301,9 @@ StgDriver::StgDriver(ConfigFile* cf, int section) :
 	 	  ifsrc = new InterfaceHallsensor( player_addr,  this, cf, section );
 	 	  break;
 
+	 	case PLAYER_GRAYSENSOR_CODE:
+	 	  ifsrc = new InterfaceGraysensor( player_addr,  this, cf, section );
+	 	  break;
 			// case PLAYER_DIO_CODE:
 			// 	ifsrc = new InterfaceDio(player_addr, this, cf, section);
 			// 	break;
