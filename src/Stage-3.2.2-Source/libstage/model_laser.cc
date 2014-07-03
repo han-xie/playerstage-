@@ -18,7 +18,6 @@
 #include "option.hh"
 using namespace Stg;
 
-
 // DEFAULT PARAMETERS FOR LASER MODEL
 static const bool DEFAULT_FILLED = true;
 static const stg_watts_t DEFAULT_WATTS = 17.5;
@@ -34,7 +33,6 @@ static int laserC = 359;
 static int laserA = 359;
 static int laserPerA = laserC / laserA;
 static const unsigned int DEFAULT_CYZXLASER = 22;
-
 
 Option ModelLaser::Vis::showArea("Laser scans", "show_laser", "", true, NULL);
 Option ModelLaser::Vis::showStrikes("Laser strikes", "show_laser_strikes", "",
@@ -82,9 +80,8 @@ Option ModelLaser::Vis::showBeams("Laser beams", "show_laser_beams", "", false,
  */
 
 ModelLaser::ModelLaser(World* world, Model* parent, const std::string& type) :
-		Model(world, parent, type), vis(world), sample_count(DEFAULT_SAMPLES),
-		cyzxlaserc_count(DEFAULT_CYZXLASER),
-		laserCount(laserC) ,laserAngle(laserA),samples(), cyzxlaserc(), range_max(
+		Model(world, parent, type), vis(world), sample_count(DEFAULT_SAMPLES), cyzxlaserc_count(
+				DEFAULT_CYZXLASER), laserCount(laserC), laserAngle(laserA), samples(), cyzxlaserc(), range_max(
 				DEFAULT_MAXRANGE), fov(DEFAULT_FOV), resolution(
 				DEFAULT_RESOLUTION) {
 	/*PRINT_DEBUG2( "Constructing ModelLaser %d (%s)\n",
@@ -115,13 +112,18 @@ ModelLaser::~ModelLaser(void) {
 }
 
 void ModelLaser::Load(void) {
-	//I control the laser number
-	//sample_count = wf->ReadInt( wf_entity, "samples", sample_count );
-	sample_count = laserCount;
+
+	sample_count = wf->ReadInt(wf_entity, "samples", sample_count);
+	fov = wf->ReadAngle(wf_entity, "fov", fov);
+
+	/*
+	 //I control the laser number
+	 sample_count = laserCount;
+	 fov = 6.2657320146596431;     //359 degree
+	 //fov =  6.2831853071795862; 	//there not 360 degree
+	 */
+
 	range_max = wf->ReadLength(wf_entity, "range_max", range_max);
-	//fov = wf->ReadAngle(wf_entity, "fov", fov);
-	//fov =  6.2831853071795862; 	//there not 360 degree
-	fov = 6.2657320146596431;
 	resolution = wf->ReadInt(wf_entity, "resolution", resolution);
 
 	if (resolution < 1) {
@@ -171,26 +173,26 @@ void ModelLaser::SampleConfig() {
 	samples.resize(sample_count);
 }
 
-void ModelLaser::openHiddenModel(){
+void ModelLaser::openHiddenModel() {
 	/*for(int i=0;i<DEFAULT_CYZXLASER;i++){
-		if(strcmp(cyzxlaserc[i].type.data(),"hallSen")==0)
-			hallupdate = true;
-		if(strcmp(cyzxlaserc[i].type.data(),"graySen")==0)
-			grayupdate = true;
-	}*/
+	 if(strcmp(cyzxlaserc[i].type.data(),"hallSen")==0)
+	 hallupdate = true;
+	 if(strcmp(cyzxlaserc[i].type.data(),"graySen")==0)
+	 grayupdate = true;
+	 }*/
 }
-void ModelLaser::LoadFixModel(){
+void ModelLaser::LoadFixModel() {
 	//load temperature model
-	tempModel.x=wf->ReadTupleFloat(wf_entity, "temperaturesource", 0, 0);
-	tempModel.y=wf->ReadTupleFloat(wf_entity, "temperaturesource", 1, 0);
-	tempModel.z=wf->ReadTupleFloat(wf_entity, "temperaturesource", 2, 0);
+	tempModel.x = wf->ReadTupleFloat(wf_entity, "temperaturesource", 0, 0);
+	tempModel.y = wf->ReadTupleFloat(wf_entity, "temperaturesource", 1, 0);
+	tempModel.z = wf->ReadTupleFloat(wf_entity, "temperaturesource", 2, 0);
 }
 
 void ModelLaser::CYZXLaserConfig() {
 	cyzxlaserc.resize(DEFAULT_CYZXLASER);
 
 	ModelLaser::CYZXLaser tlc;
-	tlc.type= wf->ReadTupleString(wf_entity, "a0", 0, "");
+	tlc.type = wf->ReadTupleString(wf_entity, "a0", 0, "");
 	tlc.angle_from = wf->ReadTupleFloat(wf_entity, "a0", 1, 0);
 	tlc.angle_to = wf->ReadTupleFloat(wf_entity, "a0", 2, 0);
 	tlc.range_max = wf->ReadTupleFloat(wf_entity, "a0", 4, range_max);
@@ -336,7 +338,7 @@ void ModelLaser::CYZXLaserConfig() {
 	tlc.range_max = wf->ReadTupleFloat(wf_entity, "rs4220", 4, range_max);
 	tlc.range_min = wf->ReadTupleFloat(wf_entity, "rs4220", 3, 0);
 	cyzxlaserc[20] = tlc;
-	
+
 	tlc.type = wf->ReadTupleString(wf_entity, "rs4221", 0, "");
 	tlc.angle_from = wf->ReadTupleFloat(wf_entity, "rs4221", 1, 0);
 	tlc.angle_to = wf->ReadTupleFloat(wf_entity, "rs4221", 2, 0);
@@ -435,16 +437,16 @@ ModelLaser::Sample* ModelLaser::GetSamples(uint32_t* count) {
 	return &samples[0];
 }
 
-ModelLaser::FixModel ModelLaser::GetTempModelPos(){
+ModelLaser::FixModel ModelLaser::GetTempModelPos() {
 	FixModel temp;
-	temp.x=tempModel.x;
-	temp.y=tempModel.y;
-	temp.z=tempModel.z;
+	temp.x = tempModel.x;
+	temp.y = tempModel.y;
+	temp.z = tempModel.z;
 	return temp;
 }
 
 ModelLaser::CYZXLaser* ModelLaser::GetCYZXLaserConf(uint32_t* count) {
-	if(count)
+	if (count)
 		*count = cyzxlaserc_count;
 	return &cyzxlaserc[0];
 }
