@@ -40,6 +40,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "args.h"
 
 #define RAYS 32
+const double minfrontdistance = 1.5;
+const double cruisespeed = 0.5;
+const double avoidspeed = 0;
+const double avoidturn = 0.5;
+const double avoidlrspeed=0.1;
+double reward=false;
 
 int
 main(int argc, char **argv)
@@ -55,40 +61,48 @@ main(int argc, char **argv)
     Position2dProxy pp(&robot, gIndex);
     LaserProxy lp(&robot, gIndex);
 
-    std::cout << robot << std::endl;
-
-    pp.SetMotorEnable (true);
+    //pp.SetMotorEnable (true);
+    double minR = 2;
+    double minL = 2;
+    double newspeed = 0;
+    double newturnrate = 0;
 
     // go into read-think-act loop
     for(;;)
     {
-      double newspeed = 0;
-      double newturnrate = 0;
-
       // this blocks until new data comes; 10Hz by default
       robot.Read();
 
-      double minR = lp.GetMinRight();
-      double minL = lp.GetMinLeft();
+
+      if(lp.GetCount()==22){
+          minL=lp.GetRange(1);
+          minR=lp.GetRange(0);
+      }
 
       // laser avoid (stolen from esben's java example)
       std::cout << "minR: " << minR
                 << "minL: " << minL
                 << std::endl;
 
-      double l = (1e5*minR)/500-100;
-      double r = (1e5*minL)/500-100;
-
-      if (l > 100)
-        l = 100;
-      if (r > 100)
-        r = 100;
-
-      newspeed = (r+l)/1e3;
-
-      newturnrate = (r-l);
-      newturnrate = limit(newturnrate, -40.0, 40.0);
-      newturnrate = dtor(newturnrate);
+      if(minL>minfrontdistance&&minR>minfrontdistance){
+    	  newspeed=cruisespeed;
+    	  newturnrate=0;
+    	  if(reward){
+    		  pp.SetSpeed(0, 3.14);
+    		  sleep(1);
+    		  reward=false;
+    	  }
+      }else if(minL<=minfrontdistance&&minR>minfrontdistance){
+    	  newspeed=-avoidlrspeed;
+    	  newturnrate=-avoidturn;
+      }else if(minL>minfrontdistance&&minR<=minfrontdistance){
+    	  newspeed=-avoidlrspeed;
+    	  newturnrate=avoidturn;
+      }else{
+    	  newspeed=-cruisespeed;
+    	  newturnrate=0;
+    	  reward=true;
+      }
 
       std::cout << "speed: " << newspeed
                 << "turn: " << newturnrate

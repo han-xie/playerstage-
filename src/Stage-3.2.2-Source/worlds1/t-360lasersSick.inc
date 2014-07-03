@@ -3,7 +3,7 @@ define sicklaser laser
 (
   # laser-specific properties
   # factory settings for LMS200	
-  range_max 8.0
+  range_max 3.0
   fov 360.0
   samples 360
 
@@ -13,10 +13,10 @@ define sicklaser laser
   color "blue"
   size [ 0.156 0.155 0.19 ] # dimensions from LMS200 data sheet	
 
-a0 ["infrDistSensor" 40 50 0 7 ]
-a1 ["infrDistSensor" 130 140 0 7]
-#a2 ["infrDistSensor" 110 120 0 7]
-#a3 ["infrDistSensor" 200 210 0 7]
+a0 ["infrDistSensor" 40 50 0 4 ]
+a1 ["infrDistSensor" 130 140 0 4]
+#a2 ["infrDistSensor" 110 120 0 4]
+#a3 ["infrDistSensor" 200 210 0 4]
 )
 
 # extends sicklaser to add nice-looking but relatively expensive geometry

@@ -14,7 +14,7 @@ resolution 0.02
 window
 (
   size [ 635.000 666.000 ] # in pixels
-  scale 37.481   # pixels per meter
+  scale 15.0   # pixels per meter
   center [ -0.019  -0.282 ]
   rotate [ 0  0 ]
   			
@@ -27,8 +27,8 @@ floorplan
   name "cave"
   size [16.000 16.000 0.800]
   pose [0 0 0 0]
-  bitmap "bitmaps/cave.png"
-  #bitmap "bitmaps/blank.png"
+  #bitmap "bitmaps/cave.png"
+  bitmap "bitmaps/test-color.png"
 )
 
 
