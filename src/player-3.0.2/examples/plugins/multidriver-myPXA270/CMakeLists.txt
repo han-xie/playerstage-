@@ -1,4 +1,4 @@
-MESSAGE( STATUS "Configuring libstageplugin-copy" )
+MESSAGE( STATUS "Configuring multidriver-myPXA270" )
 
 link_directories( ${PLAYER_LIBRARY_DIRS} )
 include_directories( ${PLAYER_INCLUDE_DIRS} )

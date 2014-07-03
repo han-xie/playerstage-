@@ -3,3 +3,11 @@ cd /var/www/car
 http://127.0.0.1/car/simulation.php?conffilename=t-360lasersW-wander.cfg&userid=anonymous&serverport=5000
 http://127.0.0.1/car/simulation.php?conffilename=tHall.cfg&userid=worlds1&serverport=5000
 it's wired : conffilename=t-hall.cfg  will wrong
+------------------------------------------------------
+debug player plugin-driver under directory: 
+	github/playerstage-/src/player-3.0.2/examples/plugins/multidriver-myPXA270
+on PXA270:
+    1. update multidriver-myPXA270 to virtualMachine:ljj_player/exampledriver
+    ?2. change name to multidriver-my
+    ?3. change multidriver.h to #include "../driverlib/background.h" 
+-------------------------------------------------------
