@@ -147,7 +147,7 @@ void InterfaceLaser::Publish(void) {
 		}
 		stg_meters_t stg1=cyzxlc[i].range_max;
 		double d1;
-		for(unsigned int j=cyzxlc[i].angle_from;j<cyzxlc[i].angle_to;j++){
+		for(unsigned int j=cyzxlc[i].angle_from;j<cyzxlc[i].angle_to&&j<cfg.sample_count;j++){
 			if(samples[j].range < stg1){
 				stg1=samples[j].range;
 				d1= samples[j].reflectance;

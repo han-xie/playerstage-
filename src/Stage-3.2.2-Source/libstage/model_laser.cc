@@ -28,8 +28,10 @@ static const stg_radians_t DEFAULT_FOV = M_PI;
 static const unsigned int DEFAULT_SAMPLES = 180;
 static const unsigned int DEFAULT_RESOLUTION = 1;
 static const char* DEFAULT_COLOR = "blue";
-static int laserC = 360; // add by ke to control laser numbers
-static int laserA = 360;
+//static int laserC = 360; // add by ke to control laser numbers
+static int laserC = 359;
+//static int laserA = 360;
+static int laserA = 359;
 static int laserPerA = laserC / laserA;
 static const unsigned int DEFAULT_CYZXLASER = 22;
 
@@ -118,7 +120,8 @@ void ModelLaser::Load(void) {
 	sample_count = laserCount;
 	range_max = wf->ReadLength(wf_entity, "range_max", range_max);
 	//fov = wf->ReadAngle(wf_entity, "fov", fov);
-	fov =  6.2831853071795862; 	//there not 360 degree
+	//fov =  6.2831853071795862; 	//there not 360 degree
+	fov = 6.2657320146596431;
 	resolution = wf->ReadInt(wf_entity, "resolution", resolution);
 
 	if (resolution < 1) {
