@@ -113,15 +113,17 @@ ModelLaser::~ModelLaser(void) {
 
 void ModelLaser::Load(void) {
 
+	/*
 	sample_count = wf->ReadInt(wf_entity, "samples", sample_count);
 	fov = wf->ReadAngle(wf_entity, "fov", fov);
+	*/
 
-	/*
+
 	 //I control the laser number
 	 sample_count = laserCount;
 	 fov = 6.2657320146596431;     //359 degree
 	 //fov =  6.2831853071795862; 	//there not 360 degree
-	 */
+
 
 	range_max = wf->ReadLength(wf_entity, "range_max", range_max);
 	resolution = wf->ReadInt(wf_entity, "resolution", resolution);
