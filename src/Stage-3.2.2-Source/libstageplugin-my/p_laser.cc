@@ -150,7 +150,7 @@ void InterfaceLaser::Publish(void) {
 		for(unsigned int j=cyzxlc[i].angle_from;j<cyzxlc[i].angle_to;j++){
 			if(samples[j].range < stg1){
 				stg1=samples[j].range;
-				d1= samples[i].reflectance;
+				d1= samples[j].reflectance;
 			}
 		}
 		pdata.ranges[i] = stg1;
