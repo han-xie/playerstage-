@@ -1355,6 +1355,11 @@ PLAYERC_EXPORT int playerc_hallsensor_subscribe(playerc_hallsensor_t *device, in
 PLAYERC_EXPORT int playerc_hallsensor_unsubscribe(playerc_hallsensor_t *device);
 
 
+PLAYERC_EXPORT int playerc_hallsensor_get_int_halls_count(playerc_hallsensor_t *device);
+
+/** @brief Un-subscribe from the hallsensor device. */
+PLAYERC_EXPORT int playerc_hallsensor_set_int_cmd(playerc_hallsensor_t *device, int v);
+
 typedef player_graysensor_gray_t playerc_graysensor_gray_t;
 
 /** @brief Blobfinder device data. */

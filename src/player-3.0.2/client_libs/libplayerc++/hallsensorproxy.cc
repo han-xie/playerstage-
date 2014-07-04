@@ -47,61 +47,66 @@
 
 using namespace PlayerCc;
 
-HallsensorProxy::HallsensorProxy(PlayerClient *aPc, uint32_t aIndex)
-  : ClientProxy(aPc, aIndex),
-  mDevice(NULL)
-{
-  Subscribe(aIndex);
-  // how can I get this into the clientproxy.cc?
-  // right now, we're dependent on knowing its device type
-  mInfo = &(mDevice->info);
+HallsensorProxy::HallsensorProxy(PlayerClient *aPc, uint32_t aIndex) :
+		ClientProxy(aPc, aIndex), mDevice(NULL) {
+	Subscribe(aIndex);
+	// how can I get this into the clientproxy.cc?
+	// right now, we're dependent on knowing its device type
+	mInfo = &(mDevice->info);
 }
 
-HallsensorProxy::~HallsensorProxy()
-{
-  Unsubscribe();
+HallsensorProxy::~HallsensorProxy() {
+	Unsubscribe();
 }
 
-void
-HallsensorProxy::Subscribe(uint32_t aIndex)
-{
-  scoped_lock_t lock(mPc->mMutex);
-  mDevice = playerc_hallsensor_create(mClient, aIndex);
-  if (NULL==mDevice)
-    throw PlayerError("HallsensorProxy::HallsensorProxy()", "could not create");
+void HallsensorProxy::Subscribe(uint32_t aIndex) {
+	scoped_lock_t lock(mPc->mMutex);
+	mDevice = playerc_hallsensor_create(mClient, aIndex);
+	if (NULL == mDevice)
+		throw PlayerError("HallsensorProxy::HallsensorProxy()",
+				"could not create");
 
-  if (0 != playerc_hallsensor_subscribe(mDevice, PLAYER_OPEN_MODE))
-    throw PlayerError("HallsensorProxy::HallsensorProxy()", "could not subscribe");
+	if (0 != playerc_hallsensor_subscribe(mDevice, PLAYER_OPEN_MODE))
+		throw PlayerError("HallsensorProxy::HallsensorProxy()",
+				"could not subscribe");
 }
 
-void
-HallsensorProxy::Unsubscribe()
-{
-  assert(NULL!=mDevice);
-  scoped_lock_t lock(mPc->mMutex);
-  playerc_hallsensor_unsubscribe(mDevice);
-  playerc_hallsensor_destroy(mDevice);
-  mDevice = NULL;
+void HallsensorProxy::Unsubscribe() {
+	assert(NULL != mDevice);
+	scoped_lock_t lock(mPc->mMutex);
+	playerc_hallsensor_unsubscribe(mDevice);
+	playerc_hallsensor_destroy(mDevice);
+	mDevice = NULL;
 }
 
 std::ostream&
-std::operator << (std::ostream &os, const PlayerCc::HallsensorProxy &c)
-{
-  os << "#Hallsensor(" << c.GetInterface() << ":" << c.GetIndex() << ")" << std::endl;
-  os << "Count:" << c.GetCount() << std::endl;
-  for (unsigned int i=0;i < c.GetCount();i++)
-  {
-    os << "  hall " << i << ":" << std::endl;
-    os << "               id: " << c.GetHall(i).id << std::endl;
-    os << "             area: " << c.GetHall(i).area << std::endl;
-    os << "                X: " << c.GetHall(i).x << std::endl;
-    os << "                Y: " << c.GetHall(i).y << std::endl;
-    os << "             Left: " << c.GetHall(i).left << std::endl;
-    os << "            Right: " << c.GetHall(i).right << std::endl;
-    os << "              Top: " << c.GetHall(i).top << std::endl;
-    os << "           Bottom: " << c.GetHall(i).bottom << std::endl;
-  }
-  return os;
+std::operator <<(std::ostream &os, const PlayerCc::HallsensorProxy &c) {
+	os << "#Hallsensor(" << c.GetInterface() << ":" << c.GetIndex() << ")"
+			<< std::endl;
+	os << "Count:" << c.GetCount() << std::endl;
+	for (unsigned int i = 0; i < c.GetCount(); i++) {
+		os << "  hall " << i << ":" << std::endl;
+		os << "               id: " << c.GetHall(i).id << std::endl;
+		os << "             area: " << c.GetHall(i).area << std::endl;
+		os << "                X: " << c.GetHall(i).x << std::endl;
+		os << "                Y: " << c.GetHall(i).y << std::endl;
+		os << "             Left: " << c.GetHall(i).left << std::endl;
+		os << "            Right: " << c.GetHall(i).right << std::endl;
+		os << "              Top: " << c.GetHall(i).top << std::endl;
+		os << "           Bottom: " << c.GetHall(i).bottom << std::endl;
+	}
+	return os;
 }
 
+void HallsensorProxy::setInt(int value) {
+	scoped_lock_t lock(mPc->mMutex);
+	playerc_hallsensor_set_int_cmd(mDevice, value);
+}
 
+int HallsensorProxy::getInt() {
+	boost::mutex::scoped_lock lock(mPc->mMutex);
+
+	if (0 !=playerc_hallsensor_get_int_halls_count(mDevice))
+		throw PlayerError("HallsensorProxy::RequestInt()", "error getting int");
+	return 0;
+}

@@ -82,6 +82,9 @@ multidriver::multidriver(ConfigFile* cf, int section) :
 		case PLAYER_OPAQUE_CODE:
 			ifsrc = new InterfaceOpaque(player_addr, this, cf, section);
 			break;
+		case PLAYER_HALLSENSOR_CODE:
+			ifsrc = new InterfaceHallsensor(player_addr, this, cf, section);
+			break;
 		default:
 			printf(
 					"error: multi driver doesn't support interface type %d\n",

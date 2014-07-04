@@ -14,6 +14,7 @@ set( stagepluginSrcs
 	     p_laser.cc
 	     p_opaque.cc
 	     p_blobfinder.cc
+	     p_hallsensor.cc
 )
 
 add_library( stageplugincyzxpos2db MODULE ${stagepluginSrcs} )

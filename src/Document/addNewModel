@@ -26,3 +26,16 @@
 #	modified:   Stage-3.2.2-Source/libstageplugin-my/p_driver.h
 #	add:        Stage-3.2.2-Source/libstageplugin-my/p_hallsensor.cc
 -------------------------------------------------------------------------------
+----------add new interface for playerClient:-----------------------------------
+#	modified:   player-3.0.2/client_libs/libplayerc++/hallsensorproxy.cc
+#	modified:   player-3.0.2/client_libs/libplayerc++/playerc++.h
+#	modified:   player-3.0.2/client_libs/libplayerc/dev_hallsensor.c
+#	modified:   player-3.0.2/client_libs/libplayerc/playerc.h
+#	modified:   player-3.0.2/examples/plugins/multidriver-myPXA270/CMakeLists.txt
+#	modified:   player-3.0.2/examples/plugins/multidriver-myPXA270/CMakeLists.txt.multi.in
+#	modified:   player-3.0.2/examples/plugins/multidriver-myPXA270/background.cc
+#	modified:   player-3.0.2/examples/plugins/multidriver-myPXA270/multi-4-pc.cfg
+#	modified:   player-3.0.2/examples/plugins/multidriver-myPXA270/multidriver.cc
+#	modified:   player-3.0.2/examples/plugins/multidriver-myPXA270/multidriver.h
+#	modified:   player-3.0.2/libplayerinterface/interfaces/066_hallsensor.def
+#	add:        player-3.0.2/examples/plugins/multidriver-myPXA270/p_hallsensor.cc

@@ -50,70 +50,81 @@
 #include "playerc.h"
 #include "error.h"
 
-
 // Local declarations
-void playerc_hallsensor_putmsg( playerc_hallsensor_t *device,
-			        player_msghdr_t *header,
-			        void *datap );
+void playerc_hallsensor_putmsg(playerc_hallsensor_t *device,
+		player_msghdr_t *header, void *datap);
 
 // Create a new hallsensor proxy
-playerc_hallsensor_t *playerc_hallsensor_create(playerc_client_t *client, int index)
-{
-  playerc_hallsensor_t *device;
+playerc_hallsensor_t *playerc_hallsensor_create(playerc_client_t *client,
+		int index) {
+	playerc_hallsensor_t *device;
 
-  device = malloc(sizeof(playerc_hallsensor_t));
-  memset(device, 0, sizeof(playerc_hallsensor_t));
+	device = malloc(sizeof(playerc_hallsensor_t));
+	memset(device, 0, sizeof(playerc_hallsensor_t));
 
-  playerc_device_init(&device->info, client, PLAYER_HALLSENSOR_CODE, index,
-                      (playerc_putmsg_fn_t) playerc_hallsensor_putmsg);
+	playerc_device_init(&device->info, client, PLAYER_HALLSENSOR_CODE, index,
+			(playerc_putmsg_fn_t) playerc_hallsensor_putmsg);
 
-  return device;
+	return device;
 }
-
 
 // Destroy a hallsensor proxy
-void playerc_hallsensor_destroy(playerc_hallsensor_t *device)
-{
-  playerc_device_term(&device->info);
-  free(device->halls);
-  free(device);
+void playerc_hallsensor_destroy(playerc_hallsensor_t *device) {
+	playerc_device_term(&device->info);
+	free(device->halls);
+	free(device);
 }
-
 
 // Subscribe to the hallsensor device
-int playerc_hallsensor_subscribe(playerc_hallsensor_t *device, int access)
-{
-  return playerc_device_subscribe(&device->info, access);
+int playerc_hallsensor_subscribe(playerc_hallsensor_t *device, int access) {
+	return playerc_device_subscribe(&device->info, access);
 }
-
 
 // Un-subscribe from the hallsensor device
-int playerc_hallsensor_unsubscribe(playerc_hallsensor_t *device)
-{
-  return playerc_device_unsubscribe(&device->info);
+int playerc_hallsensor_unsubscribe(playerc_hallsensor_t *device) {
+	return playerc_device_unsubscribe(&device->info);
 }
-
 
 // Process incoming data
 void playerc_hallsensor_putmsg(playerc_hallsensor_t *device,
-			       player_msghdr_t *header,
-			       void* datap )
-{
-  if( header->type == PLAYER_MSGTYPE_DATA &&
-      header->subtype == PLAYER_HALLSENSOR_DATA_HALLS)
-    {
-      player_hallsensor_data_t *data = (player_hallsensor_data_t*)datap;
-      
-      device->width  = data->width;
-      device->height = data->height;
-      
-      // threshold the number of halls to avoid overunning the array
-      device->halls_count =data->halls_count;
-      device->halls = realloc(device->halls, device->halls_count * sizeof(device->halls[0]));
-      memcpy(device->halls, data->halls, sizeof (player_hallsensor_hall_t)*device->halls_count);
+		player_msghdr_t *header, void* datap) {
+	if (header->type == PLAYER_MSGTYPE_DATA
+			&& header->subtype == PLAYER_HALLSENSOR_DATA_HALLS) {
+		player_hallsensor_data_t *data = (player_hallsensor_data_t*) datap;
 
-    }
+		device->width = data->width;
+		device->height = data->height;
 
-  return;
+		// threshold the number of halls to avoid overunning the array
+		device->halls_count = data->halls_count;
+		device->halls = realloc(device->halls,
+				device->halls_count * sizeof(device->halls[0]));
+		memcpy(device->halls, data->halls,
+				sizeof(player_hallsensor_hall_t) * device->halls_count);
+
+	}
+
+	return;
 }
 
+int playerc_hallsensor_get_int_halls_count(playerc_hallsensor_t *device) {
+	int *geom;
+
+	if (playerc_client_request(device->info.client, &device->info,
+			PLAYER_HALLSENSOR_REQ_GET_COLOR, NULL, (void**) &geom) < 0)
+		return (-1);
+
+	device->halls_count = *geom;
+	free(geom);
+	return (0);
+}
+
+int playerc_hallsensor_set_int_cmd(playerc_hallsensor_t *device, int v) {
+	player_hallsensor_int_t cmd;
+
+	memset(&cmd, 0, sizeof(cmd));
+	cmd.i = v;
+
+	return playerc_client_write(device->info.client, &device->info,
+			PLAYER_HALLSENSOR_REQ_SET_COLOR, &cmd, NULL );
+}

@@ -41,7 +41,7 @@ void MFCapSetS(int inSmax,int inSmin){}
 void MFCapSetI(int inImax,int inImin){}
 void MFCapSetMode(int inMode){}
 int MFCapGetCenterX(){return 0;}
-int MFCapGetCenterY(){return 0;}
+int MFCapGetCenterY(){return 1;}
 int MFCapGetSum(){return 0;}
 
 //SpeechRecongn

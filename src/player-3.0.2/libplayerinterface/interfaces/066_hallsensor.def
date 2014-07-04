@@ -9,9 +9,17 @@ in images.
 message { DATA, HALLS, 1, player_hallsensor_data_t };
 
 message { REQ, SET_COLOR, 1, player_hallsensor_color_config_t };
-message { REQ, SET_IMAGER_PARAMS, 2, player_hallsensor_imager_config_t };
+message { REQ, SET_IMAGER_PARAMS, 2, player_hallsensor_imager_config_t};
 message { REQ, GET_COLOR, 3, player_hallsensor_color_config_t };
 
+message { CMD, INT, 1 , player_hallsensor_int_t};
+
+/** @brief Structure include a int. */
+typedef struct player_hallsensor_int
+{
+  /** temp */
+  uint32_t i;
+} player_hallsensor_int_t;
 
 /** @brief Structure describing a single hall. */
 typedef struct player_hallsensor_hall
@@ -113,4 +121,3 @@ typedef struct player_hallsensor_imager_config
   /** AutoGain:   0=off, 1=on.  -1=no change. */
   int32_t  autogain;
 } player_hallsensor_imager_config_t;
-

@@ -5,5 +5,5 @@ PROJECT (playerplugin_opaques)
 SET (CMAKE_MODULE_PATH "@CMAKE_INSTALL_PREFIX@/share/cmake/Modules")
 INCLUDE (UsePlayerPlugin)
 
-PLAYER_ADD_PLUGIN_DRIVER (multidriver SOURCES multidriver.cc p_position.cc p_opaque.cc p_laser.cc p_blobfinder.cc background.cc)
+PLAYER_ADD_PLUGIN_DRIVER (multidriver SOURCES multidriver.cc p_position.cc p_opaque.cc p_laser.cc p_blobfinder.cc p_hallsensor.cc background.cc)
 #PLAYER_ADD_PLUGIN_DRIVER (multidriver SOURCES multidriver2.cc)

@@ -496,6 +496,8 @@ class PLAYERCC_EXPORT HallsensorProxy : public ClientProxy
     playerc_hallsensor_hall_t operator [](uint32_t aIndex) const
       { return(GetHall(aIndex)); }
 
+    void setInt(int value);
+    int getInt();
 /*
     /// Set the color to be tracked
     void SetTrackingColor(uint32_t aReMin=0,   uint32_t aReMax=255, uint32_t aGrMin=0,
