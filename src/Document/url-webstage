@@ -4,6 +4,58 @@ b websim.cc:299
 r -g ../worlds/simple.world 
 r -g /home/keevi7c3l/src/Stage-3.2.2-Source/worlds1/simple2.world
 ---------------------------------------------------------------------
+t-obstacle_return_web.cfg
+
+http://localhost:8000/sim/clock/get
+Current time: 0.200000 seconds. 
+http://localhost:8000/sim/clock/get
+http://localhost:8000/sim/children/get?format=xml
+http://localhost:8000/sim/geometry/get?format=xml
+<ModelGeometry Type="geometry" Name="sim" X="40.960" Y="40.960" Z="0.000" Origin="0.000,0.000,0.000,0.000,0.000,0.000"/>
+http://localhost:8000/sim/clock/tick
+http://localhost:8000/sim/treeNode/get
+{"model":"cave",
+"model":"source",
+"model":"sink",
+"position1":"r0",
+"ranger":"r0.ranger:0","laser":"r0.laser:0",
+"position0":"1"} 
+http://localhost:8000/sim/tree/get
+() cave(model) source(model) sink(model) r0(position) r0.ranger:0(ranger) r0.laser:0(laser)
+http://localhost:8000/sim/tree/get?format=xml
+ <ModelTree>
+  <Model Name="cave" Type="model"/>
+  <Model Name="source" Type="model"/>
+  <Model Name="sink" Type="model"/>
+  <Model Name="r0" Type="position">
+    <Model Name="r0.ranger:0" Type="ranger"/>
+    <Model Name="r0.laser:0" Type="laser"/>
+  </Model>
+</ModelTree>
+
+http://localhost:8000/cave/attribute/get?format=xml
+<Model Time="0.0" Type="attribute" Name="cave" bitmap="bitmaps/cave.bmp" color="0.302,0.302,0.302,1.000"/>
+localhost:8000/source/attribute/get?format=xml
+<Model Time="0.0" Type="attribute" Name="source" bitmap="" color="0.000,1.000,0.000,1.000"/>
+localhost:8000/sink/attribute/get?format=xml
+<Model Time="0.0" Type="attribute" Name="sink" bitmap="bitmaps/ghost.png" color="1.000,0.000,0.000,1.000"/>
+ 
+http://localhost:8000/cave/pva/get?format=xml 
+ <Model Time="0.0" Type="pva" Name="cave" Pose="0.000,0.000,0.000,0.000,0.000,0.000" Velocity="0.000,0.000,0.000,0.000,0.000,0.000" Acceleration="0.000,0.000,0.000,0.000,0.000,0.000"/>
+http://localhost:8000/sink/pva/get?format=xml
+<Model Time="0.0" Type="pva" Name="sink" Pose="4.000,4.000,0.000,0.000,0.000,0.000" Velocity="0.000,0.000,0.000,0.000,0.000,0.000" Acceleration="0.000,0.000,0.000,0.000,0.000,0.000"/>
+http://localhost:8000/r0/pva/get?format=xml
+<Model Time="0.0" Type="pva" Name="r0" Pose="-2.050,-4.546,0.000,0.000,0.000,-0.315" Velocity="0.000,0.000,0.000,0.000,0.000,0.000" Acceleration="0.000,0.000,0.000,0.000,0.000,0.000"/>
+
+
+http://localhost:8000/cave/geometry/get?format=xml
+ <ModelGeometry Type="geometry" Name="cave" X="16.000" Y="16.000" Z="0.800" Origin="0.000,0.000,0.000,0.000,0.000,0.000"/>
+http://localhost:8000/sink/geometry/get?format=xml
+<ModelGeometry Type="geometry" Name="sink" X="2.000" Y="2.000" Z="0.010" Origin="0.000,0.000,0.000,0.000,0.000,0.000"/>
+http://localhost:8000/cave/geometryNode/get
+{"sizex":"16.000","sizey":"16.000","sizez":"0.800","centerx":"0.000","centery":"0.000","centerz":"0.000","centerr":"0.000","centerp":"0.000","centera":"0.000"} 
+
+--------------------------------------------------------------------
 http://localhost:8000/r0/pvaNodeTick/get
 {"posex":"-0.643","posey":"-5.004","posea":"-0.315","time":"3.700000"}
 

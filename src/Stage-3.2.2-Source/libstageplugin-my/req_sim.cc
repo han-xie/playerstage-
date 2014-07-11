@@ -7,6 +7,7 @@ using namespace websim;
 const uint32_t TICK_INTERVAL = 100; // 100 msec
 
 extern bool player_quit;
+extern int globalMyupdateSign;
 
 // todo: XML format for more sim requests
 
@@ -242,6 +243,10 @@ bool WebSim::HandleSimClockRequest(std::string action, Format format,
 	if (action == "") // DEFAULT ACTION
 		action = "get";
 
+	if(action == "addonetick"){
+		globalMyupdateSign=1;
+		return true;
+	}
 	if (action == "get") {
 		if (format == TEXT) {
 			response = "Current time: " + GetTime().String() + " seconds.";

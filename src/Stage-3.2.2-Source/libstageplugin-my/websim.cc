@@ -49,11 +49,11 @@ std::string Time::String()
   return std::string( buf );
 }
 
-WebSim::WebSim( const std::string& _host, 
+WebSim::WebSim( const std::string& _host,
                 const unsigned short _port) :
   tick_count_expected(0),
   ticks_remaining(0),
-  host(_host), 
+  host(_host),
   port(_port),
   puppets(),
   confederates(),  
