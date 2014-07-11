@@ -52,6 +52,7 @@ class Acceleration;
 class Time;
 class Bounds;
 class Fiducial;
+class Color;
 
 class WebSim {
 public:
@@ -137,6 +138,8 @@ public:
 	virtual bool GetModelData(const std::string& name, std::string& response,
 			Format format, void* xmlnode) = 0;
 
+
+
 	/** Gets the PVA of the model.
 
 	 @param name The name of the model
@@ -163,6 +166,9 @@ public:
 	 */
 	virtual bool GetModelPVA(const std::string& name, Time& t, Pose& p,
 			Velocity& v, Acceleration& a, std::string& response) = 0;
+
+	virtual bool GetModelAttribute(const std::string& name,Time& t,std::string& bitmap,
+			Color& modelColor,std::string& response) = 0;
 
 	/** Gets the extent and center of the model
 
@@ -284,6 +290,9 @@ protected:
 	bool HandleModelTreeRequest(std::string model, std::string action,
 			Format format, struct evkeyvalq* kv, std::string& response);
 
+	bool HandleModelAttributeRequest(std::string model, std::string action,
+			Format format, struct evkeyvalq* kv, std::string& response);
+
 	bool HandleModelGeometryRequest(std::string model, std::string action,
 			Format format, struct evkeyvalq* kv, std::string& response);
 
@@ -317,6 +326,10 @@ protected:
 	void GetPVA(const std::string& name, Time& t, const Pose& p,
 			const Velocity& v, const Acceleration& a, Format format,
 			std::string& response, void* xmlnode);
+
+	void GetAttribute(const std::string& name,Time&  t,std::string& bitmap,
+			const Color modelColor,Format  format,std::string&  response,
+			void*  xmlnode);
 
 	void GetPVANode(const std::string& name, Time& t, const Pose& p,
 			const Velocity& v, const Acceleration& a, Format format,
@@ -537,6 +550,16 @@ public:
 	std::string String();
 };
 
+class Color
+{
+public:
+	 float r,g,b,a;
+
+	 Color():r(0),g(0),b(0),a(a){
+	 }
+	 Color(float r,float g,float b,float a):r(r),g(g),b(b),a(a){
+	 }
+};
 class Pose {
 public:
 	double x, y, z, r, p, a;

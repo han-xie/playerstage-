@@ -155,6 +155,7 @@ void Model::Load()
 		  }
 		
       blockgroup.LoadBitmap( this, bitmapfile, wf );
+      this->bitmap = bitmapfile.c_str();
     }
   
   if( wf->PropertyExists( wf_entity, "boundary" ))

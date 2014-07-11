@@ -36,6 +36,9 @@ bool WebSim::HandleModelRequest(const std::string& model,
 	if (prop == "tree")
 		return HandleModelTreeRequest(model, action, format, kv, response);
 
+	if(prop == "attribute")
+		return HandleModelAttributeRequest(model, action, format, kv, response);
+
 	response = "ERROR: Unknown property " + prop
 			+ " for model. Candidates are: pva data geometry tree.";
 	return false;
@@ -193,6 +196,25 @@ bool WebSim::HandleModelPVANodeRequest(std::string model, std::string action,
 	return false;
 }
 
+bool WebSim::HandleModelAttributeRequest(std::string model, std::string action,
+		Format format, struct evkeyvalq* kv, std::string& response) {
+	if (action == "get") {
+		Time t;
+		Color modelColor;
+		std::string bitmap;
+		if (GetModelAttribute(model,t,bitmap,modelColor, response)) {
+			GetAttribute(model,t,bitmap,modelColor,format,response,NULL);
+			return true;
+		}
+		else{
+			response = "ERROR: failed to get the Attribute of model " + model;
+			return false;
+		}
+	}
+
+	return true;
+}
+
 bool WebSim::HandleModelPVARequest(std::string model, std::string action,
 		Format format, struct evkeyvalq* kv, std::string& response) {
 	if (action == "get") {
@@ -296,6 +318,63 @@ void WebSim::GetPVANode(const std::string& name, Time& t, const Pose& p,
 
 	}
 }
+
+void WebSim::GetAttribute(const std::string& name,Time&  t,std::string& bitmap,
+		const Color modelColor,Format  format,std::string&  response,void*  xmlnode){
+	if(format == TEXT){
+		char buf[1024];
+		snprintf(buf,sizeof(buf),"%s's state @%s:\n bitmap: %s\n"
+				" color: (%.3f,%.3f,%.3f,%.3f)\n",
+				name.c_str(),t.String().c_str(),
+				bitmap.c_str(),
+				modelColor.r,modelColor.g,modelColor.b,modelColor.a);
+		response = buf;
+	}else if(format ==XML){
+		xmlNodePtr root_node = NULL;
+		xmlDocPtr doc = NULL;
+		xmlNodePtr node;
+		xmlChar *tmp;
+		char str[128];
+		if (xmlnode == NULL) {
+
+			doc = xmlNewDoc(BAD_CAST "1.0");
+			root_node = xmlNewNode(NULL, BAD_CAST "root");
+			xmlDocSetRootElement(doc, root_node);
+			node = xmlNewChild(root_node, NULL, BAD_CAST "Model", NULL);
+		} else {
+			node = (xmlNodePtr) xmlnode;
+			xmlNodeSetName(node, xmlCharStrdup("Model"));
+			//node = xmlNewChild((xmlNodePtr)parent, NULL, BAD_CAST "PVA", NULL);
+			//root_node = (xmlNodePtr)parent;
+		}
+		sprintf(str, "%s", t.String().c_str());
+		tmp = ConvertInput(str, MY_ENCODING);
+		xmlNewProp(node, BAD_CAST "Time", BAD_CAST tmp);
+		xmlNewProp(node, BAD_CAST "Type", BAD_CAST "attribute");
+
+		tmp = ConvertInput(name.c_str(), MY_ENCODING);
+		xmlNewProp(node, BAD_CAST "Name", BAD_CAST tmp);
+
+		sprintf(str, "%s", bitmap.c_str());
+		tmp = ConvertInput(str, MY_ENCODING);
+		xmlNewProp(node, BAD_CAST "bitmap", BAD_CAST tmp);
+
+		sprintf(str, "%.3f,%.3f,%.3f,%.3f", modelColor.r,modelColor.g,modelColor.b,modelColor.a);
+		tmp = ConvertInput(str, MY_ENCODING);
+		xmlNewProp(node, BAD_CAST "color", BAD_CAST tmp);
+
+			if (xmlnode == NULL) {
+				xmlBufferPtr buf = xmlBufferCreate();
+				xmlKeepBlanksDefault(0);
+				xmlNodeDump(buf, doc, node, 0, 1);
+				response = (const char*) buf->content;
+				puts(response.c_str());
+				xmlBufferFree(buf);
+				xmlFreeDoc(doc);
+			}
+	}
+}
+
 void WebSim::GetPVA(const std::string& name, Time& t, const Pose& p,
 		const Velocity& v, const Acceleration& a, Format format,
 		std::string& response, void* xmlnode) {

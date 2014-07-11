@@ -1,6 +1,6 @@
 ----------------------------------------------
 stage debug: stage source file CMakeLists.txt
-player debug: I only find under build-dri CMakeList.txt/CMAKE_BUILD_TYPE
+player debug: I only find under build-dir CMakeList.txt/CMAKE_BUILD_TYPE
 ----debug how laser get its range-------------
 gdb player
 	//void ModelLaser::Update(void)
@@ -11,3 +11,15 @@ b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstage/world.cc:6
 b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstageplugin/p_driver.cc:288
 b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstageplugin-my/p_driver.cc:261
 b /home/keevi7c3l/github/playerstage-/src/player-3.0.2/examples/plugins/multidriver-myPXA270/multidriver.cc:72
+-------------------------------------------------------------------
+debug worldfile:
+/home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstage/world.cc:372
+/home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstage/model_load.cc:19
+r test-laser-wander.cfg
+-------------------------------------------------------------------
+tHallBlobGrayWebSim.cfg
+t-hallBlobGray-webSim.cfg
+b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstageplugin-my/websim.cc:214
+b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstageplugin-my/req_model.cc:39
+b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/libstageplugin-my/req_model.cc:317
+http://localhost:7002/hospital/attribute/get

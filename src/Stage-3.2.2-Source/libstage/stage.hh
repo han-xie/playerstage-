@@ -1823,6 +1823,7 @@ namespace Stg
 
 	 //stg_model_type_t type;  
 	 const std::string type;
+	 std::string bitmap;
 	 /** The index into the world's vector of event queues. Initially
 			 -1, to indicate that it is not on a list yet. */
 		unsigned int event_queue_num; 
@@ -1852,6 +1853,7 @@ namespace Stg
   public:
 	 
 	 const std::string& GetModelType() const {return type;}	 
+	 const std::string& GetModelBitmap() const {return bitmap;}
 	 std::string GetSayString(){return std::string(say_string);}
 	 
     /** Returns a pointer to the model identified by name, or NULL if

@@ -814,6 +814,27 @@ public:
 		return true;
 	}
 
+	virtual bool GetModelAttribute(const std::string& name,websim::Time& t,
+			std::string& bitmap,websim::Color& modelColor,std::string& response) {
+		t = GetTime();
+		Model*mod = world->GetModel(name.c_str());
+		if(mod){
+			bitmap = mod->GetModelBitmap();
+
+			Stg::Color sColor = mod->GetColor();
+			modelColor.r=sColor.r;
+			modelColor.g=sColor.g;
+			modelColor.b=sColor.b;
+			modelColor.a=sColor.a;
+		}else {
+			printf("Warning: tried to get the data of unkown model:%s .\n",
+					name.c_str());
+			return false;
+		}
+		return true;
+	}
+
+
 	virtual bool GetModelPVA(const std::string& name, websim::Time& t,
 			websim::Pose& p, websim::Velocity& v, websim::Acceleration& a,
 			std::string& error) {
