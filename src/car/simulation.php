@@ -54,5 +54,5 @@ socket_close ($socket ) ;
 jump to simulation url + send some data
 ************************************************/
 
-header("Location: http://l92.168.1.112/car/webstage.php?httpport=$httpport&map=$mappath");
+header("Location: http://localhost/car/webstage.php?httpport=$httpport&map=$mappath");
 ?> 
