@@ -72,6 +72,7 @@ PLAYERCORE_EXPORT char playerversion[32];
 PLAYERCORE_EXPORT bool player_quit;
 PLAYERCORE_EXPORT bool player_quiet_startup;
 PLAYERCORE_EXPORT bool usegui;
+PLAYERCORE_EXPORT bool wlocalhost;
 PLAYERCORE_EXPORT int http;
 
 //below global var use to control some hidden model

@@ -126,6 +126,7 @@ PlayerUDP* pudp;
 ConfigFile* cf;
 extern bool usegui;
 extern int http;
+extern bool wlocalhost;
 
 int
 main(int argc, char** argv)
@@ -134,6 +135,8 @@ main(int argc, char** argv)
   player_argc = argc;
   player_argv = argv;
   usegui = true;
+  wlocalhost=true;
+
   http = 8000;
 
 
@@ -450,7 +453,7 @@ ParseArgs(int* port, int* debuglevel, char** cfgfilename, int* gz_serverid, char
           int argc, char** argv)
 {
   int ch;
-  const char* optflags = "d:p:h:l:hgq";
+  const char* optflags = "d:p:h:l:hgwq";
 
   // Get letter options
   while((ch = getopt(argc, argv, optflags)) != -1)
@@ -466,6 +469,11 @@ ParseArgs(int* port, int* debuglevel, char** cfgfilename, int* gz_serverid, char
       case 'g':
     	  usegui = false;
     	  break;
+      case 'w':{
+    	  //webstage ip address , not use localhost
+    	  wlocalhost=false;
+    	  break;
+      }
       case 'l':
         *logfilename = optarg;
         break;

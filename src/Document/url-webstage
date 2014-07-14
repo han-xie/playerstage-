@@ -6,6 +6,10 @@ r -g /home/keevi7c3l/src/Stage-3.2.2-Source/worlds1/simple2.world
 ---------------------------------------------------------------------
 t-obstacle_return_web.cfg
 
+
+http://localhost:8000//pva/get
+
+http://localhost:8000/sim/clock/addonetick
 http://localhost:8000/sim/clock/get
 Current time: 0.200000 seconds. 
 http://localhost:8000/sim/clock/get
