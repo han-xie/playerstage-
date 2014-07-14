@@ -17,6 +17,9 @@ bool WebSim::HandleSimRequest(const std::string& prop,
 	printf("[%s] sim %s %s\n", IdentificationString().c_str(), prop.c_str(),
 			action.c_str());
 
+	if(prop == "pva")
+		return HandleSimPVARequest(action, format, kv, response);
+
 	if (prop == "factory")
 		return HandleSimFactoryRequest(action, format, kv, response);
 
@@ -165,6 +168,21 @@ bool WebSim::HandleSimTreeNodeRequest(std::string action, Format format,
 				tmp+="\"";
 		response +=tmp;
 		response="{"+response+"}";
+		return true;
+	}
+
+	response = "ERROR: Unknown action " + action
+			+ " for sim/tree. Candidates are: get (default).";
+	return false;
+}
+
+bool WebSim::HandleSimPVARequest(std::string action, Format format,
+		struct evkeyvalq* kv, std::string& response) {
+	if (action == "")
+		action = "get"; // default action
+
+	if (action == "get") {
+		GetModelsPVA("", format, response, false);
 		return true;
 	}
 

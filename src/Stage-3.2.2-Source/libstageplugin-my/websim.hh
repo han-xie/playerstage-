@@ -194,6 +194,8 @@ public:
 	 */
 	bool GetModelTree(const std::string& model, Format format,
 			std::string& response, bool everything);
+	bool GetModelsPVA(const std::string& model, Format format,
+			std::string& response, bool everything);
 	bool GetModelTreeNode(const std::string& model, Format format,
 			std::string& response, bool everything);
 	/** Get the current simulation time
@@ -262,6 +264,8 @@ protected:
 			struct evkeyvalq* kv, std::string& response);
 
 	bool HandleSimTreeRequest(std::string action, Format format,
+			struct evkeyvalq* kv, std::string& response);
+	bool HandleSimPVARequest(std::string action, Format format,
 			struct evkeyvalq* kv, std::string& response);
 	bool HandleSimTreeNodeRequest(std::string action, Format format,
 			struct evkeyvalq* kv, std::string& response);
@@ -432,6 +436,8 @@ protected:
 	bool GetModelTreeXML(const std::string& model, void* xmlparent,
 			bool everything);
 
+	bool GetModelsPVAXML(const std::string& model, void* xmlparent,
+				bool everything);
 	// forward decare
 	class Confederate;
 

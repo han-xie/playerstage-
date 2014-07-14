@@ -835,6 +835,57 @@ return false;
 return false;
 }
 
+bool WebSim::GetModelsPVA(const std::string& model, Format format,
+std::string& response, bool everything) {
+
+	if (format == XML) {
+		xmlNodePtr root_node = NULL;
+		xmlDocPtr doc = NULL;
+		xmlBufferPtr buf;
+
+		doc = xmlNewDoc(BAD_CAST "1.0");
+		buf = xmlBufferCreate();
+		root_node = xmlNewNode(NULL, BAD_CAST "ModelTree");
+		xmlDocSetRootElement(doc, root_node);
+
+		if (GetModelsPVAXML(model, root_node, everything)) {
+			xmlKeepBlanksDefault(0);
+			xmlNodeDump(buf, doc, root_node, 0, 1);
+			response = (const char*) buf->content;
+		} else {
+			response = "Error in generating model tree.\n";
+		}
+
+		xmlBufferFree(buf);
+		xmlFreeDoc(doc);
+
+		std::string out = "Models PVA:\n " + response + "\n";
+		puts(out.c_str());
+
+		return true;
+	} else if (format == TEXT) {
+		std::string str, pva;
+		Pose p;
+		Velocity v;
+		Acceleration a;
+		Time t;
+		GetPVA(model, t, p, v, a, format, pva, NULL);
+		str += model + "(" + pva + ")" + "\n";
+		std::vector<std::string> children;
+		GetModelChildren(model, children);
+		for (unsigned int i = 0; i < children.size(); i++) {
+			std::string sub;
+			GetModelsPVA(children[i], TEXT, sub, false);
+			str += sub + "\n";
+		}
+
+		response = str;
+		return false;
+	}
+
+	return false;
+}
+
 bool WebSim::GetModelTree(const std::string& model, Format format,
 std::string& response, bool everything) {
 
@@ -885,6 +936,41 @@ return false;
 }
 
 return false;
+}
+
+
+bool WebSim::GetModelsPVAXML(const std::string& model, void* xmlparent,
+bool everything) {
+	std::string res;
+	xmlNodePtr node;
+	Pose p;
+	Velocity v;
+	Acceleration a;
+	Time t;
+
+	if (!xmlparent) {
+		printf("Invalid xmlNode pointer. \n");
+		return false;
+	}
+
+	if (model != "") {
+		node = xmlNewChild((xmlNodePtr)xmlparent, NULL, BAD_CAST "Model", NULL);
+
+		bool flag = false;
+		std::string type;
+		std::string error;
+
+		GetPVA(model, t, p , v, a, XML,error, node);
+		xmlNodeSetName(node, xmlCharStrdup("Model"));
+	} else
+		node = (xmlNodePtr) xmlparent;
+
+	std::vector<std::string> children;
+	GetModelChildren(model, children);
+	for (unsigned int i = 0; i < children.size(); i++)
+		GetModelsPVAXML(children[i], node, everything);
+
+	return true;
 }
 
 bool WebSim::GetModelTreeXML(const std::string& model, void* xmlparent,
