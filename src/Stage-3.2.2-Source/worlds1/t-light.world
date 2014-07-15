@@ -3,7 +3,7 @@ resolution     0.02
 include "pioneer.inc"
 include "irobot.inc"
 include "map.inc"
-include "sick-hall.inc"
+include "sick-light.inc"
 
 window
 ( 
@@ -19,7 +19,7 @@ floorplan
   bitmap "bitmaps/blank.png" 
   map_resolution 0.02
   size [40.000 18.000 0.600] 
-  name "cave"
+  name "hospital"
   color "gray50"
   gui_grid 1
   gui_outline 1
@@ -37,26 +37,17 @@ define puck model(
 
 
 position( 
-pose [-9.07 2.57 0 -105.501 ] 
+pose [-9.77 3.17 0 -105.501 ] 
 color "red"   
 size [ 0.080 0.080 0.100 ]  
 gripper_return 1 
-hall_return 1
+light_return 0
 blob_return 0
-gray_return 0
+laser_reurn 0
 )
-puck( 
-pose [-9.045 2.624 0 -37.717 ] color "blue" 
-hall_return 0
-blob_return 1
-gray_return 0
-)
-puck(
- pose [-8.959 2.752 0 -101.643 ] color "yellow" 
-hall_return 0
-blob_return 1
-gray_return 1
-)
+puck( pose [-9.045 2.624 0 -37.717 ] color "blue" )
+puck( pose [-8.959 2.752 0 -101.643 ] color "yellow" 
+light_return 0)
 
 
 # extend the pioneer2dx definition from pioneer.inc
@@ -80,29 +71,13 @@ define trickedoutpioneer pioneer2dx
 trickedoutpioneer
 (
   name "robot1"
-  pose [-9.431 2.67 0 -2.333]
+  pose [-10.071 3.186 0 -2.333]
 
   gripper( pose [0.23 0.000 -0.20 0.000] color "gray" )
 
-  hallsensor( 
-	range 2
+  lightsensor( 
         colors_count 6 
         colors [ "red" "blue" "green" "cyan" "yellow" "magenta" ]  
 		  alwayson 1
     )
-
- graysensor(
-        range 2 
-        colors_count 6 
-        colors [ "red" "blue" "green" "cyan" "yellow" "magenta" ]  
-		  alwayson 1
-    )
-
- blobfinder(
-        range 2 
-        colors_count 6 
-        colors [ "red" "blue" "green" "cyan" "yellow" "magenta" ]  
-		  alwayson 1
-    )
-
 )

@@ -70,6 +70,8 @@ $imageUrl = $_GET['map'];
         var position=["r0","r1","r2","r3","r4","r5","r6","r7","r8","r9","r10","r11","r12","r13","r14","r15","r16","r17","r18","r19"];
         var positionNum=0;
         var webserverport="<?php echo $tfurl ?>"
+        
+        var imagePath="cave.png";
 
 //$res['id'] = $_POST['id']; 
 //$res['wsport'] = $_POST['wsport'];

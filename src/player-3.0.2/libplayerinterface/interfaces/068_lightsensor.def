@@ -1,0 +1,123 @@
+description {
+@brief A visual light-detection system
+
+The lightsensor interface provides access to devices that detect lights
+in images.
+}
+
+
+message { DATA, LIGHTS, 1, player_lightsensor_data_t };
+
+message { REQ, SET_COLOR, 1, player_lightsensor_color_config_t };
+message { REQ, SET_IMAGER_PARAMS, 2, player_lightsensor_imager_config_t};
+message { REQ, GET_COLOR, 3, player_lightsensor_color_config_t };
+
+message { CMD, INT, 1 , player_lightsensor_int_t};
+
+/** @brief Structure include a int. */
+typedef struct player_lightsensor_int
+{
+  /** temp */
+  uint32_t i;
+} player_lightsensor_int_t;
+
+/** @brief Structure describing a single light. */
+typedef struct player_lightsensor_light
+{
+  /** Light id. */
+  uint32_t id;
+  /** A descriptive color for the light (useful for gui's).  The color
+      is stored as packed 32-bit RGB, i.e., 0x00RRGGBB. */
+  uint32_t color;
+  /** The light area [pixels]. */
+  uint32_t area;
+  /** The light centroid [pixels]. */
+  uint32_t x;
+  /** The light centroid [pixels]. */
+  uint32_t y;
+  /** Bounding box for the light [pixels]. */
+  uint32_t left;
+  /** Bounding box for the light [pixels]. */
+  uint32_t right;
+  /** Bounding box for the light [pixels]. */
+  uint32_t top;
+  /** Bounding box for the light [pixels]. */
+  uint32_t bottom;
+  /** Range to the light center [meters] */
+  float range;
+} player_lightsensor_light_t;
+
+/** @brief Data: detected lights (@ref PLAYER_LIGHTSENSOR_DATA_LIGHTS)
+
+The list of detected lights, returned as data by @p lightsensor devices. */
+typedef struct player_lightsensor_data
+{
+  /** The image dimensions. [pixels] */
+  uint32_t width;
+  /** The image dimensions. [pixels] */
+  uint32_t height;
+  /** The number of lights */
+  uint32_t lights_count;
+  /** The list of lights */
+  player_lightsensor_light_t *lights;
+} player_lightsensor_data_t;
+
+
+/** @brief Request/reply: Set tracking color.
+
+For some sensors (ie CMUcam), simple light tracking tracks only one color.
+To set the tracking color, send a @ref PLAYER_LIGHTSENSOR_REQ_SET_COLOR request
+with the format below, including the RGB color ranges (max and min).
+Values of -1 will cause the track color to be automatically set to the
+current window color.  This is useful for setting the track color by
+holding the tracking object in front of the lens.  Null response.
+*/
+typedef struct player_lightsensor_color_config
+{
+  /** For devices that can track multiple colors, indicate which
+  color channel we are defining with this structure. Single channel
+  devices will ignore this field. */
+  uint32_t channel;
+  /** RGB minimum and max values (0-255) **/
+  uint32_t rmin;
+  /** RGB minimum and max values (0-255) **/
+  uint32_t rmax;
+  /** RGB minimum and max values (0-255) **/
+  uint32_t gmin;
+  /** RGB minimum and max values (0-255) **/
+  uint32_t gmax;
+  /** RGB minimum and max values (0-255) **/
+  uint32_t bmin;
+  /** RGB minimum and max values (0-255) **/
+  uint32_t bmax;
+} player_lightsensor_color_config_t;
+
+
+/** @brief Configuration request: Set imager params.
+
+Imaging sensors that do light tracking generally have some sorts of
+image quality parameters that you can tweak.  The following ones
+are implemented here:
+   - brightness  (0-255)
+   - contrast    (0-255)
+   - auto gain   (0=off, 1=on)
+   - color mode  (0=RGB/AutoWhiteBalance Off,  1=RGB/AutoWhiteBalance On,
+                2=YCrCB/AWB Off, 3=YCrCb/AWB On)
+To set the params, send a @ref PLAYER_LIGHTSENSOR_REQ_SET_IMAGER_PARAMS request
+with the format below.  Any values set to -1 will be left unchanged.
+Null response.
+*/
+typedef struct player_lightsensor_imager_config
+{
+  /** Brightness: (0-255)  -1=no change. */
+  int32_t brightness;
+  /** Contrast: (0-255)  -1=no change. */
+  int32_t contrast;
+  /** Color Mode
+      ( 0=RGB/AutoWhiteBalance Off,  1=RGB/AutoWhiteBalance On,
+      2=YCrCB/AWB Off, 3=YCrCb/AWB On)  -1=no change.
+  */
+  int32_t  colormode;
+  /** AutoGain:   0=off, 1=on.  -1=no change. */
+  int32_t  autogain;
+} player_lightsensor_imager_config_t;

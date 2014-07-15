@@ -1865,6 +1865,7 @@ namespace Stg
 	 public:
 		bool blob_return;
 		bool hall_return;
+		bool light_return;
 		bool gray_return;
 		int fiducial_key;
 		int fiducial_return;
@@ -2209,6 +2210,7 @@ namespace Stg
 	 void SetObstacleReturn( int val );
 	 void SetBlobReturn( int val );
 	 void SetHallReturn(int val);
+	 void SetLightReturn(int val);
 	 void SetGrayReturn(int val);
 	 void SetRangerReturn( int val );
 	 void SetBoundary( int val );
@@ -2394,7 +2396,70 @@ namespace Stg
 	 void RemoveAllColors();
   };
 
+  class ModelLightsensor : public Model
+    {
+    public:
+  	 /** Sample data */
+  	 class Light
+  	 {
+  	 public:
+  		Color color;
+  		uint32_t left, top, right, bottom;
+  		stg_meters_t range;
+  	 };
 
+  	 class Vis : public Visualizer
+  	 {
+  	 private:
+  		//static Option showArea;
+  	 public:
+  		Vis( World* world );
+  		virtual ~Vis( void ){}
+  		virtual void Visualize( Model* mod, Camera* cam );
+  	 } vis;
+
+    private:
+  	 std::vector<Light> lights;
+  	 std::vector<Color> colors;
+
+  	 // predicate for ray tracing
+  	 static bool BlockMatcher( Block* testblock, Model* finder );
+
+    public:
+  	 stg_radians_t fov;
+  	 stg_radians_t pan;
+  	 stg_meters_t range;
+  	 unsigned int scan_height;
+  	 unsigned int scan_width;
+
+  	 // constructor
+  	 ModelLightsensor( World* world,
+  							Model* parent,
+  							const std::string& type );
+  	 // destructor
+  	 ~ModelLightsensor();
+
+  	 virtual void Startup();
+  	 virtual void Shutdown();
+  	 virtual void Update();
+  	 virtual void Load();
+
+  	 Light* GetLights( unsigned int* count )
+  	 {
+  		if( count ) *count = lights.size();
+  		return &lights[0];
+  	 }
+
+  	 /** Start finding lights with this color.*/
+  	 void AddColor( Color col );
+
+  	 /** Stop tracking lights with this color */
+  	 void RemoveColor( Color col );
+
+  	 /** Stop tracking all colors. Call this to clear the defaults, then
+  		  add colors individually with AddColor(); */
+  	 void RemoveAllColors();
+    };
 
   class ModelHallsensor : public Model
     {

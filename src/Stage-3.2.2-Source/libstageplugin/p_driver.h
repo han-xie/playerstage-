@@ -305,6 +305,19 @@ public:
 	virtual void Publish(void);
 };
 
+class InterfaceLightsensor: public InterfaceModel {
+public:
+	InterfaceLightsensor(player_devaddr_t addr, StgDriver* driver,
+			ConfigFile* cf, int section);
+	virtual ~InterfaceLightsensor(void) { /* TODO: clean up*/
+	}
+	;
+
+	virtual int ProcessMessage(QueuePointer & resp_queue, player_msghdr * hdr,
+			void * data);
+	virtual void Publish(void);
+};
+
 class InterfaceGraysensor: public InterfaceModel {
 public:
 	InterfaceGraysensor(player_devaddr_t addr, StgDriver* driver,

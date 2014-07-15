@@ -244,6 +244,20 @@ public:
 	virtual void Publish(void);
 };
 
+class InterfaceLightsensor: public Interface {
+public:
+	//InterfaceLightsensor(player_devaddr_t addr, multidriver* driver, ConfigFile* cf,int section, const std::string& type);
+	InterfaceLightsensor(player_devaddr_t addr, multidriver* driver, ConfigFile* cf,
+			int section);
+	virtual ~InterfaceLightsensor(void) { /* TODO: clean up*/
+	}
+	;
+	virtual int ProcessMessage(QueuePointer & resp_queue, player_msghdr_t* hdr,
+			void* data);
+public:
+	virtual void Publish(void);
+};
+
 class InterfaceLaser: public Interface {
 public:
 	InterfaceLaser(player_devaddr_t addr, multidriver* driver, ConfigFile* cf,

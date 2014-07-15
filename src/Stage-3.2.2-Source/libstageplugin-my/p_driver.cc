@@ -165,8 +165,10 @@ extern bool player_quit;
 //OpaqueModel opaquem;
 int globalMyupdateSign = 0;
 extern bool hallupdate;
+extern bool lightupdate;
 extern bool grayupdate;
 extern uint32_t hallscount;
+extern uint32_t lightscount;
 extern uint32_t grayscount;
 
 // init static vars
@@ -301,6 +303,10 @@ StgDriver::StgDriver(ConfigFile* cf, int section) :
 	 	  ifsrc = new InterfaceHallsensor( player_addr,  this, cf, section );
 	 	  break;
 
+	 	case PLAYER_LIGHTSENSOR_CODE:
+	 		 	  ifsrc = new InterfaceLightsensor( player_addr,  this, cf, section );
+	 		 	  break;
+
 	 	case PLAYER_GRAYSENSOR_CODE:
 	 	  ifsrc = new InterfaceGraysensor( player_addr,  this, cf, section );
 	 	  break;
@@ -408,8 +414,10 @@ StgDriver::StgDriver(ConfigFile* cf, int section) :
 
 	//default disable those hidden model
 	hallupdate = false;
+	lightupdate = false;
 	grayupdate = false;
 	hallscount = 0;
+	lightscount = 0;
 	grayscount = 0;
 }
 

@@ -1,0 +1,58 @@
+<html>
+<body>
+<h1>W3School.com.cn Internal Note</h1>
+<p><b>To:</b> <span id="bitmap"></span><br />
+
+
+<script type="text/javascript">
+
+		var mapPath="cave";
+
+		window.onload = function(){
+        	newxmlHttpRequest();
+        	getMapPath();
+        }
+        
+        function newxmlHttpRequest(){
+		    try {
+			// Firefox, Opera 8.0+, Safari
+			 xmlHttp = new XMLHttpRequest();
+		    }
+		    catch (e) {
+			// Internet Explorer
+			 try {
+			    xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+			}
+			catch (e) {
+
+			    try {
+				xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+			    }
+			    catch (e) {
+				alert("your brower don not support AJAX！");
+				return false;
+			    }
+			}
+		    }
+        }
+        
+        function getMapPath(){
+	        if(xmlHttp!=null){
+	        	xmlHttp.onreadystatechange = mapPath_Change;
+	        	xmlHttp.open("POST", "../getMapPath.php", false);
+				xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xmlHttp.send("wsport=8000&model=cave");
+	        }
+        }
+        
+       function mapPath_Change(){
+        			if (xmlHttp.readyState == 4) {
+        				xmlDoc=xmlhttp.responseXML;
+        				document.getElementById("bitmap").innerHTML = 
+        				xmlDoc.getElementsByTagName('Model')[0].childNodes.getAttribute('bitmap')
+					}
+        }
+</script>
+
+</body>
+</html>

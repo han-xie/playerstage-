@@ -28,9 +28,6 @@
 -------------------------------------------------------------------------------
 ----------add new interface for playerClient:-----------------------------------
 #	modified:   player-3.0.2/client_libs/libplayerc++/hallsensorproxy.cc
-#	modified:   player-3.0.2/client_libs/libplayerc++/playerc++.h
-#	modified:   player-3.0.2/client_libs/libplayerc/dev_hallsensor.c
-#	modified:   player-3.0.2/client_libs/libplayerc/playerc.h
 #	modified:   player-3.0.2/examples/plugins/multidriver-myPXA270/CMakeLists.txt
 #	modified:   player-3.0.2/examples/plugins/multidriver-myPXA270/CMakeLists.txt.multi.in
 #	modified:   player-3.0.2/examples/plugins/multidriver-myPXA270/background.cc

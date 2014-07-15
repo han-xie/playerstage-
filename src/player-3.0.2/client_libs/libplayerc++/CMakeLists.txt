@@ -175,6 +175,7 @@ IF (BUILD_PLAYERCC)
                         blackboardproxy.cc
                         blobfinderproxy.cc
                         hallsensorproxy.cc
+                        lightsensorproxy.cc
                         graysensorproxy.cc
                         bumperproxy.cc
                         cameraproxy.cc

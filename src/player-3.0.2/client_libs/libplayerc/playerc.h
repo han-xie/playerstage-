@@ -1360,6 +1360,50 @@ PLAYERC_EXPORT int playerc_hallsensor_get_int_halls_count(playerc_hallsensor_t *
 /** @brief Un-subscribe from the hallsensor device. */
 PLAYERC_EXPORT int playerc_hallsensor_set_int_cmd(playerc_hallsensor_t *device, int v);
 
+
+
+
+
+
+typedef player_lightsensor_light_t playerc_lightsensor_light_t;
+
+/** @brief Blobfinder device data. */
+typedef struct
+{
+  /** Device info; must be at the start of all device structures. */
+  playerc_device_t info;
+
+  /** Image dimensions (pixels). */
+  unsigned int width, height;
+
+  /** A list of detected lights. */
+  unsigned int lights_count;
+  playerc_lightsensor_light_t *lights;
+
+} playerc_lightsensor_t;
+
+
+/** @brief Create a lightsensor proxy. */
+PLAYERC_EXPORT playerc_lightsensor_t *playerc_lightsensor_create(playerc_client_t *client, int index);
+
+/** @brief Destroy a lightsensor proxy. */
+PLAYERC_EXPORT void playerc_lightsensor_destroy(playerc_lightsensor_t *device);
+
+/** @brief Subscribe to the lightsensor device. */
+PLAYERC_EXPORT int playerc_lightsensor_subscribe(playerc_lightsensor_t *device, int access);
+
+/** @brief Un-subscribe from the lightsensor device. */
+PLAYERC_EXPORT int playerc_lightsensor_unsubscribe(playerc_lightsensor_t *device);
+
+
+PLAYERC_EXPORT int playerc_lightsensor_get_int_lights_count(playerc_lightsensor_t *device);
+
+/** @brief Un-subscribe from the lightsensor device. */
+PLAYERC_EXPORT int playerc_lightsensor_set_int_cmd(playerc_lightsensor_t *device, int v);
+
+
+
+
 typedef player_graysensor_gray_t playerc_graysensor_gray_t;
 
 /** @brief Blobfinder device data. */
