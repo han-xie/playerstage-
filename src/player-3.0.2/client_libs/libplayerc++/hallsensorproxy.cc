@@ -94,6 +94,7 @@ std::operator <<(std::ostream &os, const PlayerCc::HallsensorProxy &c) {
 		os << "            Right: " << c.GetHall(i).right << std::endl;
 		os << "              Top: " << c.GetHall(i).top << std::endl;
 		os << "           Bottom: " << c.GetHall(i).bottom << std::endl;
+		os << "            range: " << c.GetHall(i).range << std::endl;
 	}
 	return os;
 }

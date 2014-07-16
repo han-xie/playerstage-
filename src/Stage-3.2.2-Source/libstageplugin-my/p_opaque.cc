@@ -3,6 +3,11 @@ using namespace Stg;
 #include "CYZXInter.h"
 
 //extern OpaqueModel opaquem;
+extern bool player_quiet_startup;
+extern PlayerTime* GlobalTime;
+extern bool usegui;
+extern int http;
+extern bool wlocalhost;
 
 InterfaceOpaque::InterfaceOpaque(player_devaddr_t addr, StgDriver* driver,
 		ConfigFile* cf, int section) :
@@ -33,34 +38,18 @@ InterfaceOpaque::InterfaceOpaque(player_devaddr_t addr, StgDriver* driver,
 		free(tmp);
 	}
 
-	// a little sanity testing
-	// XX TODO
-	//  if( !g_file_test( fullname, G_FILE_TEST_EXISTS ) )
-	//{
-	//  PRINT_ERR1( "worldfile \"%s\" does not exist", worldfile_name );
-	//  return;
-	//}
+	std::string fedfilename = "";
+	std::string host = "localhost";
+	unsigned short phttp = http;
 
-	// create a passel of Stage models in the local cache based on the
-	// worldfile
+	int ch = 0, optindex = 0;
+	bool usefedfile = false;
 
-	// if the initial size is to large this crashes on some systems
-	StgDriver::world = new WorldGui(400, 300, "Player/Stage");
+	StgDriver::world = (Stg::World*) new WorldGui(400, 300, "Player/Stage");
 	assert(StgDriver::world);
 
 	puts("");
 	StgDriver::world->Load(fullname);
-	//printf( " done.\n" );
-
-	// poke the P/S name into the window title bar
-	//   if( StgDriver::world )
-	//     {
-	//       char txt[128];
-	//       snprintf( txt, 128, "Player/Stage: %s", StgDriver::world->token );
-	//       StgDriverstg_world_set_title(StgDriver::world, txt );
-	//     }
-
-	// steal the global clock - a bit aggressive, but a simple approach
 
 	delete GlobalTime;
 	GlobalTime = new StTime(driver);
@@ -68,6 +57,12 @@ InterfaceOpaque::InterfaceOpaque(player_devaddr_t addr, StgDriver* driver,
 	// start the simulation
 	// printf( "  Starting world clock... " ); fflush(stdout);
 	//stg_world_resume( world );
+
+	WebStage* ws = new WebStage(StgDriver::world, host, phttp);
+	assert(ws);
+	if (usefedfile)
+		ws->LoadFederationFile(fedfilename);
+	ws->Startup(true); // start http server
 
 	StgDriver::world->Start();
 

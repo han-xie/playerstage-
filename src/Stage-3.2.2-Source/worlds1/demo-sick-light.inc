@@ -3,15 +3,19 @@ define sicklaser laser
 (
   # laser-specific properties
   # factory settings for LMS200	
-  range_max 1
-  fov 360.0
-  samples 90
+  range_max 3
+  fov 359.0
+  samples 359
 
   #samples 90 # still useful but much faster to compute
 
   # generic model properties
   color "blue"
   size [ 0.156 0.155 0.19 ] # dimensions from LMS200 data sheet	
+
+a0 ["infrDistSen" 130 140 0 3]
+a1 ["infrDistSen" 175 185 0 3]
+a2 ["infrDistSen" 220 230 0 3]
 )
 
 define sicklaser2 laser

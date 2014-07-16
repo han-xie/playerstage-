@@ -46,8 +46,7 @@ blob_return 0
 laser_reurn 0
 )
 puck( pose [-9.045 2.624 0 -37.717 ] color "blue" )
-puck( pose [-8.959 2.752 0 -101.643 ] color "yellow" 
-hall_return 0)
+puck( pose [-8.959 2.752 0 -101.643 ] color "yellow")
 
 
 # extend the pioneer2dx definition from pioneer.inc
@@ -73,10 +72,22 @@ trickedoutpioneer
   name "robot1"
   pose [-10.071 3.186 0 -2.333]
 
-  gripper( pose [0.23 0.000 -0.20 0.000] color "gray" )
+  #gripper( pose [0.23 0.000 -0.20 0.000] color "gray" )
 
   hallsensor( 
-        colors_count 6 
+        colors_count 6
+	range 2 
+	fov 30
+	pose [0.23 0.1500 0 60]
+        colors [ "red" "blue" "green" "cyan" "yellow" "magenta" ]  
+		  alwayson 1
+    )
+
+  hallsensor( 
+        colors_count 6
+	range 2 
+	fov 30
+	pose [0.23 -0.1500 0 -60]
         colors [ "red" "blue" "green" "cyan" "yellow" "magenta" ]  
 		  alwayson 1
     )

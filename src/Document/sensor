@@ -14,10 +14,10 @@
 	  color "blue"
 	  size [ 0.156 0.155 0.19 ] # dimensions from LMS200 data sheet	
 	
-	a0 ["infrDistSensor" 40 50 0 7 ] #angle from 40 to 50 , detection range from 0 to 7
-	a1 ["infrDistSensor" 130 140 0 7]
-	#a2 ["infrDistSensor" 110 120 0 7]
-	#a3 ["infrDistSensor" 200 210 0 7]
+	a0 ["infrDistSen" 40 50 0 7 ] #angle from 40 to 50 , detection range from 0 to 7
+	a1 ["infrDistSen" 130 140 0 7]
+	#a2 ["infrDistSen" 110 120 0 7]
+	#a3 ["infrDistSen" 200 210 0 7]
 	)
 ---sensor configure file which used in hardware PXA270-------------------------------------------------------------------
 ---*.cfg store in the dir:/home/keevi7c3l/github/playerstage-/src/player-3.0.2/examples/plugins/multidriver-myPXA270-----------------
