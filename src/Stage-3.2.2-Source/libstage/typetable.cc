@@ -31,8 +31,8 @@ void Stg::RegisterModels()
   Register( "fiducial", Creator<ModelFiducial> );
   Register( "gripper", Creator<ModelGripper> );
   Register( "laser", Creator<ModelLaser> );
-  Register( "lightindicator", Creator<ModelLightIndicator> );
   Register( "position", Creator<ModelPosition> );
   Register( "ranger",  Creator<ModelRanger> );
+  Register( "lightindicator", Creator<ModelLightIndicator> );
 }  
 
