@@ -49,30 +49,16 @@ puck( pose [-9.045 2.624 0 -37.717 ] color "blue" )
 puck( pose [-8.959 2.752 0 -101.643 ] color "yellow")
 
 
-# extend the pioneer2dx definition from pioneer.inc
-#
-define trickedoutpioneer pioneer2dx
-(
-	ranger( alwayson 0 )
-
-  sicklaser( pose [0.030 0 0 0 ]  alwayson 1 )
-
-  fiducial( range_max 8 range_max_id 5 ) 
-
-  fiducial_return 17
-  gripper_return 0
-
-  localization "gps"
-  localization_origin [ 0 0 0 0 ]
-)
-
-
-trickedoutpioneer
+position
 (
   name "robot1"
-  pose [-10.071 3.186 0 -2.333]
+  
+  localization "gps"
+  localization_origin [ 0 0 0 0 ]
 
-  gripper( pose [0.23 0.000 -0.20 0.000] color "gray" )
+  pose [-10.071 3.186 0 0]
+  size [1 1 1]
+  gripper( pose [0.6 -0.5 0 60] color "gray" )
 
   hallsensor( 
         colors_count 6
