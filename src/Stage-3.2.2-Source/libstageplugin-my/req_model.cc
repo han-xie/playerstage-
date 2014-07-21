@@ -38,6 +38,12 @@ bool WebSim::HandleModelRequest(const std::string& model,
 
 	if(prop == "attribute")
 		return HandleModelAttributeRequest(model, action, format, kv, response);
+	else if(prop == "color")
+		return HandleModelColorRequest(model, action, format, kv, response);
+	else if(prop == "stall")
+		return HandleModelStallRequest(model, action, format, kv, response);
+	else if(prop == "switch")
+		return HandleModelSwitchRequest(model, action, format, kv, response);
 
 	response = "ERROR: Unknown property " + prop
 			+ " for model. Candidates are: pva data geometry tree.";
@@ -213,6 +219,69 @@ bool WebSim::HandleModelAttributeRequest(std::string model, std::string action,
 	}
 
 	return true;
+}
+
+bool WebSim::HandleModelSwitchRequest(std::string model, std::string action,
+		Format format, struct evkeyvalq* kv, std::string& response) {
+	if (action == "get") {
+	} else if (action == "set") {
+		std::string sb;
+		stg_bool_t disable;
+		try {
+			if (GetValue(sb, kv, "switch"))
+				disable = boost::lexical_cast<bool>(sb);
+		} catch (boost::bad_lexical_cast e) {
+			response = std::string("Failed to parse input value(s): ")
+					+ e.what();
+			return false;
+		}
+		return (SetModelSwitch(model,disable, response));
+	}
+	return false;
+}
+
+bool WebSim::HandleModelStallRequest(std::string model, std::string action,
+		Format format, struct evkeyvalq* kv, std::string& response) {
+	if (action == "get") {
+	} else if (action == "set") {
+		std::string sb;
+		stg_bool_t stall;
+		try {
+			if (GetValue(sb, kv, "stall"))
+				stall = boost::lexical_cast<bool>(sb);
+		} catch (boost::bad_lexical_cast e) {
+			response = std::string("Failed to parse input value(s): ")
+					+ e.what();
+			return false;
+		}
+		return (SetModelStall(model,stall, response));
+	}
+	return false;
+}
+
+bool WebSim::HandleModelColorRequest(std::string model, std::string action,
+		Format format, struct evkeyvalq* kv, std::string& response) {
+	if (action == "get") {
+	} else if (action == "set") {
+		std::string sr,sg,sb,sa;
+		Color c;
+		try {
+			if (GetValue(sr, kv, "r"))
+				c.r = boost::lexical_cast<float>(sr);
+			if (GetValue(sg, kv, "g"))
+				c.g = boost::lexical_cast<float>(sg);
+			if (GetValue(sb, kv, "b"))
+				c.b = boost::lexical_cast<float>(sb);
+			if (GetValue(sa, kv, "a"))
+				c.a = boost::lexical_cast<float>(sa);
+		} catch (boost::bad_lexical_cast e) {
+			response = std::string("Failed to parse input value(s): ")
+					+ e.what();
+			return false;
+		}
+		return (SetModelColor(model,c, response));
+	}
+	return false;
 }
 
 bool WebSim::HandleModelPVARequest(std::string model, std::string action,

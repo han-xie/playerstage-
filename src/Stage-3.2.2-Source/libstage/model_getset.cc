@@ -36,6 +36,11 @@ void Model::SetStall( stg_bool_t val )
   CallCallbacks( &stall );
 }
 
+void Model::SetModelAble(stg_bool_t able){
+	disabled = able;
+	CallCallbacks(&disabled);
+}
+
 void Model::SetGripperReturn( int val )
 {
   vis.gripper_return = val;

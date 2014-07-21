@@ -54,6 +54,8 @@ class Bounds;
 class Fiducial;
 class Color;
 
+typedef bool stg_bool_t;
+
 class WebSim {
 public:
 	int myupdateSign;
@@ -166,6 +168,16 @@ public:
 	 */
 	virtual bool GetModelPVA(const std::string& name, Time& t, Pose& p,
 			Velocity& v, Acceleration& a, std::string& response) = 0;
+
+	virtual bool GetModelColor(const std::string& name, Color& c, std::string& response) = 0;
+	virtual bool SetModelColor(const std::string& name, const Color& c,
+			std::string& response) = 0;
+
+	virtual bool GetModelStall(const std::string& name, stg_bool_t& stall, std::string& response) = 0;
+	virtual bool SetModelStall(const std::string& name, const stg_bool_t& stall,
+			std::string& response) = 0;
+	virtual bool SetModelSwitch(const std::string& name, const stg_bool_t& stall,
+				std::string& response) = 0;
 
 	virtual bool GetModelAttribute(const std::string& name,Time& t,std::string& bitmap,
 			Color& modelColor,std::string& response) = 0;
@@ -305,6 +317,12 @@ protected:
 
 	bool HandleModelPVARequest(std::string model, std::string action,
 			Format format, struct evkeyvalq* kv, std::string& response);
+	bool HandleModelColorRequest(std::string model, std::string action,
+				Format format, struct evkeyvalq* kv, std::string& response);
+	bool HandleModelStallRequest(std::string model, std::string action,
+				Format format, struct evkeyvalq* kv, std::string& response);
+	bool HandleModelSwitchRequest(std::string model, std::string action,
+				Format format, struct evkeyvalq* kv, std::string& response);
 	bool HandleModelPVANodeRequest(std::string model, std::string action,
 			Format format, struct evkeyvalq* kv, std::string& response);
 	bool HandleModelPVANodeTickRequest(std::string model, std::string action,
@@ -555,6 +573,7 @@ public:
 	/** Returns the time in a human-readable string form "sec.usec" */
 	std::string String();
 };
+
 
 class Color
 {

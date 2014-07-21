@@ -810,6 +810,42 @@ public:
 		return true;
 	}
 
+	virtual bool SetModelColor(const std::string& name, const websim::Color& c,
+			std::string& error) {
+		Model* mod = world->GetModel(name.c_str());
+		if (mod) {
+			mod->SetColor(Stg::Color(c.r,c.g,c.b,c.a));
+		} else
+			printf(
+					"Warning: attempt to set Color for unrecognized model \"%s\"\n",
+					name.c_str());
+		return true;
+	}
+
+	virtual bool SetModelStall(const std::string& name, const websim::stg_bool_t& stall,
+			std::string& error) {
+		Model* mod = world->GetModel(name.c_str());
+		if (mod) {
+			mod->SetStall(Stg::stg_bool_t(stall));
+		} else
+			printf(
+					"Warning: attempt to set Stall for unrecognized model \"%s\"\n",
+					name.c_str());
+		return true;
+	}
+
+	virtual bool SetModelSwitch(const std::string& name, const websim::stg_bool_t& sw,
+			std::string& error) {
+		Model* mod = world->GetModel(name.c_str());
+		if (mod) {
+			mod->SetModelAble(Stg::stg_bool_t(sw));
+		} else
+			printf(
+					"Warning: attempt to set Stall for unrecognized model \"%s\"\n",
+					name.c_str());
+		return true;
+	}
+
 	virtual bool SetModelPVA(const std::string& name, const websim::Pose& p,
 			const websim::Velocity& v, const websim::Acceleration& a,
 			std::string& error) {
@@ -848,6 +884,16 @@ public:
 		return true;
 	}
 
+
+	virtual bool GetModelColor(const std::string& name, websim::Color& c,
+			std::string& error) {
+		return true;
+	}
+
+	virtual bool GetModelStall(const std::string& name, websim::stg_bool_t& stall,
+			std::string& error) {
+		return true;
+	}
 
 	virtual bool GetModelPVA(const std::string& name, websim::Time& t,
 			websim::Pose& p, websim::Velocity& v, websim::Acceleration& a,

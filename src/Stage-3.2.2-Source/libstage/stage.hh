@@ -2203,6 +2203,7 @@ namespace Stg
 	 void SetColor( Color col );
 	 void SetMass( stg_kg_t mass );
 	 void SetStall( stg_bool_t stall );
+	 void SetModelAble(stg_bool_t able);
 	 void SetGravityReturn( int val );
 	 void SetGripperReturn( int val );
 	 void SetStickyReturn( int val );
