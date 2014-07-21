@@ -80,12 +80,14 @@ PLAYERCORE_EXPORT bool hallupdate;//霍尔接近传感器端口号
 PLAYERCORE_EXPORT uint32_t hallscount;
 PLAYERCORE_EXPORT bool grayupdate;//灰度传感器端口号
 PLAYERCORE_EXPORT uint32_t grayscount;
+PLAYERCORE_EXPORT float grayvalue;
 PLAYERCORE_EXPORT bool soundupdate;//声音传感器端口号
 PLAYERCORE_EXPORT uint32_t soundcount;
 PLAYERCORE_EXPORT bool gestupdate;//姿态传感器端口号
 PLAYERCORE_EXPORT uint32_t gestcount;
 PLAYERCORE_EXPORT bool lightupdate;//光强传感器端口号
 PLAYERCORE_EXPORT uint32_t lightscount;
+PLAYERCORE_EXPORT float lightvalue;
 PLAYERCORE_EXPORT bool tempupdate;//温度传感器端口号
 PLAYERCORE_EXPORT uint32_t tempcount;
 PLAYERCORE_EXPORT bool dioupdate;//输出端口端口号

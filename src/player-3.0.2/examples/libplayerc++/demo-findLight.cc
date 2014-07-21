@@ -231,8 +231,6 @@ int main(int argc, char **argv) {
 		robot = new PlayerClient(gHostname, gPort);
 		pp = new Position2dProxy(robot,gIndex);
 		lp = new LaserProxy(robot, gIndex);
-		lspLeft = new LightsensorProxy(robot, 0);
-		lspRight = new LightsensorProxy(robot, 1);
 
 		double minR = 2;
 		double minL = 2;

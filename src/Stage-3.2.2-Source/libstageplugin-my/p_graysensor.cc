@@ -39,6 +39,7 @@
 using namespace Stg;
 
 extern int grayscount;
+extern float grayvalue;
 
 InterfaceGraysensor::InterfaceGraysensor( player_devaddr_t addr,
 				StgDriver* driver,
@@ -60,8 +61,10 @@ void InterfaceGraysensor::Publish( void )
   uint32_t bcount = 0;
   const ModelGraysensor::Gray* grays = graymod->GetGrays( &bcount );
   
-  if(bcount > 0)
+  if(bcount > 0){
 	  grayscount=bcount;
+	  grayvalue= 32767;
+  }
   else grayscount = 0;
 
   if ( bcount > 0 )
@@ -109,6 +112,8 @@ void InterfaceGraysensor::Publish( void )
 		  bfd.grays[b].area  = dx * dy;
 
 		  bfd.grays[b].range = grays[b].range;
+		  if(bfd.grays[b].range<grayvalue)
+			  grayvalue = bfd.grays[b].range;
 		}
   }
 

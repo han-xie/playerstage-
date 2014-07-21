@@ -43,6 +43,10 @@ using namespace Stg;
 
 extern uint32_t hallscount;
 extern uint32_t soundcount;
+extern uint32_t grayscount;
+extern float grayvalue;
+extern uint32_t lightscount;
+extern float lightvalue;
 
 //extern OpaqueModel opaquem;
 
@@ -192,9 +196,16 @@ void InterfaceLaser::Publish(void) {
 				pdata.ranges[i]=0;
 			}
 		} else if (strcmp(cyzxlc[i].type.data(),"graySen")==0 ) {
-
+			if(grayscount>0){
+				pdata.ranges[i]=grayvalue;
+			}else{
+				pdata.ranges[i]=0;
+			}
 		} else if (strcmp(cyzxlc[i].type.data(),"lightSen")==0 ) {
-
+			if(lightscount>0){
+				pdata.ranges[i]=lightvalue;
+			}else
+				pdata.ranges[i]=0;
 		} else if (strcmp(cyzxlc[i].type.data(),"RS422Sen")==0 ) {
 
 		}
