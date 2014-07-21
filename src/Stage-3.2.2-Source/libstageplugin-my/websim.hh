@@ -53,6 +53,8 @@ class Time;
 class Bounds;
 class Fiducial;
 class Color;
+class Geometry;
+class Pose;
 
 typedef bool stg_bool_t;
 
@@ -167,7 +169,7 @@ public:
 	 @returns TRUE if the method is successful anf FALSE otherwise.
 	 */
 	virtual bool GetModelPVA(const std::string& name, Time& t, Pose& p,
-			Velocity& v, Acceleration& a, std::string& response) = 0;
+			Velocity& v, Acceleration& a,std::string&modeltype, std::string& response) = 0;
 
 	virtual bool GetModelColor(const std::string& name, Color& c, std::string& response) = 0;
 	virtual bool SetModelColor(const std::string& name, const Color& c,
@@ -180,7 +182,7 @@ public:
 				std::string& response) = 0;
 
 	virtual bool GetModelAttribute(const std::string& name,Time& t,std::string& bitmap,
-			Color& modelColor,std::string& response) = 0;
+			Color& modelColor,Geometry& geo,Pose& mpose,std::string& modeltype ,std::string& response) = 0;
 
 	/** Gets the extent and center of the model
 
@@ -207,6 +209,8 @@ public:
 	bool GetModelTree(const std::string& model, Format format,
 			std::string& response, bool everything);
 	bool GetModelsPVA(const std::string& model, Format format,
+			std::string& response, bool everything);
+	bool GetModelsAttributes(const std::string& model, Format format,
 			std::string& response, bool everything);
 	bool GetModelTreeNode(const std::string& model, Format format,
 			std::string& response, bool everything);
@@ -279,6 +283,8 @@ protected:
 			struct evkeyvalq* kv, std::string& response);
 	bool HandleSimPVARequest(std::string action, Format format,
 			struct evkeyvalq* kv, std::string& response);
+	bool HandleSimAttributeRequest(std::string action, Format format,
+			struct evkeyvalq* kv, std::string& response);
 	bool HandleSimTreeNodeRequest(std::string action, Format format,
 			struct evkeyvalq* kv, std::string& response);
 	bool HandleSimTreePositionRequest(std::string action, Format format,
@@ -346,11 +352,11 @@ protected:
 	 @param xmlnode the xml node output
 	 */
 	void GetPVA(const std::string& name, Time& t, const Pose& p,
-			const Velocity& v, const Acceleration& a, Format format,
+			const Velocity& v, const Acceleration& a,const std::string& modeltype, Format format,
 			std::string& response, void* xmlnode);
 
 	void GetAttribute(const std::string& name,Time&  t,std::string& bitmap,
-			const Color modelColor,Format  format,std::string&  response,
+			const Color& modelColor,const Geometry& geo,const Pose& mpose,std::string& modeltype,Format  format,std::string&  response,
 			void*  xmlnode);
 
 	void GetPVANode(const std::string& name, Time& t, const Pose& p,
@@ -456,6 +462,8 @@ protected:
 
 	bool GetModelsPVAXML(const std::string& model, void* xmlparent,
 				bool everything);
+	bool GetModelsAttributesXML(const std::string& model, void* xmlparent,
+			bool everything);
 	// forward decare
 	class Confederate;
 
@@ -599,6 +607,18 @@ public:
 		// nothing to do
 	}
 
+};
+
+class Geometry{
+public:
+	double x,y,z;
+	Geometry():
+		x(0),y(0),z(0){
+
+	}
+	Geometry(double x,double y,double z):x(x),y(y),z(z){
+
+	}
 };
 
 class Velocity: public Pose {

@@ -718,7 +718,7 @@ public:
 				v.z = sv.z;
 				v.a = sv.a;
 
-				WebSim::GetPVA(name, t, p, v, a, format, response, xmlparent);
+				WebSim::GetPVA(name, t, p, v, a, type,format, response, xmlparent);
 
 			} else if (type == "laser") {
 
@@ -865,17 +865,29 @@ public:
 	}
 
 	virtual bool GetModelAttribute(const std::string& name,websim::Time& t,
-			std::string& bitmap,websim::Color& modelColor,std::string& response) {
+			std::string& bitmap,websim::Color& modelColor,
+			websim::Geometry& geo,websim::Pose& mpose,
+			std::string& modeltype,std::string& response) {
 		t = GetTime();
 		Model*mod = world->GetModel(name.c_str());
 		if(mod){
 			bitmap = mod->GetModelBitmap();
+			modeltype = mod->GetModelType();
 
 			Stg::Color sColor = mod->GetColor();
 			modelColor.r=sColor.r;
 			modelColor.g=sColor.g;
 			modelColor.b=sColor.b;
 			modelColor.a=sColor.a;
+
+			Stg::Geom sgeom = mod->GetGeom();
+			geo.x = sgeom.size.x;
+			geo.y = sgeom.size.y;
+			geo.z = sgeom.size.z;
+			mpose.x=sgeom.pose.x;
+			mpose.y=sgeom.pose.y;
+			mpose.z=sgeom.pose.z;
+			mpose.a=sgeom.pose.a;
 		}else {
 			printf("Warning: tried to get the data of unkown model:%s .\n",
 					name.c_str());
@@ -897,7 +909,7 @@ public:
 
 	virtual bool GetModelPVA(const std::string& name, websim::Time& t,
 			websim::Pose& p, websim::Velocity& v, websim::Acceleration& a,
-			std::string& error) {
+			std::string& modeltype,std::string& error) {
 		//printf( "get model name:%s\n", name.c_str() );
 
 		t = GetTime();
@@ -915,6 +927,8 @@ public:
 			v.y = sv.y;
 			v.z = sv.z;
 			v.a = sv.a;
+
+			modeltype=mod->GetModelType();
 		} else
 			printf(
 					"Warning: attempt to set PVA for unrecognized model \"%s\"\n",
