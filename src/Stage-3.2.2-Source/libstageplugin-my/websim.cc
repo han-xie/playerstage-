@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libxml/encoding.h>
+#include <boost/lexical_cast.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -37,9 +38,10 @@
 #include "websim.hh"
 using namespace websim;
 
+
 const std::string WebSim::package = "WebSim";
 const std::string WebSim::version = "0.1";
-
+extern int globalMyupdateSign;
 
 std::string Time::String()
 { 
@@ -195,7 +197,7 @@ WebSim::HandleURI(const std::string& model,
 {
 
   Format format;
-  std::string f;
+  std::string f,tick;
   // specify the format of the response: Text or Xml
   if(GetValue(f, kv, "format")){
 
@@ -208,6 +210,13 @@ WebSim::HandleURI(const std::string& model,
 
     format = TEXT;
 
+  }
+
+  if(GetValue(tick,kv,"tick")){
+	  bool update=boost::lexical_cast<float>(tick);
+	  if(update){
+		  globalMyupdateSign=1;
+	  }
   }
 
   // The special simulation model

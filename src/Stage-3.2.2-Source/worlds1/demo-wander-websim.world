@@ -22,7 +22,7 @@ floorplan
   map_resolution 0.02
   size [16.000 16.000 0.800] 
   name "cave"
-  color "gray50"
+  color "gray"
   gui_grid 1
   gui_outline 1
 )

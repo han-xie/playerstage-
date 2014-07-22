@@ -884,10 +884,12 @@ public:
 			geo.x = sgeom.size.x;
 			geo.y = sgeom.size.y;
 			geo.z = sgeom.size.z;
-			mpose.x=sgeom.pose.x;
-			mpose.y=sgeom.pose.y;
-			mpose.z=sgeom.pose.z;
-			mpose.a=sgeom.pose.a;
+
+			Stg::Pose sp = mod->GetPose();
+			mpose.x=sp.x;
+			mpose.y=sp.y;
+			mpose.z=sp.z;
+			mpose.a=sp.a;
 		}else {
 			printf("Warning: tried to get the data of unkown model:%s .\n",
 					name.c_str());
