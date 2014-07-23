@@ -59,21 +59,8 @@
 PlayerCc::PlayerClient* robot;
 PlayerCc::Position2dProxy* pp;
 PlayerCc::LaserProxy* lp;
-PlayerCc::LightsensorProxy *lspLeft;
-PlayerCc::LightsensorProxy *lspRight;
-
-#define RAYS 32
-const double minfrontdistance = 0.35;
-const double minlfdistance = 0.30;
-const double exminlfdistance = 0.20;
-const double cruisespeed = 0.4;
-const double avoidspeed = 0;
-const double avoidturn = 0.2;
-const double baturn = 0.2;
-const double littlechange = 0.1;
-double reward = false;
-const float lightrangemax = 1000;
-const double findlightsensorDis = 0.2;
+PlayerCc::HallsensorProxy *bp;
+PlayerCc::GripperProxy *gp;
 
 bool gMotorEnable(false);
 bool gGotoDone(false);
@@ -230,79 +217,23 @@ int main(int argc, char **argv) {
 		using namespace PlayerCc;
 		parse_args(argc, argv);
 		robot = new PlayerClient(gHostname, gPort);
-		pp = new Position2dProxy(robot,gIndex);
-		lp = new LaserProxy(robot, gIndex);
+		pp = new Position2dProxy(robot, gIndex);
 
-		double minR = 0.6;
-		double minL = 0.6;
-		double minF = 0.6;
-		double newspeed = 0;
-		double newturnrate = 0;
-
-
-		// go into read-think-act loop
+		float newspeed,newturnrate;
+		int time;
 		for (;;) {
-			// this blocks until new data comes; 10Hz by default
-			robot->Read();
-
-			if (lp->GetCount() == 22) {
-				minL = lp->GetRange(2);
-				minR = lp->GetRange(0);
-				minF = lp->GetRange(1);
-			}
-
-			std::cout << " minR:" << minR << " minL:" << minL << " minF:"
-					<< minF  << std::endl;
-
-			if (minF > minfrontdistance) {
-				if (minL > minlfdistance && minR > minlfdistance) {
-						newspeed = cruisespeed;
-						newturnrate = 0;
-				}else if(minL > minlfdistance && minR > exminlfdistance){
-					newspeed = cruisespeed;
-					newturnrate = littlechange;
-				}else if(minR > minlfdistance && minL > exminlfdistance){
-					newspeed = cruisespeed;
-					newturnrate = -littlechange;
-				}
-				else {
-					newspeed = 0;
-					newturnrate = -avoidturn;
-				}
-			} else if (minL > minlfdistance && minR > minlfdistance) {
-				newspeed = 0;
-				newturnrate = baturn;
-			} else if (minL > minlfdistance) {
-				//turn to left
-				pp->SetSpeed(0,0.75);
-				sleep(2);
-				newspeed=0;
-				newturnrate =0;
-			} else if (minR > minlfdistance) {
-				pp->SetSpeed(0,-0.75);
-				sleep(2);
-				newspeed = 0;
-				newturnrate = 0;
-			} else {
-				pp->SetSpeed(0, 0.75);
-				sleep(5);
-				newspeed = 0;
-				newturnrate = 0;
-			}
-
-			std::cout << "speed: " << newspeed << "turn: " << newturnrate
-					<< std::endl;
-
-			// write commands to robot
+			std::cout <<"newspeed + newturnrate+time"<< std::endl;
+			std::cin >> newspeed;
+			std::cin>>newturnrate;
+			std::cin >>time;
 			pp->SetSpeed(newspeed, newturnrate);
+			sleep(time);
+			pp->SetSpeed(0,0);
 		}
 	} catch (PlayerCc::PlayerError & e) {
 		std::cerr << e << std::endl;
 		return -1;
 	}
-
-	int i;
-	std::cin>>i;
 
 	return (0);
 }

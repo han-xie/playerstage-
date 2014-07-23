@@ -29,12 +29,78 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <libplayerc++/playerc++.h>
 
+#define USAGE \
+  "USAGE: goto [-x <x>] [-y <y>] [-h <host>] [-p <port>] [-m]\n" \
+  "       -x <x>: set the X coordinate of the target to <x>\n"\
+  "       -y <y>: set the Y coordinate of the target to <y>\n"\
+  "       -h <host>: connect to Player on this host\n" \
+  "       -p <port>: connect to Player on this TCP port\n" \
+  "       -m       : turn on motors (be CAREFUL!)"
+
+bool gMotorEnable(false);
+bool gGotoDone(false);
+std::string gHostname(PlayerCc::PLAYER_HOSTNAME);
+uint32_t gPort(PlayerCc::PLAYER_PORTNUM);
+uint32_t gIndex(0);
+uint32_t gDebug(0);
+uint32_t gFrequency(10);
+
+player_pose2d_t gTarget = { 0, 0, 0 };
+
+void print_usage(int argc, char** argv) {
+	std::cout << USAGE << std::endl;
+}
+
+
+int parse_args(int argc, char** argv) {
+	const char* optflags = "h:p:i:d:u:x:y:m";
+	int ch;
+
+	while (-1 != (ch = getopt(argc, argv, optflags))) {
+		switch (ch) {
+		/* case values must match long_options */
+		case 'h':
+			gHostname = optarg;
+			break;
+		case 'p':
+			gPort = atoi(optarg);
+			break;
+		case 'i':
+			gIndex = atoi(optarg);
+			break;
+		case 'd':
+			gDebug = atoi(optarg);
+			break;
+		case 'u':
+			gFrequency = atoi(optarg);
+			break;
+		case 'x':
+			gTarget.px = atof(optarg);
+			break;
+		case 'y':
+			gTarget.py = atof(optarg);
+			break;
+		case 'm':
+			gMotorEnable = true;
+			break;
+		case '?':
+		case ':':
+		default:
+			print_usage(argc, argv);
+			return (-1);
+		}
+	}
+
+	return (0);
+}
+
 int
 main(int argc, char *argv[])
 {
   using namespace PlayerCc;
+  parse_args(argc, argv);
 
-  PlayerClient    robot("localhost");
+  PlayerClient    robot(gHostname, gPort);
   LaserProxy      lp(&robot,0);
   Position2dProxy pp(&robot,0);
 

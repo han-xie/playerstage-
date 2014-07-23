@@ -8,8 +8,8 @@ include "demo-sick-wander.inc"
 
 window
 (
-  size [ 635.000 666.000 ] # in pixels
-  scale 37.481   # pixels per meter
+  size [ 490.000 490.000 ] # in pixels
+  scale 70.0   # pixels per meter
   center [ -0.019  -0.282 ]
   rotate [ 0  0 ]
   			
@@ -20,7 +20,7 @@ floorplan
 ( 
   bitmap "bitmaps/wander.png" 
   map_resolution 0.02
-  size [16.000 16.000 0.800] 
+  size [7.000 7.000 0.800] 
   name "cave"
   color "gray50"
   gui_grid 1
@@ -30,10 +30,39 @@ floorplan
 
 # extend the pioneer2dx definition from pioneer.inc
 #
-define trickedoutpioneer pioneer2dx
-(
+#define trickedoutpioneer pioneer2dx
+#(
   #ranger( alwayson 0 )
 
+#  sicklaser( pose [0.075 0 0 0 ]  alwayson 1 )
+
+  #fiducial( range_max 8 range_max_id 5 ) 
+
+#  fiducial_return 17
+#  gripper_return 0
+
+#  localization "gps"
+#  localization_origin [ 0 0 0 0 ]
+#)
+
+
+#trickedoutpioneer
+#(
+#  name "robot1"
+#  pose [6.75 4.87 0 -90]
+
+  #gripper( pose [0.23 0.000 -0.20 0.000] color "gray" )
+
+#)
+
+
+position
+(
+  #ranger( alwayson 0 )
+  name "robot1"
+  #pose [6.75 4.87 0 -90]
+  pose [0 0 0 -90]
+  size [0.25 0.21 0.12]
   sicklaser( pose [0.075 0 0 0 ]  alwayson 1 )
 
   #fiducial( range_max 8 range_max_id 5 ) 
@@ -43,14 +72,4 @@ define trickedoutpioneer pioneer2dx
 
   localization "gps"
   localization_origin [ 0 0 0 0 ]
-)
-
-
-trickedoutpioneer
-(
-  name "robot1"
-  pose [6.75 4.87 0 -90]
-
-  #gripper( pose [0.23 0.000 -0.20 0.000] color "gray" )
-
 )

@@ -517,7 +517,7 @@ void WebSim::GetPVA(const std::string& name, Time& t, const Pose& p,
 
 	sprintf(str, "%.3f,%.3f,%.3f,%.3f,%.3f,%.3f", p.x, p.y, p.z, p.r, p.p, p.a);
 	tmp = ConvertInput(str, MY_ENCODING);
-	xmlNewProp(node, BAD_CAST "Pose", BAD_CAST tmp);
+	xmlNewProp(node, BAD_CAST "pose", BAD_CAST tmp);
 
 	sprintf(str, "%.3f,%.3f,%.3f,%.3f,%.3f,%.3f", v.x, v.y, v.z, v.r, v.p, v.a);
 	tmp = ConvertInput(str, MY_ENCODING);
