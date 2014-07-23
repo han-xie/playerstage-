@@ -91,6 +91,14 @@ int InterfacePosition::ProcessMessage(QueuePointer &resp_queue,
 		player_msghdr_t* hdr, void* data) {
 	ModelPosition* mod = (ModelPosition*) this->mod;
 
+	/*do this just for
+	 same with pxa270
+	 because in pxa270:+a is right
+	                   -a is left*/
+	player_position2d_data_t_redress* pcmd =
+			(player_position2d_data_t_redress*) data;
+	pcmd->pos2d.pos.pa = -(pcmd->pos2d.pos.pa);
+
 	if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_DATA,
 			PLAYER_POSITION2D_DATA_STATE, this->require_addr)) {
 		if (this->conf.type == FPOS2D8BUTTON) {

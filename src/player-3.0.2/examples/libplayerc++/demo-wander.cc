@@ -260,32 +260,32 @@ int main(int argc, char **argv) {
 						newturnrate = 0;
 				}else if(minL > minlfdistance && minR > exminlfdistance){
 					newspeed = cruisespeed;
-					newturnrate = littlechange;
+					newturnrate = -littlechange;
 				}else if(minR > minlfdistance && minL > exminlfdistance){
 					newspeed = cruisespeed;
-					newturnrate = -littlechange;
+					newturnrate = littlechange;
 				}
 				else {
 					newspeed = 0;
-					newturnrate = -avoidturn;
+					newturnrate = avoidturn;
 				}
 			} else if (minL > minlfdistance && minR > minlfdistance) {
 				newspeed = 0;
-				newturnrate = baturn;
+				newturnrate = -baturn;
 			} else if (minL > minlfdistance) {
 				//turn to left
-				pp->SetSpeed(0,0.75);
+				pp->SetSpeed(0,-0.75);
 				sleep(2);
 				newspeed=0;
 				newturnrate =0;
 			} else if (minR > minlfdistance) {
-				pp->SetSpeed(0,-0.75);
+				pp->SetSpeed(0,0.75);
 				sleep(2);
 				newspeed = 0;
 				newturnrate = 0;
 			} else {
-				pp->SetSpeed(0, 0.75);
-				sleep(5);
+				pp->SetSpeed(0, -0.75);
+				sleep(4);
 				newspeed = 0;
 				newturnrate = 0;
 			}
