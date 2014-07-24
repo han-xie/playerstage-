@@ -42,14 +42,14 @@ void InterfaceLightsensor::Publish() {
 
 		unsigned int b;
 		for (b = 0; b < bcount; b++) {
-			hsd.lights[b].x = MFCapGetCenterX();
-			hsd.lights[b].y = MFCapGetCenterY();
+			hsd.lights[b].x = 0;
+			hsd.lights[b].y = 0;
 			hsd.lights[b].left = 0;
 			hsd.lights[b].right = 0;
 			hsd.lights[b].top = 0;
 			hsd.lights[b].bottom = 0;
 			hsd.lights[b].color = 0;
-			hsd.lights[b].area = MFCapGetSum();
+			hsd.lights[b].area = 0;
 			hsd.lights[b].range = 0;
 		}
 	}

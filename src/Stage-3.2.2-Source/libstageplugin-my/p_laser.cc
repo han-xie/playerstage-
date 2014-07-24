@@ -47,6 +47,7 @@ extern uint32_t grayscount;
 extern float grayvalue;
 extern uint32_t lightscount;
 extern float lightvalue;
+#define maxAioValue 32767
 
 //extern OpaqueModel opaquem;
 
@@ -193,19 +194,19 @@ void InterfaceLaser::Publish(void) {
 				pdata.ranges[i]=sqrt(pow(sp.x-temp.x,2)+pow(sp.y-temp.y,2));
 			}
 			else{
-				pdata.ranges[i]=0;
+				pdata.ranges[i]=maxAioValue;
 			}
 		} else if (strcmp(cyzxlc[i].type.data(),"graySen")==0 ) {
 			if(grayscount>0){
 				pdata.ranges[i]=grayvalue;
 			}else{
-				pdata.ranges[i]=0;
+				pdata.ranges[i]=maxAioValue;
 			}
 		} else if (strcmp(cyzxlc[i].type.data(),"lightSen")==0 ) {
 			if(lightscount>0){
 				pdata.ranges[i]=lightvalue;
 			}else
-				pdata.ranges[i]=0;
+				pdata.ranges[i]=maxAioValue;
 		} else if (strcmp(cyzxlc[i].type.data(),"RS422Sen")==0 ) {
 
 		}

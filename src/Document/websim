@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------------
+before use opaque to do webstage+sim,but after opaque was used to do publish 22 lasers. 
+so wand to use webstage+sim by this :
+----------------------------p_simulation.cc--128---------------------------------
+1.player *.cfg -g
+2.change p_driver.cc  StgDriver::Update(void)  557
+------------------------
+	if (usegui == false)
+		StgDriver::world = new World("Player/Stage");
+	else
+		StgDriver::world = (Stg::World*) new WorldGui(400, 300, "Player/Stage");
+	assert(StgDriver::world);
+
+-----------------------
+		case PLAYER_SIMULATION_CODE:
+			// one round of FLTK's update loop.
+			if (globalMyupdateSign == 1) {
+				globalMyupdateSign = 0;
+				world->Update();
+			}
+			//Fl::wait();
+			break;
+		case PLAYER_OPAQUE_CODE:
+			Fl::wait();
+			break;
+------------------------------------------------------------------------------

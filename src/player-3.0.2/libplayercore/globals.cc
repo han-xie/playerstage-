@@ -76,7 +76,11 @@ PLAYERCORE_EXPORT bool wlocalhost;
 PLAYERCORE_EXPORT int http;
 
 //below global var use to control some hidden model
-PLAYERCORE_EXPORT bool hallupdate;//霍尔接近传感器端口号
+#define PXA270PORTS 22 //8 aio + 12 dio + 2 RS422
+PLAYERCORE_EXPORT bool[PXA270PORTS] PXAupdate;
+PLAYERCORE_EXPORT uint32_t[PXA270PORTS] PXAcount;
+PLAYERCORE_EXPORT float[PXA270PORTS] PXAvalue;
+/*PLAYERCORE_EXPORT bool hallupdate;//霍尔接近传感器端口号
 PLAYERCORE_EXPORT uint32_t hallscount;
 PLAYERCORE_EXPORT bool grayupdate;//灰度传感器端口号
 PLAYERCORE_EXPORT uint32_t grayscount;
@@ -91,7 +95,7 @@ PLAYERCORE_EXPORT float lightvalue;
 PLAYERCORE_EXPORT bool tempupdate;//温度传感器端口号
 PLAYERCORE_EXPORT uint32_t tempcount;
 PLAYERCORE_EXPORT bool dioupdate;//输出端口端口号
-PLAYERCORE_EXPORT uint32_t diocount;
+PLAYERCORE_EXPORT uint32_t diocount;*/
 
 
 // global access to the cmdline arguments
