@@ -450,6 +450,12 @@ public:
 	int capGetCenterY();
 public:
 	int capGetSum();
+
+	//wifi-device
+public:
+	void wifiLCD(char *content,char *ip=NULL);
+	void wifiSound(char *type,char *ip=NULL);
+public:
 };
 
 #endif /* CYZXINTER_H_ */
