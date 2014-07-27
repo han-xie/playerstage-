@@ -27,6 +27,35 @@ floorplan
   gui_outline 1
 )
 
+
+# extend the pioneer2dx definition from pioneer.inc
+#
+#define trickedoutpioneer pioneer2dx
+#(
+  #ranger( alwayson 0 )
+
+#  sicklaser( pose [0.075 0 0 0 ]  alwayson 1 )
+
+  #fiducial( range_max 8 range_max_id 5 ) 
+
+#  fiducial_return 17
+#  gripper_return 0
+
+#  localization "gps"
+#  localization_origin [ 0 0 0 0 ]
+#)
+
+
+#trickedoutpioneer
+#(
+#  name "robot1"
+#  pose [6.75 4.87 0 -90]
+
+  #gripper( pose [0.23 0.000 -0.20 0.000] color "gray" )
+
+#)
+
+
 position
 (
   name "robot1"
@@ -34,9 +63,6 @@ position
   size [0.21 0.19 0.12]
   #sicklaser( pose [0.075 0 0 0 ]  alwayson 1 )
   #sicklaser(pose [0.1 0 0 0 ] alwayson 1)
-  cyzxlaser(
-	tempSensor [0 0 0 0] #[x y z a]
-  )
   infrDistSensor(
 	pose [0.105 -0.095 0 -45 ] 
 	alwayson 1
