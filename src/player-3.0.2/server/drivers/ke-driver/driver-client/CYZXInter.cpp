@@ -1756,3 +1756,128 @@ void CYZXInter::SRClearItems() {
 bool CYZXInter::SRisStarted() {
 	return false;
 }
+
+void CYZXInter::WifiSetWeibo(char *ip=NULL){
+	player_opaque_data_t popa;
+	uint32_t wifiID = WIFIPERIPHERAL;
+	uint32_t subtype = WIFISETWEIBOF;
+	uint8_t temp[30];
+	for(int i=0;i<30;i++)
+		temp[i]='\0';
+	uint8_t *from,*to;
+	to=temp;
+
+	from=&wifiID;
+	for(int i=0;i<4;i++){
+		*(to+i)=*from;
+		from++;
+		to++;
+	}
+	from=&subtype;
+	for(int i=4;i<8;i++){
+		*(to+i)=*from;
+		from++;
+		to++;
+	}
+	if(ip!=NULL){
+		from=ip;
+		for(int i=0;i<16&&from;i++){
+			*(to+8+i)=*from;
+			from++;
+			to++;
+		}
+	}
+	popa.data_count = 8+16;
+	popa.data = (uint8_t *) temp;
+	this->opaquep->SendCmd(&popa);
+
+	return;
+}
+void CYZXInter::WifiSetLCD(char *display,char *ip=NULL){
+	player_opaque_data_t popa;
+	uint32_t wifiID = WIFIPERIPHERAL;
+	uint32_t subtype = WIFISETLCDF;
+	uint8_t temp[1024];
+	for(int i=0;i<1024;i++)
+		temp[i]='\0';
+	uint8_t *from,*to;
+	to=temp;
+
+	from=&wifiID;
+	for(int i=0;i<4;i++){
+		*(to+i)=*from;
+		from++;
+		to++;
+	}
+	from=&subtype;
+	for(int i=4;i<8;i++){
+		*(to+i)=*from;
+		from++;
+		to++;
+	}
+	if(ip!=NULL){
+		from=ip;
+		for(int i=0;i<16&&from;i++){
+			*(to+8+i)=*from;
+			from++;
+			to++;
+		}
+	}
+	popa.data_count = 8+16;
+	if(display){
+		int i=0;
+		from=display;
+		for(i=0;i<1024&from;i++){
+			*(to+24+i)=*from;
+			from++;
+			to++;
+		}
+		popa.data_count+=i;
+	}
+	popa.data = (uint8_t *) temp;
+	this->opaquep->SendCmd(&popa);
+}
+void CYZXInter::WifiSetSound(char *type,char *ip=NULL){
+	player_opaque_data_t popa;
+	uint32_t wifiID = WIFIPERIPHERAL;
+	uint32_t subtype = WIFISETSOUNDF;
+	uint8_t temp[1024];
+	for(int i=0;i<1024;i++)
+		temp[i]='\0';
+	uint8_t *from,*to;
+	to=temp;
+
+	from=&wifiID;
+	for(int i=0;i<4;i++){
+		*(to+i)=*from;
+		from++;
+		to++;
+	}
+	from=&subtype;
+	for(int i=4;i<8;i++){
+		*(to+i)=*from;
+		from++;
+		to++;
+	}
+	if(ip!=NULL){
+		from=ip;
+		for(int i=0;i<16&&from;i++){
+			*(to+8+i)=*from;
+			from++;
+			to++;
+		}
+	}
+	popa.data_count = 8+16;
+	if(display){
+		int i=0;
+		from=type;
+		for(i=0;i<1024&from;i++){
+			*(to+24+i)=*from;
+			from++;
+			to++;
+		}
+		popa.data_count+=i;
+	}
+	popa.data = (uint8_t *) temp;
+	this->opaquep->SendCmd(&popa);
+}

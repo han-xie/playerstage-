@@ -1,0 +1,62 @@
+/home/keevi7c3l/github/playerstage-/src/Document
+/home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/worlds1
+/home/keevi7c3l/github/playerstage-/src/player-3.0.2/examples/libplayerc++
+/home/keevi7c3l/github/playerstage-/src/player-3.0.2/examples/plugins/multidriver-myPXA270
+/home/keevi7c3l/github/build/build-playerstage-/build-player
+--playerclient test program--: 
+/home/keevi7c3l/github/playerstage-/src/player-3.0.2/server/drivers/ke-driver/driver-client
+/home/keevi7c3l/github/playerstage-/src/player-3.0.2/examples/plugins/multidriver-myPXA270/
+---------------------------------------------
+need do :
+1 . javascript 
+2 . see the node-tree of simulation , so convenite to draw the simulation use js .
+---------------------------------------------
+#colliSen      DIO：碰撞传感器端口号
+#soundSen      DIO：声音传感器端口号
+#RS422Sen      RS422
+#tempSen       AIO：温度传感器端口号
+?#gestSen       DIO：姿态传感器端口号
+#hallSen       DIO：霍尔接近传感器端口号
+#graySen       AIO：灰度传感器端口号
+#lightSen      AIO：光强传感器端口号
+#dout          DIO：输出端口端口号
+----------------------------------------
+/home/keevi7c3l/test/Stage-3.2.2-Source
+/home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source
+libstage/model_laser.cc
+
+ 6.2831853071795862
+
+
+
+./pioneer.inc:  obstacle_return 1           	# Can hit things.
+./pantilt.inc:  obstacle_return 0
+./walle.inc:  obstacle_return 1           	# Can hit things.
+./map.inc:  obstacle_return 0
+./pioneer-omni.inc:  obstacle_return 1           	# Can hit things.
+./uoa_robotics_lab_models.inc:    obstacle_return 1
+./chatterbox.inc:	obstacle_return 0
+./chatterbox.inc:	obstacle_return 0
+./chatterbox.inc:	obstacle_return 0
+
+b 358
+b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/examples/ctrl/wander.cc:38
+b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/examples/ctrl/wander.cc:80
+b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/examples/ctrl/wander.cc:180
+
+b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/examples/ctrl/sink.cc:11
+b /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/examples/ctrl/sink.cc:19
+
+
+string: cave value: 0x86262b0
+string: model:0 value: 0x86262b0
+string: source value: 0x8676d88
+string: model:1 value: 0x8676d88
+string: sink value: 0x8acd8f8
+string: model:2 value: 0x8acd8f8
+string: position:0 value: 0x8b086a8
+string: r0 value: 0x8b086a8
+string: r0.laser:0 value: 0x8b24cd0
+string: r0.ranger:0 value: 0x8b23670
+
+

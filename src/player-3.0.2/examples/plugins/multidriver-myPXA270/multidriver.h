@@ -91,6 +91,10 @@ typedef struct {
 	int servoFL;
 	int servoRR;
 	int servoRL;
+	std::string lcdIP;
+	std::string soundIP;
+	int lcdport;
+	int soundport;
 #ifdef WRITELOG
 	//all messages count
 	int mc;
@@ -225,9 +229,14 @@ private:
 			void * data);
 	int dealOpaqueSR(QueuePointer & resp_queue, player_msghdr * hdr,
 			void * data);
+	int dealWifiPeripheral(QueuePointer & resp_queue, player_msghdr * hdr,
+			void * data);
 	void writeMessagehrToFile(player_msghdr * hdr, void * data);
 	int dealOpaqueBKGETULTRASONICF(comReqBk1 *popa);
 	int deaperDealAIO(int t, int type);
+	void dealWifiSetweiboCMD(uint8_t *ip);
+	void dealWifiSetLCDCMD(uint8_t *ip,uint8_t *display);
+	void dealWifiSetSoundCMD(uint8_t *ip,uint8_t *type);
 };
 
 class InterfaceHallsensor: public Interface {

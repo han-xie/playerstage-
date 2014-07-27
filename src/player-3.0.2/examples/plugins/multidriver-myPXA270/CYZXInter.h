@@ -10,8 +10,8 @@
 
 #include <string>
 #include <map>
-//#include <libplayerc++/playerc++.h>
-//using namespace PlayerCc;
+#include <libplayerc++/playerc++.h>
+using namespace PlayerCc;
 
 #define LABLESTRING "CYZXSPECIALSTRING:"
 #define LOGFILENAME "/mnt/yaffs/test/CYZXmultidriver.log"
@@ -40,8 +40,12 @@
 #define MYOPAQUESTTYPEPOS 4    //position2d
 #define MYOPAQUEBk        5    //backgroud's special function
 #define MYOPAQUESR        6    //speech recognize
+#define WIFIPERIPHERAL    7
 #define MAXCOMMANDNUMBER 256
 
+#define WIFISETWEIBOF 1 //void WifiSetWeibo(char *ip=NULL);
+#define WIFISETLCDF 2 //void WifiSetLCD(char *displayer,char *ip=NULL);
+#define WIFISETSOUNDF 3//void WifiSetSound(char *type,char *ip=NULL);
 #define SRSTARTF 1       //void SRStart();
 #define SRSTOPF  2   //void SRStop();
 #define SRPAUSEF  3       //bool SRPause();
@@ -125,85 +129,87 @@
 #define SENSAIO3 "lightSen"
 #define SENSAIONUM 4
 
+typedef unsigned int   uint32_t;
+typedef unsigned char  uint8_t;
+
 struct myOpaqueHead {
-	int type;
-	int subtype;
-	char name[8];
+	uint32_t type;
+	uint32_t subtype;
 };
 struct myOpaqueSt {
-	int type;
-	int subtype;
-	char name[8];
-	int p1;
-	int p2;
+	uint32_t type;
+	uint32_t subtype;
+	uint8_t name[8];
+	uint32_t p1;
+	uint32_t p2;
 	//int f1;
 };
 struct myOpaqueSt0 {
-	int type;
-	int subtype;
-	char name[8];
+	uint32_t type;
+	uint32_t subtype;
+	uint8_t name[8];
 };
 struct myOpaqueSt1 {
-	int type;
-	int subtype;
-	char name[8];
-	int p1;
+	uint32_t type;
+	uint32_t subtype;
+	uint8_t name[8];
+	uint32_t p1;
 };
 typedef myOpaqueSt myOpaqueSt2;
 struct myOpaqueSt3 {
-	int type;
-	int subtype;
-	char name[8];
-	int p1;
-	int p2;
-	int p3;
+	uint32_t type;
+	uint32_t subtype;
+	uint8_t name[8];
+	uint32_t p1;
+	uint32_t p2;
+	uint32_t p3;
 };
 struct myOpaqueSt4{
-	int type;
-	int subtype;
-	char name[8];
-	int p1;
-	int p2;
-	int p3;
-	int p4;
+	uint32_t type;
+	uint32_t subtype;
+	uint8_t name[8];
+	uint32_t p1;
+	uint32_t p2;
+	uint32_t p3;
+	uint32_t p4;
 };
 struct myOpaqueStLCD {
-	int type;
-	int subtype;
-	char name[8];
-	char disp[LCDMAXLENGTH];
+	uint32_t type;
+	uint32_t subtype;
+	uint8_t name[8];
+	uint8_t disp[LCDMAXLENGTH];
 };
 struct myOpaqueStMp3 {
-	int type;
-	int subtype;
-	char name[8];
-	char mp3Title[MP3MAXLENGTH];
+	uint32_t type;
+	uint32_t subtype;
+	uint8_t name[8];
+	uint8_t mp3Title[MP3MAXLENGTH];
 };
 struct myOpaqueSt4Tires {
-	int type;
-	int subtype;
-	char name[8];
+	uint32_t type;
+	uint32_t subtype;
+	uint8_t name[8];
 	char tires[4];
-	int speed1;
-	int speed2;
-	int speed3;
-	int speed4;
+	uint32_t speed1;
+	uint32_t speed2;
+	uint32_t speed3;
+	uint32_t speed4;
 };
 struct myOpaqueSt4TiresPos {
-	int type;
-	int subtype;
-	char name[8];
+	uint32_t type;
+	uint32_t subtype;
+	uint8_t name[8];
 	char tires[4];
-	int pos;
-	int speed;
+	uint32_t pos;
+	uint32_t speed;
 };
 struct myOpaqueStTime {
-	int type;
-	int subtype;
-	char name[8];
-	int p1;
-	int p2;
-	int time;
+	uint32_t type;
+	uint32_t subtype;
+	uint8_t name[8];
+	uint32_t p1;
+	uint32_t p2;
+	uint32_t time;
 };
 class mlist {
 public:
@@ -249,11 +255,11 @@ private:
 	std::map<std::string, std::string> tsadports;
 };
 
-/*class CYZXInter {
+class CYZXInter {
 private:
 	PlayerClient *robot;
-	//DioProxy *diop;
-	//AioProxy *aiop;
+	DioProxy *diop;
+	AioProxy *aiop;
 	OpaqueProxy *opaquep;
 	Position2dProxy *posp;
 	BlobfinderProxy *bfp;
@@ -275,6 +281,15 @@ public:
 	CYZXInter();
 public:
 	CYZXInter(PlayerClient *probot);
+
+public:
+	CYZXInter(DioProxy *pdiop);
+public:
+	CYZXInter(AioProxy *paiop);
+public:
+	CYZXInter(OpaqueProxy *popaquep);
+public:
+	CYZXInter(Position2dProxy *pposp);
 public:
 	CYZXInter(PlayerClient *probot,OpaqueProxy *opaquep,Position2dProxy *posp,BlobfinderProxy *bfp,LaserProxy *lp);
 public:
@@ -336,9 +351,9 @@ public:
 	bool SRisStarted();
 
 	//dio
-private:
+public:
 	void dioSetPortDirect(unsigned int inData);
-private:
+public:
 	void dioSetPortDirectOutput(unsigned int from, unsigned int to); //others is input
 public:
 	int dioGetDigiInput(int port);                  //can't get result return -1
@@ -384,7 +399,7 @@ public:
 	virtual void pos2dTurnRight(int speed = 500);
 public:
 	virtual void pos2dSetServoTurn(int angle, int inSpeed); //void MFSetServoPos(int inID,int inPos,int inSpeed);
-protected:
+public:
 	void pos2dSetServoTurnA(int angle, int inSpeed);
 public:
 	virtual void pos2dStop();
@@ -441,6 +456,12 @@ public:
 	int capGetCenterY();
 public:
 	int capGetSum();
+
+	//wifi device
+public:
+	void WifiSetWeibo(char *ip=NULL);
+	void WifiSetLCD(char *displayer,char *ip=NULL);
+	void WifiSetSound(char *type,char *ip=NULL);
 };
-*/
-#endif
+
+#endif /* CYZXINTER_H_ */

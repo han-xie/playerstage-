@@ -1,9 +1,18 @@
 #include "multidriver.h"
+#include <arpa/inet.h>
+#include <unistd.h> // fork, close
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<errno.h>
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<netinet/in.h>
 
 InterfaceOpaque::InterfaceOpaque(player_devaddr_t addr, multidriver* driver,
 		ConfigFile* cf, int section) :
 		Interface(addr, driver, cf, section) {
-	this->Interface::PublishSign = cf->ReadInt(section,"publish",1);
+	this->Interface::PublishSign = cf->ReadInt(section, "publish", 1);
 	this->conf.frontL = cf->ReadInt(section, "frontL", 1);
 	this->conf.frontR = cf->ReadInt(section, "frontR", 2);
 	this->conf.rearL = cf->ReadInt(section, "rearL", 3);
@@ -12,6 +21,10 @@ InterfaceOpaque::InterfaceOpaque(player_devaddr_t addr, multidriver* driver,
 	this->conf.servoFL = cf->ReadInt(section, "servofl", 6);
 	this->conf.servoRR = cf->ReadInt(section, "servorr", 7);
 	this->conf.servoRL = cf->ReadInt(section, "servorl", 8);
+	this->conf.lcdIP = cf->ReadString(section, "lcdip", "192.168.1.2");
+	this->conf.soundIP = cf->ReadString(section, "soundip", "192.168.1.2");
+	this->conf.lcdport = cf->ReadInt(section, "lcdport", 9000);
+	this->conf.soundport = cf->ReadInt(section, "soundport", 9001);
 	MFSetServoMode(this->conf.frontL, 1);
 	MFSetServoMode(this->conf.frontR, 1);
 	MFSetServoMode(this->conf.rearL, 1);
@@ -30,7 +43,7 @@ int InterfaceOpaque::ProcessMessage(QueuePointer &resp_queue,
 			return -1;
 		}
 		return 0;
-	}else {
+	} else {
 		return -1;
 	}
 }
@@ -184,8 +197,8 @@ int InterfaceOpaque::dealOpaqueMFCAPReq(myOpaqueSt *popa, myOpaqueSt *pr) {
 	return 0;
 }
 
-int InterfaceOpaque::dealOpaqueMFCAP(QueuePointer & resp_queue, player_msghdr * hdr,
-		void * data) {
+int InterfaceOpaque::dealOpaqueMFCAP(QueuePointer & resp_queue,
+		player_msghdr * hdr, void * data) {
 	player_opaque_data_t *opaquedata = (player_opaque_data_t *) data;
 	myOpaqueSt *popa = (myOpaqueSt *) opaquedata->data;
 
@@ -275,8 +288,8 @@ int InterfaceOpaque::dealOpaqueMFCAP(QueuePointer & resp_queue, player_msghdr * 
 
 	return 0;
 }
-int InterfaceOpaque::dealOpaqueBK(QueuePointer & resp_queue, player_msghdr * hdr,
-		void * data) {
+int InterfaceOpaque::dealOpaqueBK(QueuePointer & resp_queue,
+		player_msghdr * hdr, void * data) {
 	pid_t pid;
 	player_opaque_data_t *opaquedata = (player_opaque_data_t *) data;
 	myOpaqueSt0 *popa = (myOpaqueSt0 *) opaquedata->data;
@@ -402,18 +415,222 @@ int InterfaceOpaque::dealOpaqueBK(QueuePointer & resp_queue, player_msghdr * hdr
 
 	return 0;
 }
-int InterfaceOpaque::dealOpaqueSR(QueuePointer & resp_queue, player_msghdr * hdr,
-		void * data) {
+int InterfaceOpaque::dealOpaqueSR(QueuePointer & resp_queue,
+		player_msghdr * hdr, void * data) {
 	return -1;
 }
-int InterfaceOpaque::dealOpaqueAIO(QueuePointer & resp_queue, player_msghdr * hdr,
-		void * data) {
+int InterfaceOpaque::dealWifiPeripheral(QueuePointer & resp_queue,
+		player_msghdr * hdr, void * data) {
+	player_opaque_data_t *opaquedata = (player_opaque_data_t *) data;
+	myOpaqueHead head;
+	uint8_t *from, *to;
+	from = (uint8_t) opaquedata->data;
+	to = &(head.type);
+	for (int i = 0; i < 4; i++) {
+		*(to + i) = *(from + i);
+		to++;
+		from++;
+	}
+	to = &(head.subtype);
+	for (int i = 0; i < 4; i++) {
+		*(to + i) = *(from + 4 + i);
+		to++;
+		from++;
+	}
+
+	player_opaque_data_t opaqueRes;
+
+	switch (head.subtype) {
+	case WIFISETWEIBOF: {
+		uint8_t ip[16];
+		for (int i = 0; i < 16; i++) {
+			ip[i] = *from;
+			from++;
+		}
+		ip[16] = 0x0;
+		dealWifiSetweiboCMD(ip);
+		return 0;
+		break;
+	}
+	case WIFISETLCDF: {
+		uint8_t ip[16];
+		for (int i = 0; i < 16; i++) {
+			ip[i] = *from;
+			from++;
+		}
+		ip[16] = 0x0;
+		int length = opaquedata->data_count - 24 + 1;
+		uint8_t *display = new uint8_t[length];
+		uint8_t *to = display;
+		for (int i = 0; i < length; i++) {
+			*to = *from;
+			from++;
+			to++;
+		}
+		*to = 0x0;
+		dealWifiSetLCDCMD(ip, display);
+		delete display();
+		return 0;
+		break;
+	}
+	case WIFISETSOUNDF: {
+		uint8_t ip[16];
+		for (int i = 0; i < 16; i++) {
+			ip[i] = *from;
+			from++;
+		}
+		ip[16] = 0x0;
+		int length = opaquedata->data_count - 24 + 1;
+		uint8_t *type = new uint8_t[length];
+		uint8_t *to = type;
+		for (int i = 0; i < length; i++) {
+			*to = *from;
+			from++;
+			to++;
+		}
+		*to = 0x0;
+		dealWifiSetSoundCMD(ip, type);
+		delete type();
+		return 0;
+		break;
+	}
+	}
+	return -1;
+}
+void InterfaceOpaque::dealWifiSetweiboCMD(uint8_t *ip) {
+	int i;
+	for (i = 0; i < 16; i++) {
+		if (*ip != 0x0)
+			break;
+	}
+	if (i == 16)
+		ip = this->conf.lcdIP.c_str();
+	int sockfdc;
+	char sendlinec[4096];
+	struct sockaddr_in servaddrc;
+	char buff[4096];
+	int n;
+
+	if ((sockfdc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		printf("create socket error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	memset(&servaddrc, 0, sizeof(servaddrc));
+	servaddrc.sin_family = AF_INET;
+	servaddrc.sin_port = htons(this->conf.lcdport);
+	if (inet_pton(AF_INET, ip, &servaddrc.sin_addr) <= 0) {
+		printf("inet_pton error for %s\n", argv[1]);
+		return;
+	}
+
+	if (connect(sockfdc, (struct sockaddr*) &servaddrc, sizeof(servaddrc))
+			< 0) {
+		printf("connect error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	sendlinec[0] = 'w';
+	sendlinec[1] = 'e';
+	sendlinec[2] = 'i';
+	sendlinec[3] = 'b';
+	sendlinec[1] = 'o';
+	if (send(sockfdc, sendlinec, strlen(sendlinec), 0) < 0) {
+		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	close(sockfdc);
+	return;
+}
+void InterfaceOpaque::dealWifiSetLCDCMD(uint8_t *ip, uint8_t *display) {
+	int i;
+	for (i = 0; i < 16; i++) {
+		if (*ip != 0x0)
+			break;
+	}
+	if (i == 16)
+		ip = this->conf.lcdIP.c_str();
+	int sockfdc;
+	struct sockaddr_in servaddrc;
+	char buff[4096];
+	int n;
+
+	if ((sockfdc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		printf("create socket error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	memset(&servaddrc, 0, sizeof(servaddrc));
+	servaddrc.sin_family = AF_INET;
+	servaddrc.sin_port = htons(this->conf.lcdport);
+	if (inet_pton(AF_INET, ip, &servaddrc.sin_addr) <= 0) {
+		printf("inet_pton error for %s\n", argv[1]);
+		return;
+	}
+
+	if (connect(sockfdc, (struct sockaddr*) &servaddrc, sizeof(servaddrc))
+			< 0) {
+		printf("connect error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	if (send(sockfdc, sendlinec, strlen(display), 0) < 0) {
+		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	close(sockfdc);
+	return;
+}
+void InterfaceOpaque::dealWifiSetSoundCMD(uint8_t *ip, uint8_t *type) {
+	int i;
+	for (i = 0; i < 16; i++) {
+		if (*ip != 0x0)
+			break;
+	}
+	if (i == 16)
+		ip = this->conf.soundIP.c_str();
+	int sockfdc;
+	char sendlinec[4096];
+	struct sockaddr_in servaddrc;
+	char buff[4096];
+	int n;
+
+	if ((sockfdc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		printf("create socket error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	memset(&servaddrc, 0, sizeof(servaddrc));
+	servaddrc.sin_family = AF_INET;
+	servaddrc.sin_port = htons(this->conf.soundport);
+	if (inet_pton(AF_INET, ip, &servaddrc.sin_addr) <= 0) {
+		printf("inet_pton error for %s\n", argv[1]);
+		return;
+	}
+
+	if (connect(sockfdc, (struct sockaddr*) &servaddrc, sizeof(servaddrc))
+			< 0) {
+		printf("connect error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	if (send(sockfdc, sendlinec, strlen(type), 0) < 0) {
+		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	close(sockfdc);
+	return;
+}
+int InterfaceOpaque::dealOpaqueAIO(QueuePointer & resp_queue,
+		player_msghdr * hdr, void * data) {
 	player_opaque_data_t *opaquedata = (player_opaque_data_t *) data;
 	myOpaqueSt *popa = (myOpaqueSt *) opaquedata->data;
 
 	player_opaque_data_t opaqueRes;
 	myOpaqueSt res;
-
 
 	switch (popa->subtype) {
 	case AIOCOMTF: {
@@ -528,7 +745,6 @@ int InterfaceOpaque::dealOpaquePosition2d(QueuePointer & resp_queue,
 		break;
 	}
 	case POS2DFORWARDF: {
-
 
 		myOpaqueSt4 *popa = (myOpaqueSt4 *) opaquedata->data;
 
@@ -688,8 +904,8 @@ int InterfaceOpaque::dealOpaquePosition2d(QueuePointer & resp_queue,
 
 }
 
-int InterfaceOpaque::dealOpaqueDIO(QueuePointer & resp_queue, player_msghdr * hdr,
-		void * data) {
+int InterfaceOpaque::dealOpaqueDIO(QueuePointer & resp_queue,
+		player_msghdr * hdr, void * data) {
 	player_opaque_data_t *opaquedata = (player_opaque_data_t *) data;
 	myOpaqueSt *popa = (myOpaqueSt *) opaquedata->data;
 
@@ -760,7 +976,6 @@ int InterfaceOpaque::deaperDealAIO(int t, int type) {
 	}
 }
 
-
 int InterfaceOpaque::dealOpaqueAIOComReq(myOpaqueSt *popa, myOpaqueSt *res) {
 	res->type = popa->type;
 	res->subtype = popa->subtype;
@@ -769,7 +984,8 @@ int InterfaceOpaque::dealOpaqueAIOComReq(myOpaqueSt *popa, myOpaqueSt *res) {
 		res->p1 = deaperDealAIO(res->p1, popa->p2);
 	return 0;
 }
-int InterfaceOpaque::dealOpaquePosition2dComReq(myOpaqueSt *popa, myOpaqueSt *res) {
+int InterfaceOpaque::dealOpaquePosition2dComReq(myOpaqueSt *popa,
+		myOpaqueSt *res) {
 	res->type = popa->type;
 	res->subtype = popa->subtype;
 	if (POS2DSERVOMODESERVOF == popa->subtype) {
@@ -914,7 +1130,7 @@ int InterfaceOpaque::dealOpaqueMessages(QueuePointer & resp_queue,
 	 * */
 	player_opaque_data_t *opaquedata = (player_opaque_data_t *) data;
 
-	myOpaqueSt *popa = (myOpaqueSt *) opaquedata->data;
+	myOpaqueHead *popa = (myOpaqueHead *) opaquedata->data;
 	if (popa->type == MYOPAQUESTTYPEMFCAP) {
 		dealOpaqueMFCAP(resp_queue, hdr, data);
 		return 0;
@@ -932,6 +1148,9 @@ int InterfaceOpaque::dealOpaqueMessages(QueuePointer & resp_queue,
 		return 0;
 	} else if (popa->type == MYOPAQUESR) {
 		dealOpaqueSR(resp_queue, hdr, data);
+		return 0;
+	} else if () {
+		dealWifiPeripheral(resp_queue, hdr, data);
 		return 0;
 	} else {
 #ifdef WRITELOG
@@ -1040,8 +1259,8 @@ int InterfaceOpaque::dealBlobFinderMessages(QueuePointer & resp_queue,
 	 }*/
 	return -1;
 }
-int InterfaceOpaque::dealPosMessages(QueuePointer & resp_queue, player_msghdr * hdr,
-		void * data) {
+int InterfaceOpaque::dealPosMessages(QueuePointer & resp_queue,
+		player_msghdr * hdr, void * data) {
 
 	/*
 	 #define PLAYER_POSITION2D_REQ_GET_GEOM 1

@@ -1,6 +1,5 @@
 ---------------------------------------------------------------------------------
-before use opaque to do webstage+sim,but after opaque was used to do publish 22 lasers. 
-so wand to use webstage+sim by this :
+use opaque to do webstage+sim
 ----------------------------p_simulation.cc--128---------------------------------
 1.player *.cfg -g
 2.change p_driver.cc  StgDriver::Update(void)  557
