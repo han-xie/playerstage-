@@ -77,9 +77,9 @@ PLAYERCORE_EXPORT int http;
 
 //below global var use to control some hidden model
 #define PXA270PORTS 22 //8 aio + 12 dio + 2 RS422
-PLAYERCORE_EXPORT bool[PXA270PORTS] PXAupdate;
-PLAYERCORE_EXPORT uint32_t[PXA270PORTS] PXAcount;
-PLAYERCORE_EXPORT float[PXA270PORTS] PXAvalue;
+PLAYERCORE_EXPORT bool PXAupdate[PXA270PORTS];
+PLAYERCORE_EXPORT uint32_t PXAcount[PXA270PORTS];
+PLAYERCORE_EXPORT float PXAvalue[PXA270PORTS];
 /*PLAYERCORE_EXPORT bool hallupdate;//霍尔接近传感器端口号
 PLAYERCORE_EXPORT uint32_t hallscount;
 PLAYERCORE_EXPORT bool grayupdate;//灰度传感器端口号
