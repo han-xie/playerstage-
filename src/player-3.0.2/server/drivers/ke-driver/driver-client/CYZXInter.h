@@ -1,1 +1,1 @@
-/home/keevi7c3l/github/playerstage-/src/player-3.0.2/examples/plugins/multidriver-myPXA270/CYZXInter.h
+/home/keevi7c3l/github/playerstage-/src/player-3.0.2/examples/plugins/multidriver-myPXA270/CYZXInter-full.h

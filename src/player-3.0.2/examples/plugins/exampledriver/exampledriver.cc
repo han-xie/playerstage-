@@ -37,7 +37,6 @@
 #include <string.h>
 
 #include <libplayercore/playercore.h>
-
 #define LABLESTRING "CYZXSPECIALSTRING:"
 #define LOGFILENAME "/mnt/yaffs/test/CYZXexampledriver.log"
 

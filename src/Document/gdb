@@ -1,5 +1,10 @@
 ----------------------------------------------
 stage debug: stage source file CMakeLists.txt
+			but can add :
+			IF (NOT CMAKE_BUILD_TYPE)
+			  SET (CMAKE_BUILD_TYPE "debug" CACHE STRING 
+			    "Choose the type of build, options are: release (default) debug profile" FORCE)
+			ENDIF (NOT CMAKE_BUILD_TYPE)
 player debug: I only find under build-dir CMakeList.txt/CMAKE_BUILD_TYPE
 ----debug how laser get its range-------------
 gdb player

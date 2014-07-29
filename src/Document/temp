@@ -7,6 +7,11 @@
 /home/keevi7c3l/github/playerstage-/src/player-3.0.2/server/drivers/ke-driver/driver-client
 /home/keevi7c3l/github/playerstage-/src/player-3.0.2/examples/plugins/multidriver-myPXA270/
 ---------------------------------------------
+can't understand why : can't find the file
+	#include <libplayerc++/playerc++.h>
+	using namespace PlayerCc;
+so everytime , I have comment it when test it . but return when compile on PXA270
+--------------------------------------------
 need do :
 1 . javascript 
 2 . see the node-tree of simulation , so convenite to draw the simulation use js .

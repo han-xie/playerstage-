@@ -1757,7 +1757,7 @@ bool CYZXInter::SRisStarted() {
 	return false;
 }
 
-void CYZXInter::WifiSetWeibo(char *ip=NULL){
+void CYZXInter::WifiSetWeibo(char *ip){
 	player_opaque_data_t popa;
 	uint32_t wifiID = WIFIPERIPHERAL;
 	uint32_t subtype = WIFISETWEIBOF;
@@ -1767,20 +1767,20 @@ void CYZXInter::WifiSetWeibo(char *ip=NULL){
 	uint8_t *from,*to;
 	to=temp;
 
-	from=&wifiID;
+	from=(uint8_t*)&wifiID;
 	for(int i=0;i<4;i++){
 		*(to+i)=*from;
 		from++;
 		to++;
 	}
-	from=&subtype;
+	from=(uint8_t*)&subtype;
 	for(int i=4;i<8;i++){
 		*(to+i)=*from;
 		from++;
 		to++;
 	}
 	if(ip!=NULL){
-		from=ip;
+		from=(uint8_t*)ip;
 		for(int i=0;i<16&&from;i++){
 			*(to+8+i)=*from;
 			from++;
@@ -1788,12 +1788,12 @@ void CYZXInter::WifiSetWeibo(char *ip=NULL){
 		}
 	}
 	popa.data_count = 8+16;
-	popa.data = (uint8_t *) temp;
+	popa.data = (uint8_t *) &temp[0];
 	this->opaquep->SendCmd(&popa);
 
 	return;
 }
-void CYZXInter::WifiSetLCD(char *display,char *ip=NULL){
+void CYZXInter::WifiSetLCD(char *display,char *ip){
 	player_opaque_data_t popa;
 	uint32_t wifiID = WIFIPERIPHERAL;
 	uint32_t subtype = WIFISETLCDF;
@@ -1803,20 +1803,20 @@ void CYZXInter::WifiSetLCD(char *display,char *ip=NULL){
 	uint8_t *from,*to;
 	to=temp;
 
-	from=&wifiID;
+	from=(uint8_t*)&wifiID;
 	for(int i=0;i<4;i++){
 		*(to+i)=*from;
 		from++;
 		to++;
 	}
-	from=&subtype;
+	from=(uint8_t*)&subtype;
 	for(int i=4;i<8;i++){
 		*(to+i)=*from;
 		from++;
 		to++;
 	}
 	if(ip!=NULL){
-		from=ip;
+		from=(uint8_t*)ip;
 		for(int i=0;i<16&&from;i++){
 			*(to+8+i)=*from;
 			from++;
@@ -1826,18 +1826,18 @@ void CYZXInter::WifiSetLCD(char *display,char *ip=NULL){
 	popa.data_count = 8+16;
 	if(display){
 		int i=0;
-		from=display;
-		for(i=0;i<1024&from;i++){
+		from=(uint8_t*)display;
+		for(i=0;i<1024&&from;i++){
 			*(to+24+i)=*from;
 			from++;
 			to++;
 		}
 		popa.data_count+=i;
 	}
-	popa.data = (uint8_t *) temp;
+	popa.data = (uint8_t *) &temp[0];
 	this->opaquep->SendCmd(&popa);
 }
-void CYZXInter::WifiSetSound(char *type,char *ip=NULL){
+void CYZXInter::WifiSetSound(char *type,char *ip){
 	player_opaque_data_t popa;
 	uint32_t wifiID = WIFIPERIPHERAL;
 	uint32_t subtype = WIFISETSOUNDF;
@@ -1847,20 +1847,20 @@ void CYZXInter::WifiSetSound(char *type,char *ip=NULL){
 	uint8_t *from,*to;
 	to=temp;
 
-	from=&wifiID;
+	from=(uint8_t*)&wifiID;
 	for(int i=0;i<4;i++){
 		*(to+i)=*from;
 		from++;
 		to++;
 	}
-	from=&subtype;
+	from=(uint8_t*)&subtype;
 	for(int i=4;i<8;i++){
 		*(to+i)=*from;
 		from++;
 		to++;
 	}
 	if(ip!=NULL){
-		from=ip;
+		from=(uint8_t*)ip;
 		for(int i=0;i<16&&from;i++){
 			*(to+8+i)=*from;
 			from++;
@@ -1868,16 +1868,16 @@ void CYZXInter::WifiSetSound(char *type,char *ip=NULL){
 		}
 	}
 	popa.data_count = 8+16;
-	if(display){
+	if(type){
 		int i=0;
-		from=type;
-		for(i=0;i<1024&from;i++){
+		from=(uint8_t*)type;
+		for(i=0;i<1024&&from;i++){
 			*(to+24+i)=*from;
 			from++;
 			to++;
 		}
 		popa.data_count+=i;
 	}
-	popa.data = (uint8_t *) temp;
+	popa.data = (uint8_t *) &temp[0];
 	this->opaquep->SendCmd(&popa);
 }

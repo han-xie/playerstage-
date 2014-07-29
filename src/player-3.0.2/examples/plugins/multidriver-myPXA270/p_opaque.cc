@@ -322,7 +322,7 @@ int InterfaceOpaque::dealOpaqueBK(QueuePointer & resp_queue,
 		break;
 	}
 	case BKMFSERVOACTIONF: {
-		myOpaqueSt0 *popa = (myOpaqueSt0 *) opaquedata->data;
+		//myOpaqueSt0 *popa = (myOpaqueSt0 *) opaquedata->data;
 		MFServoAction();
 		break;
 	}
@@ -356,7 +356,7 @@ int InterfaceOpaque::dealOpaqueBK(QueuePointer & resp_queue,
 		break;
 	}
 	case BKMP3STOPF: {
-		comReqBk1 *popa = (comReqBk1 *) opaquedata->data;
+		//comReqBk1 *popa = (comReqBk1 *) opaquedata->data;
 
 		//MFMp3Stop();
 
@@ -383,7 +383,7 @@ int InterfaceOpaque::dealOpaqueBK(QueuePointer & resp_queue,
 
 		myOpaqueStLCD *popa = (myOpaqueStLCD*) opaquedata->data;
 
-		if (pid = fork() < 0) {
+		if ((pid = fork()) < 0) {
 			printf("fork error\n");
 		} else if (pid == 0) {
 			char lcdDisp[LCDMAXLENGTH];
@@ -406,7 +406,7 @@ int InterfaceOpaque::dealOpaqueBK(QueuePointer & resp_queue,
 	}
 	case BKUSONICENABLEF: {
 
-		comReqBk1 *popa = (comReqBk1 *) opaquedata->data;
+		//comReqBk1 *popa = (comReqBk1 *) opaquedata->data;
 		MFUSonicEnable();
 
 		break;
@@ -424,21 +424,21 @@ int InterfaceOpaque::dealWifiPeripheral(QueuePointer & resp_queue,
 	player_opaque_data_t *opaquedata = (player_opaque_data_t *) data;
 	myOpaqueHead head;
 	uint8_t *from, *to;
-	from = (uint8_t) opaquedata->data;
-	to = &(head.type);
+	from = (uint8_t*) opaquedata->data;
+	to = (uint8_t*) (&head.type);
 	for (int i = 0; i < 4; i++) {
 		*(to + i) = *(from + i);
 		to++;
 		from++;
 	}
-	to = &(head.subtype);
+	to = (uint8_t*) (&head.subtype);
 	for (int i = 0; i < 4; i++) {
 		*(to + i) = *(from + 4 + i);
 		to++;
 		from++;
 	}
 
-	player_opaque_data_t opaqueRes;
+	//player_opaque_data_t opaqueRes;
 
 	switch (head.subtype) {
 	case WIFISETWEIBOF: {
@@ -469,7 +469,7 @@ int InterfaceOpaque::dealWifiPeripheral(QueuePointer & resp_queue,
 		}
 		*to = 0x0;
 		dealWifiSetLCDCMD(ip, display);
-		delete display();
+		delete[] display;
 		return 0;
 		break;
 	}
@@ -490,7 +490,7 @@ int InterfaceOpaque::dealWifiPeripheral(QueuePointer & resp_queue,
 		}
 		*to = 0x0;
 		dealWifiSetSoundCMD(ip, type);
-		delete type();
+		delete[] type;
 		return 0;
 		break;
 	}
@@ -498,18 +498,12 @@ int InterfaceOpaque::dealWifiPeripheral(QueuePointer & resp_queue,
 	return -1;
 }
 void InterfaceOpaque::dealWifiSetweiboCMD(uint8_t *ip) {
-	int i;
-	for (i = 0; i < 16; i++) {
-		if (*ip != 0x0)
-			break;
-	}
-	if (i == 16)
-		ip = this->conf.lcdIP.c_str();
+
 	int sockfdc;
 	char sendlinec[4096];
 	struct sockaddr_in servaddrc;
-	char buff[4096];
-	int n;
+	//char buff[4096];
+	//int n;
 
 	if ((sockfdc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		printf("create socket error: %s(errno: %d)\n", strerror(errno), errno);
@@ -519,8 +513,13 @@ void InterfaceOpaque::dealWifiSetweiboCMD(uint8_t *ip) {
 	memset(&servaddrc, 0, sizeof(servaddrc));
 	servaddrc.sin_family = AF_INET;
 	servaddrc.sin_port = htons(this->conf.lcdport);
-	if (inet_pton(AF_INET, ip, &servaddrc.sin_addr) <= 0) {
-		printf("inet_pton error for %s\n", argv[1]);
+	int i;
+	for (i = 0; i < 16; i++) {
+		if (*ip != 0x0)
+			break;
+	}
+	if (inet_pton(AF_INET,(i==16)?this->conf.lcdIP.data():(char *)ip, &servaddrc.sin_addr) <= 0) {
+		printf("inet_pton error for %s\n",ip);
 		return;
 	}
 
@@ -544,17 +543,11 @@ void InterfaceOpaque::dealWifiSetweiboCMD(uint8_t *ip) {
 	return;
 }
 void InterfaceOpaque::dealWifiSetLCDCMD(uint8_t *ip, uint8_t *display) {
-	int i;
-	for (i = 0; i < 16; i++) {
-		if (*ip != 0x0)
-			break;
-	}
-	if (i == 16)
-		ip = this->conf.lcdIP.c_str();
+
 	int sockfdc;
 	struct sockaddr_in servaddrc;
-	char buff[4096];
-	int n;
+	//char buff[4096];
+	//int n;
 
 	if ((sockfdc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		printf("create socket error: %s(errno: %d)\n", strerror(errno), errno);
@@ -564,8 +557,13 @@ void InterfaceOpaque::dealWifiSetLCDCMD(uint8_t *ip, uint8_t *display) {
 	memset(&servaddrc, 0, sizeof(servaddrc));
 	servaddrc.sin_family = AF_INET;
 	servaddrc.sin_port = htons(this->conf.lcdport);
-	if (inet_pton(AF_INET, ip, &servaddrc.sin_addr) <= 0) {
-		printf("inet_pton error for %s\n", argv[1]);
+	int i;
+	for (i = 0; i < 16; i++) {
+		if (*ip != 0x0)
+			break;
+	}
+	if (inet_pton(AF_INET, (i==16)?this->conf.lcdIP.c_str():(char *)ip, &servaddrc.sin_addr) <= 0) {
+		printf("inet_pton error for %s\n", ip);
 		return;
 	}
 
@@ -575,7 +573,7 @@ void InterfaceOpaque::dealWifiSetLCDCMD(uint8_t *ip, uint8_t *display) {
 		return;
 	}
 
-	if (send(sockfdc, sendlinec, strlen(display), 0) < 0) {
+	if (send(sockfdc, (char*)display, strlen((char*)display), 0) < 0) {
 		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
 		return;
 	}
@@ -584,18 +582,12 @@ void InterfaceOpaque::dealWifiSetLCDCMD(uint8_t *ip, uint8_t *display) {
 	return;
 }
 void InterfaceOpaque::dealWifiSetSoundCMD(uint8_t *ip, uint8_t *type) {
-	int i;
-	for (i = 0; i < 16; i++) {
-		if (*ip != 0x0)
-			break;
-	}
-	if (i == 16)
-		ip = this->conf.soundIP.c_str();
+
 	int sockfdc;
-	char sendlinec[4096];
+	//char sendlinec[4096];
 	struct sockaddr_in servaddrc;
-	char buff[4096];
-	int n;
+	//char buff[4096];
+	//int n;
 
 	if ((sockfdc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		printf("create socket error: %s(errno: %d)\n", strerror(errno), errno);
@@ -605,8 +597,14 @@ void InterfaceOpaque::dealWifiSetSoundCMD(uint8_t *ip, uint8_t *type) {
 	memset(&servaddrc, 0, sizeof(servaddrc));
 	servaddrc.sin_family = AF_INET;
 	servaddrc.sin_port = htons(this->conf.soundport);
-	if (inet_pton(AF_INET, ip, &servaddrc.sin_addr) <= 0) {
-		printf("inet_pton error for %s\n", argv[1]);
+	int i;
+	for (i = 0; i < 16; i++) {
+		if (*ip != 0x0)
+			break;
+	}
+	if (inet_pton(AF_INET, (i==16)?this->conf.soundIP.c_str():(char *)ip, &servaddrc.sin_addr)
+	<= 0) {
+		printf("inet_pton error for %s\n", ip);
 		return;
 	}
 
@@ -616,7 +614,7 @@ void InterfaceOpaque::dealWifiSetSoundCMD(uint8_t *ip, uint8_t *type) {
 		return;
 	}
 
-	if (send(sockfdc, sendlinec, strlen(type), 0) < 0) {
+	if (send(sockfdc, type, strlen((char *)type), 0) < 0) {
 		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
 		return;
 	}
@@ -1149,7 +1147,7 @@ int InterfaceOpaque::dealOpaqueMessages(QueuePointer & resp_queue,
 	} else if (popa->type == MYOPAQUESR) {
 		dealOpaqueSR(resp_queue, hdr, data);
 		return 0;
-	} else if () {
+	} else if (popa->type == WIFIPERIPHERAL) {
 		dealWifiPeripheral(resp_queue, hdr, data);
 		return 0;
 	} else {
@@ -1158,6 +1156,9 @@ int InterfaceOpaque::dealOpaqueMessages(QueuePointer & resp_queue,
 #endif
 		return -1;
 	}
+#ifdef WRITELOG
+		printf("opaque message type%d subtype%d \n",popa->type,popa->subtype);
+#endif
 
 }
 

@@ -5,6 +5,11 @@ ELSE (WIN32)
     CMAKE_MINIMUM_REQUIRED (VERSION 2.4.7 FATAL_ERROR)
 ENDIF (WIN32)
 
+IF (NOT CMAKE_BUILD_TYPE)
+  SET (CMAKE_BUILD_TYPE "debug" CACHE STRING 
+    "Choose the type of build, options are: release (default) debug profile" FORCE)
+ENDIF (NOT CMAKE_BUILD_TYPE)
+
 # Compatibility settings
 IF (COMMAND CMAKE_POLICY)
     CMAKE_POLICY (SET CMP0003 NEW)

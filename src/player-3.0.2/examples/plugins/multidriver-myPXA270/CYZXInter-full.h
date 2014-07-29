@@ -11,8 +11,8 @@
 #include <string>
 #include <map>
 
-//#include <libplayerc++/playerc++.h>
-//using namespace PlayerCc;
+#include <libplayerc++/playerc++.h>
+using namespace PlayerCc;
 
 #define LABLESTRING "CYZXSPECIALSTRING:"
 #define LOGFILENAME "/mnt/yaffs/test/CYZXmultidriver.log"
@@ -250,7 +250,7 @@ private:
 	std::map<std::string, std::string> tsadports;
 };
 
-/*class CYZXInter {
+class CYZXInter {
 private:
 	PlayerClient *robot;
 	DioProxy *diop;
@@ -457,6 +457,6 @@ public:
 	void WifiSetWeibo(char *ip=NULL);
 	void WifiSetLCD(char *displayer,char *ip=NULL);
 	void WifiSetSound(char *type,char *ip=NULL);
-};*/
+};
 
 #endif /* CYZXINTER_H_ */

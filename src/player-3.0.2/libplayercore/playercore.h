@@ -59,5 +59,4 @@
 #include <libplayercore/wallclocktime.h>
 #include <libplayercore/property.h>
 #include <playerconfig.h>
-
 #endif

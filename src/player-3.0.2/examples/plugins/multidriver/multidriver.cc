@@ -16,6 +16,7 @@
 #include <sys/wait.h>
 
 #include <libplayercore/playercore.h>
+
 //#include <libplayerinterface/player_interfaces.h>
 
 
@@ -89,8 +90,8 @@
 #define AIOCOMINFRAREDF 22            //int aioComInfrared(int port);
 #define AIOCOMF 23                    //int aioCom(int port);
 #define AIOCOMTF 24                   //int aioComT(int port, int whatKindAIO);
-#define whatKindAIOAIODEF 25         	  //int whatKindAIO   Ä¬ÈÏÖµ
-#define whatKindAIOAIOINFRAREDR  26  	  //int whatKindAIO   ºìÍâ²â¾à´«¸ÐÆ÷
+#define whatKindAIOAIODEF 25         	  //int whatKindAIO   Ä¬ï¿½ï¿½Öµ
+#define whatKindAIOAIOINFRAREDR  26  	  //int whatKindAIO   ï¿½ï¿½ï¿½ï¿½ï¿½à´«ï¿½ï¿½ï¿½ï¿½
 #define DIOSETPORTDIRECTF 27     //void dioSetPortDirect(unsigned int inData);
 #define DIOGETDIGIINPUTF 28      //int dioGetDigiInput(int port);
 #define DIODIGIOUTPUTF 29       //void dioDigiOutput(int port, int inVal);
