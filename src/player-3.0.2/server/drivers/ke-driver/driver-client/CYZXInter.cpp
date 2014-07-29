@@ -1761,33 +1761,39 @@ void CYZXInter::WifiSetWeibo(char *ip){
 	player_opaque_data_t popa;
 	uint32_t wifiID = WIFIPERIPHERAL;
 	uint32_t subtype = WIFISETWEIBOF;
-	uint8_t temp[30];
-	for(int i=0;i<30;i++)
+	uint8_t temp[50];
+	int iplength=30;
+	for(int i=0;i<50;i++)
 		temp[i]='\0';
 	uint8_t *from,*to;
 	to=temp;
 
 	from=(uint8_t*)&wifiID;
 	for(int i=0;i<4;i++){
-		*(to+i)=*from;
+		*to=*from;
 		from++;
 		to++;
 	}
 	from=(uint8_t*)&subtype;
 	for(int i=4;i<8;i++){
-		*(to+i)=*from;
+		*to=*from;
 		from++;
 		to++;
 	}
 	if(ip!=NULL){
 		from=(uint8_t*)ip;
-		for(int i=0;i<16&&from;i++){
-			*(to+8+i)=*from;
+		for(int i=0;i<iplength&&from!='\0';i++){
+			*to=*from;
 			from++;
 			to++;
 		}
+	}else{
+		for(int i=0;i<iplength;i++){
+			*to=' ';
+			to++;
+		}
 	}
-	popa.data_count = 8+16;
+	popa.data_count = 8+iplength;
 	popa.data = (uint8_t *) &temp[0];
 	this->opaquep->SendCmd(&popa);
 
@@ -1798,6 +1804,7 @@ void CYZXInter::WifiSetLCD(char *display,char *ip){
 	uint32_t wifiID = WIFIPERIPHERAL;
 	uint32_t subtype = WIFISETLCDF;
 	uint8_t temp[1024];
+	int iplength=30;
 	for(int i=0;i<1024;i++)
 		temp[i]='\0';
 	uint8_t *from,*to;
@@ -1805,30 +1812,35 @@ void CYZXInter::WifiSetLCD(char *display,char *ip){
 
 	from=(uint8_t*)&wifiID;
 	for(int i=0;i<4;i++){
-		*(to+i)=*from;
+		*to=*from;
 		from++;
 		to++;
 	}
 	from=(uint8_t*)&subtype;
 	for(int i=4;i<8;i++){
-		*(to+i)=*from;
+		*to=*from;
 		from++;
 		to++;
 	}
 	if(ip!=NULL){
 		from=(uint8_t*)ip;
-		for(int i=0;i<16&&from;i++){
-			*(to+8+i)=*from;
+		for(int i=0;i<iplength&&from!='\0';i++){
+			*to=*from;
 			from++;
 			to++;
 		}
+	}else{
+		for(int i=0;i<iplength;i++){
+			*to=' ';
+			to++;
+		}
 	}
-	popa.data_count = 8+16;
+	popa.data_count = 8+iplength;
 	if(display){
 		int i=0;
 		from=(uint8_t*)display;
-		for(i=0;i<1024&&from;i++){
-			*(to+24+i)=*from;
+		for(i=0;i<900&&from!='\0';i++){
+			*to=*from;
 			from++;
 			to++;
 		}
@@ -1841,6 +1853,7 @@ void CYZXInter::WifiSetSound(char *type,char *ip){
 	player_opaque_data_t popa;
 	uint32_t wifiID = WIFIPERIPHERAL;
 	uint32_t subtype = WIFISETSOUNDF;
+	int iplength=30;
 	uint8_t temp[1024];
 	for(int i=0;i<1024;i++)
 		temp[i]='\0';
@@ -1849,30 +1862,35 @@ void CYZXInter::WifiSetSound(char *type,char *ip){
 
 	from=(uint8_t*)&wifiID;
 	for(int i=0;i<4;i++){
-		*(to+i)=*from;
+		*to=*from;
 		from++;
 		to++;
 	}
 	from=(uint8_t*)&subtype;
 	for(int i=4;i<8;i++){
-		*(to+i)=*from;
+		*to=*from;
 		from++;
 		to++;
 	}
 	if(ip!=NULL){
 		from=(uint8_t*)ip;
-		for(int i=0;i<16&&from;i++){
-			*(to+8+i)=*from;
+		for(int i=0;i<iplength&&from!='\0';i++){
+			*to=*from;
 			from++;
 			to++;
 		}
+	}else{
+		for(int i=0;i<iplength;i++){
+			*to=' ';
+			to++;
+		}
 	}
-	popa.data_count = 8+16;
+	popa.data_count = 8+iplength;
 	if(type){
 		int i=0;
 		from=(uint8_t*)type;
-		for(i=0;i<1024&&from;i++){
-			*(to+24+i)=*from;
+		for(i=0;i<900&&from!='\0';i++){
+			*to=*from;
 			from++;
 			to++;
 		}

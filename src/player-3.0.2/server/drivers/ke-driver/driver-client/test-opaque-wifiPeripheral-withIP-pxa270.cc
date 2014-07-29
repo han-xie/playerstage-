@@ -224,19 +224,18 @@ int main(int argc, char *argv[]) {
 				return 0;
 			}
 			case 1:{
-				cyzxic.WifiSetWeibo();
+				cyzxic.WifiSetWeibo("192.168.0.100:8899");
 				break;
 			}
 			case 2:{
-				cyzxic.WifiSetLCD("lcd displayer\n!\0");
+				cyzxic.WifiSetLCD("lcd displayer\n!\0","192.168.0.99:8888");
 				break;
 			}
 			case 3:{
-				cyzxic.WifiSetSound("google.mp3\0");
+				cyzxic.WifiSetSound("play\n\0","192.168.0.99:8888");
 				break;
 			}
 			}
 	}
-
 }
 

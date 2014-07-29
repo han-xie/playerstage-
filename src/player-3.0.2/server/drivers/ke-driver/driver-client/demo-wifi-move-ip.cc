@@ -207,36 +207,26 @@ int main(int argc, char *argv[]) {
 		parse_args(argc, argv);
 	PlayerClient robot(gHostname, gPort);
 	OpaqueProxy opaquep(&robot, 0);
+	Position2dProxy pp(&robot,gIndex);
 	CYZXInter cyzxic(&robot, &opaquep);
 
-	int i=0;
-	std::cout<<"1 WifiSetWeibo ,"
-			"2  WifiSetLCD,"
-			"3 WifiSetSound"<<std::endl;
 
-	//opaquep.newSizeFormDevice(100);
+	//forward
+	pp.SetSpeed(0.3,0);
 
-	for(;;){
-		std::cin>>i;
+	sleep(3);
 
-			switch(i){
-			case 0:{
-				return 0;
-			}
-			case 1:{
-				cyzxic.WifiSetWeibo();
-				break;
-			}
-			case 2:{
-				cyzxic.WifiSetLCD("lcd displayer\n!\0");
-				break;
-			}
-			case 3:{
-				cyzxic.WifiSetSound("google.mp3\0");
-				break;
-			}
-			}
-	}
+	cyzxic.WifiSetLCD("weather\t成都\t192.168.0.99\t8888\t\0","192.168.1.101:7666");
+	//cyzxic.WifiSetLCD("weather\t成都\t192.168.0.99\t8888\t\0");
+	sleep(5);
+	pp.SetSpeed(0,0.75);
+	sleep(2);
+	pp.SetSpeed(0.3,0);
+	cyzxic.WifiSetSound("play","192.168.1.101:7666");
+	//cyzxic.WifiSetSound("play");
+	sleep(3);
+	pp.SetSpeed(0,0);
+	sleep(3);
 
 }
 

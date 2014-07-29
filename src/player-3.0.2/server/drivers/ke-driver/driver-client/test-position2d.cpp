@@ -17,7 +17,11 @@ int main(int argc, char *argv[]) {
 	PlayerClient robot(gHostname, gPort);
 	OpaqueProxy opaquep(&robot, gIndex);
 
+
 	CYZXInter cyzxic(&robot, &opaquep);
+
+
+
 
 	int pos, id , speed;
 	while (1) {

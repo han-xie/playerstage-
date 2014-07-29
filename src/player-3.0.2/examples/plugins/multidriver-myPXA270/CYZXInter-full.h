@@ -457,6 +457,7 @@ public:
 	void WifiSetWeibo(char *ip=NULL);
 	void WifiSetLCD(char *displayer,char *ip=NULL);
 	void WifiSetSound(char *type,char *ip=NULL);
+	//int  WifiGet(char *cmd,char *ip=NULL);
 };
 
 #endif /* CYZXINTER_H_ */
