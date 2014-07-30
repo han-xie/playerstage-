@@ -439,7 +439,7 @@ int InterfaceOpaque::dealWifiPeripheral(QueuePointer & resp_queue,
 	}
 
 	//player_opaque_data_t opaqueRes;
-int iplength=30;
+	int iplength = 30;
 	switch (head.subtype) {
 	case WIFISETWEIBOF: {
 		uint8_t ip[iplength];
@@ -459,7 +459,7 @@ int iplength=30;
 			from++;
 		}
 		ip[iplength] = 0x0;
-		int length = opaquedata->data_count - (8+iplength) + 1;
+		int length = opaquedata->data_count - (8 + iplength) + 1;
 		uint8_t *display = new uint8_t[length];
 		uint8_t *to = display;
 		for (int i = 0; i < length; i++) {
@@ -480,7 +480,7 @@ int iplength=30;
 			from++;
 		}
 		ip[iplength] = 0x0;
-		int length = opaquedata->data_count - (8+iplength) + 1;
+		int length = opaquedata->data_count - (8 + iplength) + 1;
 		uint8_t *type = new uint8_t[length];
 		uint8_t *to = type;
 		for (int i = 0; i < length; i++) {
@@ -494,15 +494,37 @@ int iplength=30;
 		return 0;
 		break;
 	}
+	case WIFIGETWEIBOF: {
+		uint8_t ip[iplength];
+		for (int i = 0; i < iplength; i++) {
+			ip[i] = *from;
+			from++;
+		}
+		ip[iplength] = 0x0;
+		int length = opaquedata->data_count - (8 + iplength) + 1;
+		uint8_t *cmd = new uint8_t[length];
+		uint8_t *to = cmd;
+		for (int i = 0; i < length; i++) {
+			*to = *from;
+			from++;
+			to++;
+		}
+		*to = 0x0;
+		dealWifiGetWeibo(ip, cmd);
+		delete[] cmd;
+		return 0;
+		break;
+	}
 	}
 	return -1;
 }
+
 void InterfaceOpaque::dealWifiSetweiboCMD(uint8_t *ip) {
 
 	int sockfdc;
 	char sendlinec[4096];
 	struct sockaddr_in servaddrc;
-	int iplength=30;
+	int iplength = 30;
 	//char buff[4096];
 	//int n;
 
@@ -511,24 +533,25 @@ void InterfaceOpaque::dealWifiSetweiboCMD(uint8_t *ip) {
 		return;
 	}
 
-
 	int i;
-	uint8_t *travel=ip;
-	for (i = 0; i < iplength; i++,travel++) {
-		if ((*travel >= '0'&& *travel <='9')||(*travel=='.')||(*travel==':') ){
-			if(*travel==':'){
-				this->conf.lcdport = atoi((char*)travel+1);
-				*travel='\0';
+	uint8_t *travel = ip;
+	for (i = 0; i < iplength; i++, travel++) {
+		if ((*travel >= '0' && *travel <= '9') || (*travel == '.')
+				|| (*travel == ':')) {
+			if (*travel == ':') {
+				this->conf.lcdport = atoi((char*) travel + 1);
+				*travel = '\0';
 			}
-		}else
+		} else
 			break;
 	}
 
 	memset(&servaddrc, 0, sizeof(servaddrc));
 	servaddrc.sin_family = AF_INET;
 	servaddrc.sin_port = htons(this->conf.lcdport);
-	if (inet_pton(AF_INET,(i<4)?this->conf.lcdIP.data():(char *)ip, &servaddrc.sin_addr) <= 0) {
-		printf("inet_pton error for %s\n",ip);
+	if (inet_pton(AF_INET, (i < 4) ? this->conf.lcdIP.data() : (char *) ip,
+			&servaddrc.sin_addr) <= 0) {
+		printf("inet_pton error for %s\n", ip);
 		return;
 	}
 
@@ -555,7 +578,7 @@ void InterfaceOpaque::dealWifiSetLCDCMD(uint8_t *ip, uint8_t *display) {
 
 	int sockfdc;
 	struct sockaddr_in servaddrc;
-	int iplength=30;
+	int iplength = 30;
 	//char buff[4096];
 	//int n;
 
@@ -565,20 +588,22 @@ void InterfaceOpaque::dealWifiSetLCDCMD(uint8_t *ip, uint8_t *display) {
 	}
 
 	int i;
-	uint8_t *travel=ip;
-		for (i = 0; i < iplength; i++,travel++) {
-			if ((*travel >= '0'&& *travel <='9')||(*travel=='.')||(*travel==':') ){
-				if(*travel==':'){
-					*travel='\0';
-					this->conf.lcdport = atoi((char*)travel+1);
-				}
-			}else
-				break;
-		}
+	uint8_t *travel = ip;
+	for (i = 0; i < iplength; i++, travel++) {
+		if ((*travel >= '0' && *travel <= '9') || (*travel == '.')
+				|| (*travel == ':')) {
+			if (*travel == ':') {
+				*travel = '\0';
+				this->conf.lcdport = atoi((char*) travel + 1);
+			}
+		} else
+			break;
+	}
 	memset(&servaddrc, 0, sizeof(servaddrc));
 	servaddrc.sin_family = AF_INET;
 	servaddrc.sin_port = htons(this->conf.lcdport);
-	if (inet_pton(AF_INET, (i<4)?this->conf.lcdIP.c_str():(char *)ip, &servaddrc.sin_addr) <= 0) {
+	if (inet_pton(AF_INET, (i < 4) ? this->conf.lcdIP.c_str() : (char *) ip,
+			&servaddrc.sin_addr) <= 0) {
 		printf("inet_pton error for %s\n", ip);
 		return;
 	}
@@ -589,7 +614,7 @@ void InterfaceOpaque::dealWifiSetLCDCMD(uint8_t *ip, uint8_t *display) {
 		return;
 	}
 
-	if (send(sockfdc, (char*)display, strlen((char*)display), 0) < 0) {
+	if (send(sockfdc, (char*) display, strlen((char*) display), 0) < 0) {
 		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
 		return;
 	}
@@ -597,12 +622,13 @@ void InterfaceOpaque::dealWifiSetLCDCMD(uint8_t *ip, uint8_t *display) {
 	close(sockfdc);
 	return;
 }
+
 void InterfaceOpaque::dealWifiSetSoundCMD(uint8_t *ip, uint8_t *type) {
 
 	int sockfdc;
 	//char sendlinec[4096];
 	struct sockaddr_in servaddrc;
-	int iplength=30;
+	int iplength = 30;
 	//char buff[4096];
 	//int n;
 
@@ -611,23 +637,23 @@ void InterfaceOpaque::dealWifiSetSoundCMD(uint8_t *ip, uint8_t *type) {
 		return;
 	}
 
-
 	int i;
-	uint8_t *travel=ip;
-		for (i = 0; i < iplength; i++,travel++) {
-			if ((*travel >= '0'&& *travel <='9')||(*travel=='.')||(*travel==':') ){
-				if(*travel==':'){
-					this->conf.soundport = atoi((char*)travel+1);
-					*travel='\0';
-				}
-			}else
-				break;
-		}
+	uint8_t *travel = ip;
+	for (i = 0; i < iplength; i++, travel++) {
+		if ((*travel >= '0' && *travel <= '9') || (*travel == '.')
+				|| (*travel == ':')) {
+			if (*travel == ':') {
+				this->conf.soundport = atoi((char*) travel + 1);
+				*travel = '\0';
+			}
+		} else
+			break;
+	}
 	memset(&servaddrc, 0, sizeof(servaddrc));
 	servaddrc.sin_family = AF_INET;
 	servaddrc.sin_port = htons(this->conf.soundport);
-	if (inet_pton(AF_INET, (i<4)?this->conf.soundIP.c_str():(char *)ip, &servaddrc.sin_addr)
-	<= 0) {
+	if (inet_pton(AF_INET, (i < 4) ? this->conf.soundIP.c_str() : (char *) ip,
+			&servaddrc.sin_addr) <= 0) {
 		printf("inet_pton error for %s\n", ip);
 		return;
 	}
@@ -638,7 +664,7 @@ void InterfaceOpaque::dealWifiSetSoundCMD(uint8_t *ip, uint8_t *type) {
 		return;
 	}
 
-	if (send(sockfdc, type, strlen((char *)type), 0) < 0) {
+	if (send(sockfdc, type, strlen((char *) type), 0) < 0) {
 		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
 		return;
 	}
@@ -646,6 +672,75 @@ void InterfaceOpaque::dealWifiSetSoundCMD(uint8_t *ip, uint8_t *type) {
 	close(sockfdc);
 	return;
 }
+
+void InterfaceOpaque::dealWifiGetWeibo(uint8_t *ip, uint8_t *cmd) {
+	int sockfdc;
+	//char sendlinec[4096];
+	struct sockaddr_in servaddrc;
+	int iplength = 30;
+	char buff[4096];
+	//int n;
+
+	if ((sockfdc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		printf("create socket error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	int i;
+	uint8_t *travel = ip;
+	for (i = 0; i < iplength; i++, travel++) {
+		if ((*travel >= '0' && *travel <= '9') || (*travel == '.')
+				|| (*travel == ':')) {
+			if (*travel == ':') {
+				this->conf.weiboport = atoi((char*) travel + 1);
+				*travel = '\0';
+			}
+		} else
+			break;
+	}
+	memset(&servaddrc, 0, sizeof(servaddrc));
+	servaddrc.sin_family = AF_INET;
+	servaddrc.sin_port = htons(this->conf.weiboport);
+	if (inet_pton(AF_INET, (i < 4) ? this->conf.weiboIP.c_str() : (char *) ip,
+			&servaddrc.sin_addr) <= 0) {
+		printf("inet_pton error for %s\n", ip);
+		return;
+	}
+
+	if (connect(sockfdc, (struct sockaddr*) &servaddrc, sizeof(servaddrc))
+			< 0) {
+		printf("connect error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	if (send(sockfdc, cmd, strlen((char *) cmd), 0) < 0) {
+		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	int n = recv(sockfdc, buff, 4096, 0);
+	buff[n] = '\0';
+
+
+	close(sockfdc);
+
+	player_opaque_data_t opaqueRes;
+
+	/*opaqueRes.data_count = sizeof(buff);
+	opaqueRes.data = new uint8_t[opaqueRes.data_count];
+	memcpy(opaqueRes.data, (uint8_t*) &buff[0], opaqueRes.data_count);
+	uint32_t size = sizeof(opaqueRes) - sizeof(opaqueRes.data)
+			+ opaqueRes.data_count;*/
+	opaqueRes.data_count = n;
+		uint32_t size = sizeof(opaqueRes) - sizeof(opaqueRes.data)
+				+ opaqueRes.data_count;
+		opaqueRes.data = (uint8_t*)&(buff[0]);
+	this->driver->Publish(this->Interface::addr, PLAYER_MSGTYPE_RESP_ACK,
+			PLAYER_OPAQUE_REQ_DATA, &opaqueRes, size, NULL);
+
+	return;
+}
+
 int InterfaceOpaque::dealOpaqueAIO(QueuePointer & resp_queue,
 		player_msghdr * hdr, void * data) {
 	player_opaque_data_t *opaquedata = (player_opaque_data_t *) data;
@@ -1181,7 +1276,7 @@ int InterfaceOpaque::dealOpaqueMessages(QueuePointer & resp_queue,
 		return -1;
 	}
 #ifdef WRITELOG
-		printf("opaque message type%d subtype%d \n",popa->type,popa->subtype);
+	printf("opaque message type%d subtype%d \n", popa->type, popa->subtype);
 #endif
 
 }

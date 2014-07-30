@@ -53,6 +53,9 @@ int main(int argc, char** argv) {
 		n = recv(connfd, buff, MAXLINE, 0);
 		buff[n] = '\0';
 		printf("recv msg from client: %s\n", buff);
+		if (send(connfd, "hi back\n\t", strlen("hi back\n\t"), 0) < 0) {
+			printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
+		}
 		close(connfd);
 	}
 

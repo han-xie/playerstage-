@@ -212,7 +212,8 @@ int main(int argc, char *argv[]) {
 	int i=0;
 	std::cout<<"1 WifiSetWeibo ,"
 			"2  WifiSetLCD,"
-			"3 WifiSetSound"<<std::endl;
+			"3 WifiSetSound"
+			"4  WifiGetWeibo"<<std::endl;
 
 	//opaquep.newSizeFormDevice(100);
 
@@ -234,6 +235,11 @@ int main(int argc, char *argv[]) {
 			case 3:{
 				cyzxic.WifiSetSound("google.mp3\0","192.168.1.101:7666");
 				break;
+			}
+			case 4:{
+				std::string content;
+				cyzxic.WifiGetWeibo(content,"I am want to get weibo\n\0","192.168.1.101:7666");
+				std::cout<<"from weibo:"<<content.c_str()<<std::endl;
 			}
 			}
 	}

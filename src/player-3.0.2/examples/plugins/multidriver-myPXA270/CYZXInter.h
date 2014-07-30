@@ -46,7 +46,8 @@
 
 #define WIFISETWEIBOF 1 //void WifiSetWeibo(char *ip=NULL);
 #define WIFISETLCDF 2 //void WifiSetLCD(char *displayer,char *ip=NULL);
-#define WIFISETSOUNDF 3//void WifiSetSound(char *type,char *ip=NULL);
+#define WIFISETSOUNDF 3 //void WifiSetSound(char *type,char *ip=NULL);
+#define WIFIGETWEIBOF 4 //WifiGetWeibo
 #define SRSTARTF 1       //void SRStart();
 #define SRSTOPF  2   //void SRStop();
 #define SRPAUSEF  3       //bool SRPause();

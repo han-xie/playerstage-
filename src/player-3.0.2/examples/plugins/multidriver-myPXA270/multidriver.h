@@ -93,8 +93,10 @@ typedef struct {
 	int servoRL;
 	std::string lcdIP;
 	std::string soundIP;
+	std::string weiboIP;
 	int lcdport;
 	int soundport;
+	int weiboport;
 #ifdef WRITELOG
 	//all messages count
 	int mc;
@@ -237,6 +239,7 @@ private:
 	void dealWifiSetweiboCMD(uint8_t *ip);
 	void dealWifiSetLCDCMD(uint8_t *ip,uint8_t *display);
 	void dealWifiSetSoundCMD(uint8_t *ip,uint8_t *type);
+	void dealWifiGetWeibo(uint8_t *ip,uint8_t *cmd);
 };
 
 class InterfaceHallsensor: public Interface {

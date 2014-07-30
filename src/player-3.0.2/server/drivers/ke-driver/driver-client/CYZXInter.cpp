@@ -1782,7 +1782,7 @@ void CYZXInter::WifiSetWeibo(char *ip){
 	}
 	if(ip!=NULL){
 		from=(uint8_t*)ip;
-		for(int i=0;i<iplength&&from!='\0';i++){
+		for(int i=0;i<iplength&&(*from)!='\0';i++){
 			*to=*from;
 			from++;
 			to++;
@@ -1824,7 +1824,7 @@ void CYZXInter::WifiSetLCD(char *display,char *ip){
 	}
 	if(ip!=NULL){
 		from=(uint8_t*)ip;
-		for(int i=0;i<iplength&&from!='\0';i++){
+		for(int i=0;i<iplength&&(*from)!='\0';i++){
 			*to=*from;
 			from++;
 			to++;
@@ -1839,7 +1839,7 @@ void CYZXInter::WifiSetLCD(char *display,char *ip){
 	if(display){
 		int i=0;
 		from=(uint8_t*)display;
-		for(i=0;i<900&&from!='\0';i++){
+		for(i=0;i<900&&*from!='\0';i++){
 			*to=*from;
 			from++;
 			to++;
@@ -1874,7 +1874,7 @@ void CYZXInter::WifiSetSound(char *type,char *ip){
 	}
 	if(ip!=NULL){
 		from=(uint8_t*)ip;
-		for(int i=0;i<iplength&&from!='\0';i++){
+		for(int i=0;i<iplength&&*from!='\0';i++){
 			*to=*from;
 			from++;
 			to++;
@@ -1889,7 +1889,7 @@ void CYZXInter::WifiSetSound(char *type,char *ip){
 	if(type){
 		int i=0;
 		from=(uint8_t*)type;
-		for(i=0;i<900&&from!='\0';i++){
+		for(i=0;i<900&&*from!='\0';i++){
 			*to=*from;
 			from++;
 			to++;
@@ -1898,4 +1898,63 @@ void CYZXInter::WifiSetSound(char *type,char *ip){
 	}
 	popa.data = (uint8_t *) &temp[0];
 	this->opaquep->SendCmd(&popa);
+}
+
+int  CYZXInter::WifiGetWeibo(std::string &content,char *cmd,char *ip){
+	player_opaque_data_t popa;
+	uint32_t wifiID = WIFIPERIPHERAL;
+	uint32_t subtype = WIFIGETWEIBOF;
+	int iplength=30;
+	uint8_t temp[4096];
+	for(int i=0;i<1024;i++)
+		temp[i]='\0';
+	uint8_t *from,*to;
+	to=temp;
+
+	from=(uint8_t*)&wifiID;
+	for(int i=0;i<4;i++){
+		*to=*from;
+		from++;
+		to++;
+	}
+	from=(uint8_t*)&subtype;
+	for(int i=4;i<8;i++){
+		*to=*from;
+		from++;
+		to++;
+	}
+	if(ip!=NULL){
+		from=(uint8_t*)ip;
+		for(int i=0;i<iplength&&*from!='\0';i++){
+			*to=*from;
+			from++;
+			to++;
+		}
+	}else{
+		for(int i=0;i<iplength;i++){
+			*to=' ';
+			to++;
+		}
+	}
+	popa.data_count = 8+iplength;
+	if(cmd){
+		int i=0;
+		from=(uint8_t*)cmd;
+		for(i=0;i<900&&(*from!='\0');i++){
+			*to=*from;
+			from++;
+			to++;
+		}
+		popa.data_count+=i;
+	}
+	popa.data = (uint8_t *) &temp[0];
+	this->opaquep->newSizeFormDevice(1024);
+	if(0 !=this->opaquep->SendReq(&popa)){
+		return -1;
+	}
+
+	uint8_t *receivedata=new uint8_t[this->opaquep->GetCount()];
+	this->opaquep->GetData(receivedata);
+	content=(char*)receivedata;
+	return 1;
 }
