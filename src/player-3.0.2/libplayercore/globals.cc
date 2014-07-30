@@ -76,10 +76,11 @@ PLAYERCORE_EXPORT bool wlocalhost;
 PLAYERCORE_EXPORT int http;
 
 //below global var use to control some hidden model
-#define PXA270PORTS 22 //8 aio + 12 dio + 2 RS422
+//#define PXA270PORTS 22 //8 aio + 12 dio + 2 RS422
 PLAYERCORE_EXPORT bool PXAupdate[PXA270PORTS];
 PLAYERCORE_EXPORT uint32_t PXAcount[PXA270PORTS];
 PLAYERCORE_EXPORT float PXAvalue[PXA270PORTS];
+
 /*PLAYERCORE_EXPORT bool hallupdate;//霍尔接近传感器端口号
 PLAYERCORE_EXPORT uint32_t hallscount;
 PLAYERCORE_EXPORT bool grayupdate;//灰度传感器端口号
@@ -110,6 +111,8 @@ struct player_sd* globalSD;
 void
 player_globals_init()
 {
+	for(int i=0;i<PXA270PORTS;i++)
+		PXAupdate[i]=0;
   deviceTable = new DeviceTable();
   driverTable = new DriverTable();
   GlobalTime = new WallclockTime();

@@ -38,7 +38,9 @@
 #include "p_driver.h"
 using namespace Stg;
 
-extern int lightscount;
+extern bool PXAupdate[PXA270PORTS];
+extern uint32_t PXAcount[PXA270PORTS];
+extern float PXAvalue[PXA270PORTS];
 
 InterfaceLightsensor::InterfaceLightsensor( player_devaddr_t addr,
 				StgDriver* driver,
@@ -47,6 +49,10 @@ InterfaceLightsensor::InterfaceLightsensor( player_devaddr_t addr,
   : InterfaceModel( addr, driver, cf, section, "lightsensor" )
 {
   // nothing to do for now
+	ModelLightsensor* lightmod = (ModelLightsensor*)this->mod;
+	PXAupdate[lightmod->port]=true;
+	PXAcount[lightmod->port]=0;
+	PXAvalue[lightmod->port]=32767;
 }
 
 
@@ -60,9 +66,12 @@ void InterfaceLightsensor::Publish( void )
   uint32_t bcount = 0;
   const ModelLightsensor::Light* lights = lightmod->GetLights( &bcount );
   
-  if(bcount > 0)
-	  lightscount=bcount;
-  else lightscount = 0;
+  if(bcount > 0){
+	  PXAcount[lightmod->port]=bcount;
+  }
+  else{
+	  PXAcount[lightmod->port] = 0;
+  }
 
   if ( bcount > 0 )
   {
@@ -109,6 +118,8 @@ void InterfaceLightsensor::Publish( void )
 		  bfd.lights[b].area  = dx * dy;
 
 		  bfd.lights[b].range = lights[b].range;
+		  if(lights[b].range<PXAvalue[lightmod->port])
+			  PXAvalue[lightmod->port]=lights[b].range;
 		}
   }
 

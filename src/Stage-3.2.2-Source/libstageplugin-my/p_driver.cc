@@ -156,20 +156,11 @@ const char* copyright_notice =
 #define STG_DEFAULT_WORLDFILE "default.world"
 #define DRIVER_ERROR(X) printf( "Stage driver error: %s\n", X )
 
-// globals from Player
+
 extern PlayerTime* GlobalTime;
-//extern int global_argc;
-//extern char** global_argv;
 extern bool player_quiet_startup;
 extern bool player_quit;
-//OpaqueModel opaquem;
 int globalMyupdateSign = 0;
-extern bool hallupdate;
-extern bool lightupdate;
-extern bool grayupdate;
-extern uint32_t hallscount;
-extern uint32_t lightscount;
-extern uint32_t grayscount;
 
 // init static vars
 World* StgDriver::world = NULL;
@@ -411,14 +402,6 @@ StgDriver::StgDriver(ConfigFile* cf, int section) :
 		}
 	}
 	//puts( "  Stage driver loaded successfully." );
-
-	//default disable those hidden model
-	hallupdate = false;
-	lightupdate = false;
-	grayupdate = false;
-	hallscount = 0;
-	lightscount = 0;
-	grayscount = 0;
 }
 
 Model* StgDriver::LocateModel(char* basename, player_devaddr_t* addr,

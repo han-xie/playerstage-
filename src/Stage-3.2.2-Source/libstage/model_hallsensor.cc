@@ -157,6 +157,8 @@ void ModelHallsensor::Load( void )
 	range = wf->ReadFloat( wf_entity, "range", range );
 	fov = wf->ReadAngle( wf_entity, "fov", fov );
 	pan = wf->ReadAngle( wf_entity, "pan", pan );
+	std::string portname=wf->ReadString(wf_entity,"port","a0");
+	port=Model::GetCYZXPort(portname.data());
 
 	if( wf->PropertyExists( wf_entity, "colors" ) )
 	{

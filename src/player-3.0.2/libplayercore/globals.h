@@ -59,6 +59,8 @@ class DriverTable;
 class FileWatcher;
 struct player_sd;
 
+#define PXA270PORTS 22
+
 PLAYERCORE_EXPORT extern DeviceTable* deviceTable;
 PLAYERCORE_EXPORT extern PlayerTime* GlobalTime;
 PLAYERCORE_EXPORT extern DriverTable* driverTable;

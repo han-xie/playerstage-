@@ -16,7 +16,6 @@
 using namespace Stg;
 #include "CYZXInter.h"
 
-//extern OpaqueModel opaquem;
 extern bool player_quiet_startup;
 extern PlayerTime* GlobalTime;
 extern bool usegui;

@@ -37,8 +37,11 @@
 
 #include "p_driver.h"
 using namespace Stg;
+#include <libplayercore/globals.h>
 
-extern int hallscount;
+extern bool PXAupdate[PXA270PORTS];
+extern uint32_t PXAcount[PXA270PORTS];
+extern float PXAvalue[PXA270PORTS];
 
 InterfaceHallsensor::InterfaceHallsensor( player_devaddr_t addr,
 				StgDriver* driver,
@@ -46,6 +49,8 @@ InterfaceHallsensor::InterfaceHallsensor( player_devaddr_t addr,
 				int section )
   : InterfaceModel( addr, driver, cf, section, "hallsensor" )
 {
+	ModelHallsensor* hallmod = (ModelHallsensor*)this->mod;
+	PXAupdate[hallmod->port]=true;
   // nothing to do for now
 }
 
@@ -60,9 +65,14 @@ void InterfaceHallsensor::Publish( void )
   uint32_t bcount = 0;
   const ModelHallsensor::Hall* halls = hallmod->GetHalls( &bcount );
   
-  if(bcount > 0)
-	  hallscount=bcount;
-  else hallscount = 0;
+  if(bcount > 0){
+	  PXAcount[hallmod->port]=bcount;
+	  PXAvalue[hallmod->port]=1;
+  }
+  else{
+	  PXAcount[hallmod->port] = 0;
+	  PXAvalue[hallmod->port]=0;
+  }
 
   if ( bcount > 0 )
   {

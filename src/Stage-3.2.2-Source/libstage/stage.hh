@@ -1855,6 +1855,7 @@ namespace Stg
 	 const std::string& GetModelType() const {return type;}	 
 	 const std::string& GetModelBitmap() const {return bitmap;}
 	 std::string GetSayString(){return std::string(say_string);}
+	 int GetCYZXPort(const char *portname);
 	 
     /** Returns a pointer to the model identified by name, or NULL if
 		  it doesn't exist in this model. */
@@ -2432,6 +2433,7 @@ namespace Stg
   	 stg_meters_t range;
   	 unsigned int scan_height;
   	 unsigned int scan_width;
+  	 int port;
 
   	 // constructor
   	 ModelLightsensor( World* world,
@@ -2497,6 +2499,7 @@ namespace Stg
   	 stg_meters_t range;
   	 unsigned int scan_height;
   	 unsigned int scan_width;
+  	 int port;
 
   	 // constructor
   	 ModelHallsensor( World* world,
@@ -2564,6 +2567,7 @@ namespace Stg
   	 stg_meters_t range;
   	 unsigned int scan_height;
   	 unsigned int scan_width;
+  	 int port;
 
   	 // constructor
   	 ModelGraysensor( World* world,
