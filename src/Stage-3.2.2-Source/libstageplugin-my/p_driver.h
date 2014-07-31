@@ -297,6 +297,38 @@ public:
 	virtual void Publish(void);
 };
 
+
+typedef struct{
+	int type;
+	int macroName;
+	int portsNum;
+	char ports[DIOMAX + 1];
+	float fov;
+	int sample_count;
+	struct Bounds {
+		double min;
+		double max;
+	} range_bounds;
+	int scan_id;
+}cyzxLaserConf;
+class InterfacecyzxLaser: public InterfaceModel {
+private:
+	int scan_id;
+	cyzxLaserConf conf;
+	//player_devaddr_t opaque_addr;
+	player_devaddr_t require_addr;
+	Device* require_dev;
+public:
+	InterfacecyzxLaser(player_devaddr_t addr, StgDriver* driver, ConfigFile* cf,
+			int section);
+	virtual ~InterfacecyzxLaser(void) { /* TODO: clean up*/
+	}
+	;
+	virtual int ProcessMessage(QueuePointer & resp_queue, player_msghdr_t* hdr,
+			void* data);
+	virtual void Publish(void);
+};
+
 /*  class InterfaceAio : public InterfaceModel */
 /* { */
 /*  public: */
@@ -798,7 +830,7 @@ public:
 
 			} else {
 
-				//printf("Warning: Unkown model type\n");
+				printf("Warning: Unkown model type\n");
 				return false;
 
 			}

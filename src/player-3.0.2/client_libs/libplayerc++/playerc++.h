@@ -1159,6 +1159,180 @@ class PLAYERCC_EXPORT IrProxy : public ClientProxy
 
 };
 
+
+/**
+The @p cyzxLaserProxy class is used to control a @ref interface_cyzxlaser
+device.  The latest scan data is held in two arrays: @p ranges and @p
+intensity.  The cyzxlaser scan range, resolution and so on can be configured
+using the Configure() method.  */
+class PLAYERCC_EXPORT cyzxLaserProxy : public ClientProxy
+{
+  private:
+
+    void Subscribe(uint32_t aIndex);
+    void Unsubscribe();
+
+    // libplayerc data structure
+    playerc_cyzxlaser_t *mDevice;
+
+    // local storage of config
+    double min_angle, max_angle, scan_res, range_res, scanning_frequency;
+    bool intensity;
+
+  public:
+
+    /// constructor
+    cyzxLaserProxy(PlayerClient *aPc, uint32_t aIndex=0);
+    /// destructor
+    ~cyzxLaserProxy();
+
+    /// Number of points in scan
+    uint32_t GetCount() const { return GetVar(mDevice->scan_count); };
+
+    /// Max range for the latest set of data (meters)
+    double GetMaxRange() const { return GetVar(mDevice->max_range); };
+
+    /// Angular resolution of scan (radians)
+    double GetScanRes() const { return GetVar(mDevice->scan_res); };
+
+    /// Range resolution of scan (mm)
+    double GetRangeRes() const { return GetVar(mDevice->range_res); };
+
+    /// Scanning Frequency (Hz)
+    double GetScanningFrequency() const { return GetVar(mDevice->scanning_frequency); };
+
+    /// Scan range for the latest set of data (radians)
+    double GetMinAngle() const { return GetVar(mDevice->scan_start); };
+    /// Scan range for the latest set of data (radians)
+    double GetMaxAngle() const
+    {
+      scoped_lock_t lock(mPc->mMutex);
+      return mDevice->scan_start + (mDevice->scan_count - 1)*mDevice->scan_res;
+    };
+
+    /// Scan range from the cyzxlaser config (call RequestConfigure first) (radians)
+    double GetConfMinAngle() const { return min_angle; };
+    /// Scan range from the cyzxlaser config (call RequestConfigure first) (radians)
+    double GetConfMaxAngle() const { return max_angle; };
+
+    /// Whether or not reflectance (i.e., intensity) values are being returned.
+	bool IntensityOn() const { return GetVar(mDevice->intensity_on) != 0 ? true : false; };
+
+//    /// Scan data (polar): range (m) and bearing (radians)
+//    double GetScan(uint32_t aIndex) const
+//      { return GetVar(mDevice->scan[aIndex]); };
+
+    /// Scan data (Cartesian): x,y (m)
+    player_point_2d_t GetPoint(uint32_t aIndex) const
+      { return GetVar(mDevice->point[aIndex]); };
+
+
+    /// get the range
+    double GetRange(uint32_t aIndex) const
+      { return GetVar(mDevice->ranges[aIndex]); };
+
+    /// get the bearing
+    double GetBearing(uint32_t aIndex) const
+      { return GetVar(mDevice->scan[aIndex][1]); };
+
+
+    /// get the intensity
+    int GetIntensity(uint32_t aIndex) const
+      { return GetVar(mDevice->intensity[aIndex]); };
+
+    /// get the cyzxlaser ID, call RequestId first
+    int GetID() const
+      { return GetVar(mDevice->cyzxlaser_id); };
+
+
+    /// Configure the cyzxlaser scan pattern.  Angles @p min_angle and
+    /// @p max_angle are measured in radians.
+    /// @p scan_res is measured in units of 0.01 degrees;
+    /// valid values are: 25 (0.25 deg), 50 (0.5 deg) and
+    /// 100 (1 deg).  @p range_res is measured in mm; valid values
+    /// are: 1, 10, 100.  Set @p intensity to @p true to
+    /// enable intensity measurements, or @p false to disable.
+    /// @p scanning_frequency is measured in Hz
+    void Configure(double aMinAngle,
+                   double aMaxAngle,
+                   uint32_t aScanRes,
+                   uint32_t aRangeRes,
+                   bool aIntensity,
+                   double aScanningFrequency);
+
+    /// Request the current cyzxlaser configuration; it is read into the
+    /// relevant class attributes.
+    void RequestConfigure();
+
+    /// Request the ID of the cyzxlaser; read it with GetID()
+    void RequestID();
+
+    /// Get the cyzxlaser's geometry; it is read into the
+    /// relevant class attributes.
+    void RequestGeom();
+
+    /// Accessor for the pose of the cyzxlaser with respect to its parent
+    /// object (e.g., a robot).  Fill it in by calling RequestGeom.
+    player_pose3d_t GetPose()
+    {
+      player_pose3d_t p;
+      scoped_lock_t lock(mPc->mMutex);
+
+      p.px = mDevice->pose[0];
+      p.py = mDevice->pose[1];
+      p.pyaw = mDevice->pose[2];
+      return(p);
+    }
+
+    /// Accessor for the pose of the cyzxlaser's parent object (e.g., a robot).
+    /// Filled in by some (but not all) cyzxlaser data messages.
+    player_pose3d_t GetRobotPose()
+    {
+      player_pose3d_t p;
+      scoped_lock_t lock(mPc->mMutex);
+
+      p.px = mDevice->robot_pose[0];
+      p.py = mDevice->robot_pose[1];
+      p.pyaw = mDevice->robot_pose[2];
+      return(p);
+    }
+
+    /// Accessor for the size (fill it in by calling RequestGeom)
+    player_bbox3d_t GetSize()
+    {
+      player_bbox3d_t b;
+      scoped_lock_t lock(mPc->mMutex);
+
+      b.sl = mDevice->size[0];
+      b.sw = mDevice->size[1];
+      return(b);
+    }
+
+    /// Minimum range reading on the left side
+    double GetMinLeft() const
+      { return GetVar(mDevice->min_left); };
+
+    /// Minimum range reading on the right side
+    double GetMinRight() const
+      { return GetVar(mDevice->min_right); };
+
+    /// @deprecated Minimum range reading on the left side
+    double MinLeft () const
+      { return GetMinLeft(); }
+
+    /// @deprecated Minimum range reading on the right side
+    double MinRight () const
+      { return GetMinRight(); }
+
+    /// Range access operator.  This operator provides an alternate
+    /// way of access the range data.  For example, given an @p
+    /// cyzxLaserProxy named @p lp, the following expressions are
+    /// equivalent: @p lp.GetRange(0) and @p lp[0].
+    double operator [] (uint32_t index) const
+      { return GetRange(index);}
+
+};
+
 /**
 The @p LaserProxy class is used to control a @ref interface_laser
 device.  The latest scan data is held in two arrays: @p ranges and @p
@@ -2787,6 +2961,7 @@ namespace std
   PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::ImuProxy& c);
   PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::IrProxy& c);
   PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::LaserProxy& c);
+  PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::cyzxLaserProxy& c);
   PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::LimbProxy& c);
   PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::LinuxjoystickProxy& c);
   PLAYERCC_EXPORT std::ostream& operator << (std::ostream& os, const PlayerCc::LocalizeProxy& c);

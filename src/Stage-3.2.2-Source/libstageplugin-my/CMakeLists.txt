@@ -15,6 +15,7 @@ set( stagepluginSrcs
 	     p_simulation.cc
 	     p_opaque.cc
 	     p_laser.cc
+	     p_cyzxlaser.cc
 	     p_fiducial.cc
 	     p_position.cc
 	     p_sonar.cc

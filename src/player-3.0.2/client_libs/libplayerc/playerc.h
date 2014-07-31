@@ -2229,6 +2229,181 @@ PLAYERC_EXPORT void playerc_laser_printout( playerc_laser_t * device,
 /**************************************************************************/
 
 
+/***************************************************************************/
+/** @ingroup playerc_proxies
+ * @defgroup playerc_proxy_cyzxlaser cyzxlaser
+
+The cyzxlaser proxy provides an interface to scanning cyzxlaser range finders
+such as the @ref driver_sicklms200.  Data is returned in the
+playerc_cyzxlaser_t structure.
+
+This proxy wraps the low-level @ref interface_cyzxlaser interface.
+
+@{
+*/
+
+/** @brief cyzxLaser proxy data. */
+typedef struct
+{
+  /** Device info; must be at the start of all device structures. */
+  playerc_device_t info;
+
+  /** cyzxLaser geometry in the robot cs: pose gives the position and
+      orientation, size gives the extent.  These values are filled in by
+      playerc_cyzxlaser_get_geom(). */
+  double pose[3];
+  double size[2];
+
+  /** Robot pose (m,m,rad), filled in if the scan came with a pose attached */
+  double robot_pose[3];
+
+  /** Is intesity data returned. */
+  int intensity_on;
+
+  /** Number of points in the scan. */
+  int scan_count;
+
+  /** Start bearing of the scan (radians). */
+  double scan_start;
+
+  /** Angular resolution in radians. */
+  double scan_res;
+
+  /** Range resolution, in m. */
+  double range_res;
+
+  /** Maximum range of sensor, in m. */
+  double max_range;
+
+  /** Scanning frequency in Hz. */
+  double scanning_frequency;
+
+  /** Raw range data; range (m). */
+  double *ranges;
+
+  /** Scan data; range (m) and bearing (radians). */
+  double (*scan)[2];
+
+  /** Scan data; x, y position (m). */
+  player_point_2d_t *point;
+
+  /** Scan reflection intensity values (0-3).  Note that the intensity
+      values will only be filled if intensity information is enabled
+      (using the set_config function). */
+  int *intensity;
+
+  /** ID for this scan */
+  int scan_id;
+
+  /** cyzxLaser IDentification information */
+  int cyzxlaser_id;
+
+  /** Minimum range, in meters, in the right half of the scan (those ranges
+   * from the first beam, counterclockwise, up to the middle of the scan,
+   * including the middle beam, if one exists). */
+  double min_right;
+
+  /** Minimum range, in meters, in the left half of the scan (those ranges
+   * from the first beam after the middle of the scan, counterclockwise, to
+   * the last beam). */
+  double min_left;
+} playerc_cyzxlaser_t;
+
+
+/** @brief Create a cyzxlaser proxy. */
+PLAYERC_EXPORT playerc_cyzxlaser_t *playerc_cyzxlaser_create(playerc_client_t *client, int index);
+
+/** @brief Destroy a cyzxlaser proxy. */
+PLAYERC_EXPORT void playerc_cyzxlaser_destroy(playerc_cyzxlaser_t *device);
+
+/** @brief Subscribe to the cyzxlaser device. */
+PLAYERC_EXPORT int playerc_cyzxlaser_subscribe(playerc_cyzxlaser_t *device, int access);
+
+/** @brief Un-subscribe from the cyzxlaser device. */
+PLAYERC_EXPORT int playerc_cyzxlaser_unsubscribe(playerc_cyzxlaser_t *device);
+
+/** @brief Configure the cyzxlaser.
+
+@param device Pointer to proxy object.
+
+@param min_angle, max_angle Start and end angles for the scan
+(radians).
+
+@param resolution Angular resolution in radians. Valid values depend on the
+underlyling driver.
+
+@param range_res Range resolution in m.  Valid values depend on the
+underlyling driver.
+
+@param intensity Intensity flag; set to 1 to enable reflection intensity data.
+
+@param scanning_frequency Scanning frequency in Hz. Valid values depend on the
+underlyling driver.
+
+@returns Returns 0 on success, non-zero otherwise.  Use
+playerc_error_str() to get a descriptive error message.
+
+*/
+PLAYERC_EXPORT int playerc_cyzxlaser_set_config(playerc_cyzxlaser_t *device,
+                             double min_angle, double max_angle,
+                             double resolution,
+                             double range_res,
+                             unsigned char intensity,
+                             double scanning_frequency);
+
+/** @brief Get the cyzxlaser configuration.
+
+@param device Pointer to proxy object.
+
+@param min_angle, max_angle Start and end angles for the scan
+(radians).
+
+@param resolution Angular resolution in radians. Valid values depend on the
+underlyling driver.
+
+@param range_res Range resolution in m.  Valid values depend on the
+underlyling driver.
+
+@param intensity Intensity flag; set to 1 to enable reflection intensity data.
+
+@param scanning_frequency Scanning frequency in Hz. Valid values depend on the
+underlyling driver.
+
+@returns Returns 0 on success, non-zero otherwise.  Use
+playerc_error_str() to get a descriptive error message.
+
+*/
+PLAYERC_EXPORT int playerc_cyzxlaser_get_config(playerc_cyzxlaser_t *device,
+                             double *min_angle,
+                             double *max_angle,
+                             double *resolution,
+                             double *range_res,
+                             unsigned char *intensity,
+                             double *scanning_frequency);
+
+/** @brief Get the cyzxlaser geometry.
+
+This writes the result into the proxy rather than returning it to the
+caller.
+
+*/
+PLAYERC_EXPORT int playerc_cyzxlaser_get_geom(playerc_cyzxlaser_t *device);
+
+/** @brief Get the cyzxlaser IDentification information.
+
+This writes the result into the proxy rather than returning it to the
+caller. */
+PLAYERC_EXPORT int playerc_cyzxlaser_get_id (playerc_cyzxlaser_t *device);
+
+/** @brief Print a human-readable summary of the cyzxlaser state on
+    stdout. */
+PLAYERC_EXPORT void playerc_cyzxlaser_printout( playerc_cyzxlaser_t * device,
+        const char* prefix );
+
+/** @} */
+/**************************************************************************/
+
+
 /** @ingroup playerc_proxies
  * @defgroup playerc_proxy_limb limb
 

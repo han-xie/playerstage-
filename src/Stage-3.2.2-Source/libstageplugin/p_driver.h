@@ -219,6 +219,21 @@ public:
 	virtual void Publish(void);
 };
 
+class InterfacecyzxLaser: public InterfaceModel {
+private:
+	int scan_id;
+	player_devaddr_t opaque_addr;
+public:
+	InterfacecyzxLaser(player_devaddr_t addr, StgDriver* driver, ConfigFile* cf,
+			int section);
+	virtual ~InterfacecyzxLaser(void) { /* TODO: clean up*/
+	}
+	;
+	virtual int ProcessMessage(QueuePointer & resp_queue, player_msghdr_t* hdr,
+			void* data);
+	virtual void Publish(void);
+};
+
 /*  class InterfaceAio : public InterfaceModel */
 /* { */
 /*  public: */

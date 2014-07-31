@@ -76,6 +76,9 @@ multidriver::multidriver(ConfigFile* cf, int section) :
 		case PLAYER_LASER_CODE:
 			ifsrc = new InterfaceLaser(player_addr, this, cf, section);
 			break;
+	case PLAYER_CYZXLASER_CODE:
+			ifsrc = new InterfacecyzxLaser(player_addr, this, cf, section);
+			break;
 		case PLAYER_POSITION2D_CODE:
 			ifsrc = new InterfacePosition2d(player_addr, this, cf, section);
 			break;

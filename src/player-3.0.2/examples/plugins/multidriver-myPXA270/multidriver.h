@@ -156,6 +156,20 @@ typedef struct {
 	//below is new laser configure
 	int portsType[DIOMAX + 1 + AIOMAX + 1 + RS422MAX + 1];
 } LaserConf;
+typedef struct {
+	int type;
+	int portsNum;
+	char ports[DIOMAX + 1];
+	float fov;
+	int sample_count;
+	struct Bounds {
+		double min;
+		double max;
+	} range_bounds;
+	int scan_id;
+	//below is new laser configure
+	int portsType[DIOMAX + 1 + AIOMAX + 1 + RS422MAX + 1];
+} cyzxLaserConf;
 //define type of position2dconf
 #define POS2D8TOP 1
 #define POS2D8BUTTON 2
@@ -208,6 +222,8 @@ private:
 	int dealOpaqueMessages(QueuePointer & resp_queue, player_msghdr * hdr,
 			void * data);
 	int dealLaserMessages(QueuePointer & resp_queue, player_msghdr * hdr,
+			void * data);
+int dealcyzxLaserMessages(QueuePointer & resp_queue, player_msghdr * hdr,
 			void * data);
 	int dealBlobFinderMessages(QueuePointer & resp_queue, player_msghdr * hdr,
 			void * data);
@@ -286,6 +302,24 @@ private:
 	int AioDioRS422(int type);
 	int StringToType(const char *p);
 };
+
+class InterfacecyzxLaser: public Interface {
+public:
+	InterfacecyzxLaser(player_devaddr_t addr, multidriver* driver, ConfigFile* cf,
+			int section);
+	virtual ~InterfacecyzxLaser(void) { /* TODO: clean up*/
+	}
+	;
+	virtual int ProcessMessage(QueuePointer & resp_queue, player_msghdr_t* hdr,
+			void* data);
+public:
+	virtual void Publish(void);
+	cyzxLaserConf conf;
+private:
+	int AioDioRS422(int type);
+	int StringToType(const char *p);
+};
+
 class InterfacePosition2d: public Interface {
 public:
 	InterfacePosition2d(player_devaddr_t addr, multidriver* driver,

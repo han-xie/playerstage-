@@ -26,6 +26,7 @@ set( stageSrcs
 	model_getset.cc
 	model_gripper.cc
 	model_laser.cc
+	model_cyzxlaser.cc
 	model_lightindicator.cc
 	model_load.cc
 	model_position.cc

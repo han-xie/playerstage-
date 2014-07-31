@@ -60,6 +60,7 @@ class FileWatcher;
 struct player_sd;
 
 #define PXA270PORTS 22
+#define MAXRANGE 32767;
 
 PLAYERCORE_EXPORT extern DeviceTable* deviceTable;
 PLAYERCORE_EXPORT extern PlayerTime* GlobalTime;

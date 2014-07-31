@@ -143,6 +143,16 @@ The stage plugin driver provides the following device interfaces:
 //  - PLAYER_BLOBFINDER_SET_IMAGER_PARAMS_REQ
 
 // CODE ------------------------------------------------------------
+// C++ libs
+/*#include <cmath>
+#include <iostream>
+#include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <queue>
+#include <algorithm>*/
+
 
 #include <unistd.h>
 #include <string.h>
@@ -165,6 +175,7 @@ extern PlayerTime* GlobalTime;
 //extern char** global_argv;
 extern bool player_quiet_startup;
 extern bool player_quit;
+//OpaqueModel opaquem;
 
 // init static vars
 WorldGui* StgDriver::world = NULL;
@@ -265,11 +276,13 @@ InterfaceModel::InterfaceModel(  player_devaddr_t addr,
 // pre-Setup() setup.
 
 // configure the underlying driver to queue incoming commands and use a very long queue.
-
+//int initialtimes=0;
 StgDriver::StgDriver(ConfigFile* cf, int section)
 	: Driver(cf, section, false, 4096 ),
 		devices()
 {
+//	initialtimes++;
+//printf("---init times:%d\n",initialtimes);
   // init the array of device ids
 
   int device_count = cf->GetTupleCount( section, "provides" );
@@ -318,6 +331,17 @@ StgDriver::StgDriver(ConfigFile* cf, int section)
  	  ifsrc = new InterfaceBlobfinder( player_addr,  this, cf, section );
  	  break;
 
+ 	case PLAYER_HALLSENSOR_CODE:
+ 	  ifsrc = new InterfaceHallsensor( player_addr,  this, cf, section );
+ 	  break;
+
+	case PLAYER_LIGHTSENSOR_CODE:
+ 	  ifsrc = new InterfaceLightsensor( player_addr,  this, cf, section );
+ 	  break;
+
+ 	case PLAYER_GRAYSENSOR_CODE:
+ 	  ifsrc = new InterfaceGraysensor( player_addr,  this, cf, section );
+ 	  break;
    	// case PLAYER_DIO_CODE:
    	// 	ifsrc = new InterfaceDio(player_addr, this, cf, section);
    	// 	break;
@@ -604,6 +628,13 @@ void StgDriver::Update(void)
 					}
 				}
 		}
+
+	/*
+	std::map<std::string, Model*>::iterator it;
+	for(it=this->StgDriver::world->World::models_by_name.begin();it!=this->StgDriver::world->models_by_name.end();++it)
+	        std::cout<<"string: "<<it->first <<" value: "<<it->second<<std::endl;
+	        */
+
 }
 
 

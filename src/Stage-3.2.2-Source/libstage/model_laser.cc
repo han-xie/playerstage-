@@ -80,8 +80,8 @@ Option ModelLaser::Vis::showBeams("Laser beams", "show_laser_beams", "", false,
  */
 
 ModelLaser::ModelLaser(World* world, Model* parent, const std::string& type) :
-		Model(world, parent, type), vis(world), sample_count(DEFAULT_SAMPLES), cyzxlaserc_count(
-				DEFAULT_CYZXLASER), laserCount(laserC), laserAngle(laserA), samples(), cyzxlaserc(), range_max(
+		Model(world, parent, type), vis(world), sample_count(DEFAULT_SAMPLES),
+		laserCount(laserC), laserAngle(laserA), samples(), range_max(
 				DEFAULT_MAXRANGE), fov(DEFAULT_FOV), resolution(
 				DEFAULT_RESOLUTION) {
 	/*PRINT_DEBUG2( "Constructing ModelLaser %d (%s)\n",
@@ -112,17 +112,22 @@ ModelLaser::~ModelLaser(void) {
 }
 
 void ModelLaser::Load(void) {
-	/*sample_count = wf->ReadInt(wf_entity, "samples", sample_count);
-	fov = wf->ReadAngle(wf_entity, "fov", fov);*/
+	sample_count = wf->ReadInt(wf_entity, "samples", sample_count);
+	fov = wf->ReadAngle(wf_entity, "fov", fov);
 
-
+/*
 	 //I control the laser number
 	 sample_count = laserCount;
 	 fov = 6.2657320146596431;     //359 degree
-	 //fov =  6.2831853071795862; 	//there not 360 degree
+	 //fov =  6.2831853071795862; 	//there not 360 degree*/
 
 	range_max = wf->ReadLength(wf_entity, "range_max", range_max);
+	range_min = wf->ReadLength(wf_entity,"range_min",0);
 	resolution = wf->ReadInt(wf_entity, "resolution", resolution);
+	std::string portname=wf->ReadString(wf_entity,"port","a0");
+	port=Model::GetCYZXPort(portname.c_str());
+	if(port>=8&&port<=19) porttype=DIO;
+	else porttype=AIO;
 
 	if (resolution < 1) {
 		PRINT_WARN( "laser resolution set < 1. Forcing to 1");
@@ -132,8 +137,6 @@ void ModelLaser::Load(void) {
 	Model::Load();
 
 	SampleConfig();
-
-	CYZXLaserConfig();
 
 	LoadFixModel();
 }
@@ -145,7 +148,6 @@ ModelLaser::Config ModelLaser::GetConfig() {
 	cfg.fov = fov;
 	cfg.resolution = resolution;
 	cfg.interval = interval;
-	cfg.cyzxlaserc_count = cyzxlaserc_count;
 	return cfg;
 }
 
@@ -185,7 +187,7 @@ void ModelLaser::LoadFixModel() {
 	tempModel.y = wf->ReadTupleFloat(wf_entity, "temperaturesource", 1, 0);
 	tempModel.z = wf->ReadTupleFloat(wf_entity, "temperaturesource", 2, 0);
 }
-
+/*
 void ModelLaser::CYZXLaserConfig() {
 	cyzxlaserc.resize(DEFAULT_CYZXLASER);
 
@@ -344,7 +346,7 @@ void ModelLaser::CYZXLaserConfig() {
 	tlc.range_min = wf->ReadTupleFloat(wf_entity, "rs4221", 3, 0);
 	cyzxlaserc[21] = tlc;
 }
-
+*/
 void ModelLaser::Update(void) {
 	// removed UnMapFromRoot() optimization - though neat, it breaks
 	// thread-safety by messing with the Cell contents - rtv.
@@ -443,18 +445,8 @@ ModelLaser::FixModel ModelLaser::GetTempModelPos() {
 	return temp;
 }
 
-ModelLaser::CYZXLaser* ModelLaser::GetCYZXLaserConf(uint32_t* count) {
-	if (count)
-		*count = cyzxlaserc_count;
-	return &cyzxlaserc[0];
-}
-
 const std::vector<ModelLaser::Sample>& ModelLaser::GetSamples() {
 	return samples;
-}
-
-const std::vector<ModelLaser::CYZXLaser>& ModelLaser::GetCYZXLaserConf() {
-	return cyzxlaserc;
 }
 
 // VIS -------------------------------------------------------------------

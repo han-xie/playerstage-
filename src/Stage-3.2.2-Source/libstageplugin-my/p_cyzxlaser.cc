@@ -23,16 +23,16 @@
  * Desc: A plugin driver for Player that gives access to Stage devices.
  * Author: Richard Vaughan
  * Date: 10 December 2004
- * CVS: $Id: p_laser.cc,v 1.2 2008-01-15 01:25:42 rtv Exp $
+ * CVS: $Id: p_cyzxlaser.cc,v 1.2 2008-01-15 01:25:42 rtv Exp $
  */
 
 // DOCUMENTATION ------------------------------------------------------------
 /** @addtogroup player
- @par Laser interface
- - PLAYER_LASER_DATA_SCAN
- - PLAYER_LASER_REQ_SET_CONFIG
- - PLAYER_LASER_REQ_GET_CONFIG
- - PLAYER_LASER_REQ_GET_GEOM
+ @par cyzxLaser interface
+ - PLAYER_CYZXLASER_DATA_SCAN
+ - PLAYER_CYZXLASER_REQ_SET_CONFIG
+ - PLAYER_CYZXLASER_REQ_GET_CONFIG
+ - PLAYER_CYZXLASER_REQ_GET_GEOM
  */
 
 // CODE ----------------------------------------------------------------------
@@ -47,76 +47,47 @@ extern float PXAvalue[PXA270PORTS];
 
 //extern OpaqueModel opaquem;
 
-InterfaceLaser::InterfaceLaser(player_devaddr_t addr, StgDriver* driver,
+InterfacecyzxLaser::InterfacecyzxLaser(player_devaddr_t addr, StgDriver* driver,
 		ConfigFile* cf, int section) :
-		InterfaceModel(addr, driver, cf, section, "laser") {
+		InterfaceModel(addr, driver, cf, section, "cyzxlaser") {
 	this->scan_id = 0;
-	ModelLaser* lasermod = (ModelLaser*)this->mod;
-	PXAupdate[lasermod->port] = true;
-	PXAcount[lasermod->port] = 0;
-	PXAvalue[lasermod->port] = MAXRANGE;
 }
 
-void InterfaceLaser::Publish(void) {
-	ModelLaser* mod = (ModelLaser*) this->mod;
-	ModelLaser::Sample* samples = mod->GetSamples(NULL);
+void InterfacecyzxLaser::Publish(void) {
+	ModelcyzxLaser* mod = (ModelcyzxLaser*) this->mod;
 
-	// don't publish anything until we have some real data
-	if (samples == NULL)
-		return;
-
-	if(mod->porttype==DIO)PXAvalue[mod->port]=0;
-	else PXAvalue[mod->port]=MAXRANGE;
-
-	player_laser_data_t pdata;
+	player_cyzxlaser_data_t pdata;
 	memset(&pdata, 0, sizeof(pdata));
 
-	ModelLaser::Config cfg = mod->GetConfig();
+	ModelcyzxLaser::Config cfg = mod->GetConfig();
+
 	pdata.min_angle = -cfg.fov / 2.0;
-		pdata.max_angle = +cfg.fov / 2.0;
-		pdata.resolution = cfg.fov / cfg.sample_count;
-		pdata.max_range = cfg.range_bounds.max;
-		pdata.ranges_count = pdata.intensity_count = cfg.sample_count;
-		pdata.id = this->scan_id++;
+	pdata.max_angle = +cfg.fov / 2.0;
+	pdata.resolution = cfg.fov / cfg.sample_count;
+	pdata.max_range = cfg.range_bounds.max;
+	pdata.ranges_count = pdata.intensity_count = cfg.sample_count=PXA270PORTS;
+	pdata.id = this->scan_id++;
 
 	pdata.ranges = new float[pdata.ranges_count];
 	pdata.intensity = new uint8_t[pdata.ranges_count];
 
-	for(int i=0;i<pdata.ranges_count;i++){
-		if(samples[i].range<mod->range_max&&samples[i].range>mod->range_min){
-			if(mod->porttype == DIO){ PXAvalue[mod->port]=1;break;}
-			if(PXAvalue[mod->port]<samples[i].range)PXAvalue[mod->port]=samples[i].range;
-		}
+	for (unsigned int i = 0; i < cfg.sample_count; i++) {
+		pdata.ranges[i] = PXAvalue[i];
 	}
-	/*
-	 #define  infrProxSen 0 //#DIO：红外接近传感器端口号
-	 #define colliSen 1  //#DIO：碰撞传感器端口号
-	 #define soundSen 2  //#DIO：声音传感器端口号
-	 #define gestSen 3   //#DIO：姿态传感器端口号
-	 #define hallSen 4   //#DIO：霍尔接近传感器端口号
-	 #define dout 5 //#DIO：输出端口端口号
-	 #define infrDistSen 100 //#AIO：红外测距传感器端口号
-	 #define tempSen 101 //#AIO：温度传感器端口号
-	 #define graySen 102  //#AIO：灰度传感器端口号
-	 #define lightSen 103  //#AIO：光强传感器端口号
-	 #define RS422Sen 200     //RS422
-	 */
-	//0 -no data , 1-data
 
-	// Write laser data
 	this->driver->Publish(this->addr, PLAYER_MSGTYPE_DATA,
-			PLAYER_LASER_DATA_SCAN, (void*) &pdata, sizeof(pdata), NULL);
+			PLAYER_CYZXLASER_DATA_SCAN, (void*) &pdata, sizeof(pdata), NULL);
 
 	delete[] pdata.ranges;
 	delete[] pdata.intensity;
 }
 
-int InterfaceLaser::ProcessMessage(QueuePointer & resp_queue,
+int InterfacecyzxLaser::ProcessMessage(QueuePointer & resp_queue,
 		player_msghdr_t* hdr, void* data) {
 	ModelPosition* modpos2d = (ModelPosition*) this->mod;
 	if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_DATA,
 			PLAYER_POSITION2D_DATA_STATE, this->require_addr)) {
-		printf("--run here in Laser\n");
+		printf("--run here in cyzxLaser\n");
 		if (this->conf.type == FPOS2D8BUTTON) {
 			player_position2d_data_t_redress* pcmd =
 					(player_position2d_data_t_redress*) data;
@@ -136,22 +107,21 @@ int InterfaceLaser::ProcessMessage(QueuePointer & resp_queue,
 		}
 	}
 
-	ModelLaser* mod = (ModelLaser*) this->mod;
+	ModelcyzxLaser* mod = (ModelcyzxLaser*) this->mod;
 
-	// Is it a request to set the laser's config?
+	// Is it a request to set the cyzxlaser's config?
 	if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_REQ,
-			PLAYER_LASER_REQ_SET_CONFIG, this->addr)) {
+			PLAYER_CYZXLASER_REQ_SET_CONFIG, this->addr)) {
 
+		player_cyzxlaser_config_t* plc = (player_cyzxlaser_config_t*) data;
 
-		player_laser_config_t* plc = (player_laser_config_t*) data;
-
-		if (hdr->size == sizeof(player_laser_config_t)) {
+		if (hdr->size == sizeof(player_cyzxlaser_config_t)) {
 			// TODO
 			// int intensity = plc->intensity;
 
-			ModelLaser::Config cfg = mod->GetConfig();
+			ModelcyzxLaser::Config cfg = mod->GetConfig();
 
-			PRINT_DEBUG3( "laser config was: resolution %d, fov %.6f, interval %d\n",
+			PRINT_DEBUG3( "cyzxlaser config was: resolution %d, fov %.6f, interval %d\n",
 					cfg.resolution, cfg.fov, cfg.interval );
 
 			cfg.fov = plc->max_angle - plc->min_angle;
@@ -161,7 +131,7 @@ int InterfaceLaser::ProcessMessage(QueuePointer & resp_queue,
 				cfg.resolution = 1;
 			cfg.interval = (stg_usec_t) (1.0E6 / plc->scanning_frequency);
 
-			PRINT_DEBUG3( "setting laser config: resolution %d, fov %.6f, interval %d\n",
+			PRINT_DEBUG3( "setting cyzxlaser config: resolution %d, fov %.6f, interval %d\n",
 					cfg.resolution, cfg.fov, cfg.interval );
 
 			// Range resolution is currently locked to the world setting
@@ -171,22 +141,22 @@ int InterfaceLaser::ProcessMessage(QueuePointer & resp_queue,
 			mod->SetConfig(cfg);
 
 			this->driver->Publish(this->addr, resp_queue,
-					PLAYER_MSGTYPE_RESP_ACK, PLAYER_LASER_REQ_SET_CONFIG);
+					PLAYER_MSGTYPE_RESP_ACK, PLAYER_CYZXLASER_REQ_SET_CONFIG);
 			return (0);
 		} else {
 			PRINT_ERR2("config request len is invalid (%d != %d)",
-					(int)hdr->size, (int)sizeof(player_laser_config_t));
+					(int)hdr->size, (int)sizeof(player_cyzxlaser_config_t));
 
 			return (-1);
 		}
 	}
-	// Is it a request to get the laser's config?
+	// Is it a request to get the cyzxlaser's config?
 	else if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_REQ,
-			PLAYER_LASER_REQ_GET_CONFIG, this->addr)) {
+			PLAYER_CYZXLASER_REQ_GET_CONFIG, this->addr)) {
 		if (hdr->size == 0) {
-			ModelLaser::Config cfg = mod->GetConfig();
+			ModelcyzxLaser::Config cfg = mod->GetConfig();
 
-			player_laser_config_t plc;
+			player_cyzxlaser_config_t plc;
 			memset(&plc, 0, sizeof(plc));
 			plc.min_angle = -cfg.fov / 2.0;
 			plc.max_angle = +cfg.fov / 2.0;
@@ -197,7 +167,7 @@ int InterfaceLaser::ProcessMessage(QueuePointer & resp_queue,
 			plc.scanning_frequency = 1.0E6 / cfg.interval;
 
 			this->driver->Publish(this->addr, resp_queue,
-					PLAYER_MSGTYPE_RESP_ACK, PLAYER_LASER_REQ_GET_CONFIG,
+					PLAYER_MSGTYPE_RESP_ACK, PLAYER_CYZXLASER_REQ_GET_CONFIG,
 					(void*) &plc, sizeof(plc), NULL);
 			return (0);
 		} else {
@@ -206,16 +176,16 @@ int InterfaceLaser::ProcessMessage(QueuePointer & resp_queue,
 			return (-1);
 		}
 	}
-	// Is it a request to get the laser's geom?
+	// Is it a request to get the cyzxlaser's geom?
 	else if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_REQ,
-			PLAYER_LASER_REQ_GET_GEOM, this->addr)) {
+			PLAYER_CYZXLASER_REQ_GET_GEOM, this->addr)) {
 		if (hdr->size == 0) {
 			Geom geom = this->mod->GetGeom();
 
 			Pose pose = this->mod->GetPose();
 
 			// fill in the geometry data formatted player-like
-			player_laser_geom_t pgeom;
+			player_cyzxlaser_geom_t pgeom;
 			pgeom.pose.px = pose.x;
 			pgeom.pose.py = pose.y;
 			pgeom.pose.pyaw = pose.a;
@@ -223,7 +193,7 @@ int InterfaceLaser::ProcessMessage(QueuePointer & resp_queue,
 			pgeom.size.sw = geom.size.y;
 
 			this->driver->Publish(this->addr, resp_queue,
-					PLAYER_MSGTYPE_RESP_ACK, PLAYER_LASER_REQ_GET_GEOM,
+					PLAYER_MSGTYPE_RESP_ACK, PLAYER_CYZXLASER_REQ_GET_GEOM,
 					(void*) &pgeom, sizeof(pgeom), NULL);
 			return (0);
 		} else {
@@ -234,7 +204,7 @@ int InterfaceLaser::ProcessMessage(QueuePointer & resp_queue,
 	}
 
 	// Don't know how to handle this message.
-	PRINT_WARN2( "stage laser doesn't support message %d:%d.", hdr->type,
+	PRINT_WARN2( "stage cyzxlaser doesn't support message %d:%d.", hdr->type,
 			hdr->subtype);
 	return (-1);
 }

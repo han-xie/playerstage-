@@ -36,6 +36,7 @@ SET (playercSrcs    playerc.h
                     dev_ir.c
                     dev_joystick.c
                     dev_laser.c
+  		            dev_cyzxlaser.c
                     dev_limb.c
                     dev_localize.c
                     dev_log.c

@@ -475,6 +475,13 @@ namespace Stg
       LaserVisible, ///< detected by laser with a reflected intensity of 0 
       LaserBright  ///< detected by laser with a reflected intensity of 1 
     } stg_laser_return_t;
+
+  typedef enum 
+    {
+      cyzxLaserTransparent=0, ///<not detected by laser model 
+      cyzxLaserVisible, ///< detected by laser with a reflected intensity of 0 
+      cyzxLaserBright  ///< detected by laser with a reflected intensity of 1 
+    } stg_cyzxlaser_return_t;
   
   /** Convenient OpenGL drawing routines, used by visualization
 		code. */
@@ -1872,6 +1879,7 @@ namespace Stg
 		int fiducial_return;
 		bool gripper_return;
 		stg_laser_return_t laser_return;
+		stg_cyzxlaser_return_t cyzxlaser_return;
 		bool obstacle_return;
 		bool ranger_return;
 		bool gravity_return;
@@ -2209,6 +2217,7 @@ namespace Stg
 	 void SetGripperReturn( int val );
 	 void SetStickyReturn( int val );
 	 void SetLaserReturn( stg_laser_return_t val );
+	 void SetcyzxLaserReturn( stg_cyzxlaser_return_t val );
 	 void SetObstacleReturn( int val );
 	 void SetBlobReturn( int val );
 	 void SetHallReturn(int val);
@@ -2599,28 +2608,21 @@ namespace Stg
     };
 
 
-  // LASER MODEL --------------------------------------------------------
+// cyzxLASER MODEL --------------------------------------------------------
   
-  /// %ModelLaser class
-  class ModelLaser : public Model
+  /// %ModelcyzxLaser class
+  class ModelcyzxLaser : public Model
   {
   public:
-	 /** Laser range data */
+	 /** cyzxLaser range data */
 	 class Sample
 	 {
 	 public:
-		stg_meters_t range; ///< range to laser hit in meters
+		stg_meters_t range; ///< range to cyzxlaser hit in meters
 		double reflectance; ///< intensity of the reflection 0.0 to 1.0
 	 };
 
-	 class CYZXLaser{
-	 public:
-		 stg_meters_t range_max;
-		 stg_meters_t range_min;
-		 double angle_from;
-		 double angle_to;
-		 std::string type;
-	 };
+
 
 	 class FixModel{
 	 public:
@@ -2634,7 +2636,6 @@ namespace Stg
 	 {
 	 public:
 		uint32_t sample_count; ///< Number of range samples
-		uint32_t cyzxlaserc_count;
 		uint32_t resolution; ///< interpolation
 		Bounds range_bounds; ///< min and max ranges
 		stg_radians_t fov; ///< Field of view, centered about the pose angle
@@ -2656,12 +2657,10 @@ namespace Stg
 	 } vis;
 	 	
 	 unsigned int sample_count;
-	 unsigned int cyzxlaserc_count;
-	 unsigned int laserCount ;
-	 unsigned int laserAngle ;
+	 unsigned int cyzxlaserCount ;
+	 unsigned int cyzxlaserAngle ;
 
 	 std::vector<Sample> samples;
-	 std::vector<CYZXLaser> cyzxlaserc;
 	 FixModel tempModel;
 
 	 stg_meters_t range_max;
@@ -2671,7 +2670,111 @@ namespace Stg
     
 	 // set up data buffers after the config changes
 	 void SampleConfig();
-	 void CYZXLaserConfig();
+	 void LoadFixModel();/*it's very bad to do like this,
+	                       actually I should add a model for temperature and so on .*/
+
+  public:
+	 // constructor
+	 ModelcyzxLaser( World* world,
+					 Model* parent,
+					 const std::string& type ); 
+  
+	 // destructor
+	 ~ModelcyzxLaser();
+	
+	 virtual void Startup();
+	 virtual void Shutdown();
+	 virtual void Update();
+	 virtual void Load();
+	 virtual void Print( char* prefix );
+  
+	 /** returns an array of range & reflectance samples */
+	 Sample* GetSamples( uint32_t* count );
+
+	 
+	 /** returns a const reference to a vector of range and reflectance samples */
+	 const std::vector<Sample>& GetSamples();
+	 
+	 /** Get the user-tweakable configuration of the cyzxlaser */
+	 Config GetConfig( );
+	 FixModel GetTempModelPos();
+	 
+	 /** Set the user-tweakable configuration of the cyzxlaser */
+	 void SetConfig( Config& cfg );  
+
+	 void openHiddenModel();
+  };
+
+
+  // LASER MODEL --------------------------------------------------------
+  
+  /// %ModelLaser class
+  class ModelLaser : public Model
+  {
+  public:
+	 /** Laser range data */
+	 class Sample
+	 {
+	 public:
+		stg_meters_t range; ///< range to laser hit in meters
+		double reflectance; ///< intensity of the reflection 0.0 to 1.0
+	 };
+
+	 enum portaiodio{
+		 AIO=0,
+		 DIO,
+	 };
+
+	 class FixModel{
+	 public:
+		 stg_meters_t x;
+		 stg_meters_t y;
+		 stg_meters_t z;
+	 };
+		
+	 /** Convenience object for setting parameters using SetConfig/GetConfig */
+	 class Config
+	 {
+	 public:
+		uint32_t sample_count; ///< Number of range samples
+		uint32_t resolution; ///< interpolation
+		Bounds range_bounds; ///< min and max ranges
+		stg_radians_t fov; ///< Field of view, centered about the pose angle
+		stg_usec_t interval; ///< Time interval  between updates (TODO: is this used?)
+	 };
+	 int port;
+	 portaiodio porttype;
+	 stg_meters_t range_max;
+	 stg_meters_t range_min;
+		
+  private:	 
+	 class Vis : public Visualizer 
+	 {
+	 private:
+		static Option showArea;
+		static Option showStrikes;
+		static Option showFov;
+		static Option showBeams;
+
+	 public:
+		Vis( World* world );		virtual ~Vis( void ){}
+		virtual void Visualize( Model* mod, Camera* cam );
+	 } vis;
+	 	
+	 unsigned int sample_count;
+	 unsigned int laserCount ;
+	 unsigned int laserAngle ;
+
+	 std::vector<Sample> samples;
+	 FixModel tempModel;
+
+
+	 stg_radians_t fov;
+	 uint32_t resolution;
+
+    
+	 // set up data buffers after the config changes
+	 void SampleConfig();
 	 void LoadFixModel();/*it's very bad to do like this,
 	                       actually I should add a model for temperature and so on .*/
 
@@ -2692,11 +2795,10 @@ namespace Stg
   
 	 /** returns an array of range & reflectance samples */
 	 Sample* GetSamples( uint32_t* count );
-	 CYZXLaser* GetCYZXLaserConf(uint32_t* count);
+
 	 
 	 /** returns a const reference to a vector of range and reflectance samples */
 	 const std::vector<Sample>& GetSamples();
-	 const std::vector<CYZXLaser>& GetCYZXLaserConf();
 	 
 	 /** Get the user-tweakable configuration of the laser */
 	 Config GetConfig( );

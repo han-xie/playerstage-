@@ -354,6 +354,10 @@ StgDriver::StgDriver(ConfigFile* cf, int section)
 		ifsrc = new InterfaceLaser( player_addr,  this, cf, section );
 		break;
 
+case PLAYER_CYZXLASER_CODE:
+		ifsrc = new InterfacecyzxLaser( player_addr,  this, cf, section );
+		break;
+
 	case PLAYER_POSITION2D_CODE:
 		ifsrc = new InterfacePosition( player_addr, this,  cf, section );
 		break;

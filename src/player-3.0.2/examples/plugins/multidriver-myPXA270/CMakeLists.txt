@@ -12,6 +12,7 @@ set( stagepluginSrcs
 	     CYZXInter.h
 	     p_position.cc
 	     p_laser.cc
+	     p_cyzxlaser.cc
 	     p_opaque.cc
 	     p_blobfinder.cc
 	     p_hallsensor.cc

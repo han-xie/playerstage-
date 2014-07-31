@@ -190,6 +190,7 @@ IF (BUILD_PLAYERCC)
                         irproxy.cc
                         joystickproxy.cc
                         laserproxy.cc
+			cyzxlaserproxy.cc
                         limbproxy.cc
                         localizeproxy.cc
                         logproxy.cc

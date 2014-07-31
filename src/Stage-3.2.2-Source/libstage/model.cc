@@ -32,6 +32,7 @@
  ranger_return 1
  blob_return 1
  laser_return LaserVisible
+ cyzxlaser_return 0
  gripper_return 0
  gravity_return 0
  sticky_return 0
@@ -206,7 +207,7 @@ void Pose::Save(Worldfile* wf, int section, const char* keyword) {
 Model::Visibility::Visibility() :
 		blob_return(true), hall_return(true), light_return(true), gray_return(
 				true), fiducial_key(0), fiducial_return(0), gripper_return(
-				false), laser_return(LaserVisible), obstacle_return(true), ranger_return(
+				false), laser_return(LaserVisible),cyzxlaser_return(cyzxLaserVisible), obstacle_return(true), ranger_return(
 				true) { /* nothing do do */
 }
 
@@ -224,6 +225,8 @@ void Model::Visibility::Load(Worldfile* wf, int wf_entity) {
 	gripper_return = wf->ReadInt(wf_entity, "gripper_return", gripper_return);
 	laser_return = (stg_laser_return_t) wf->ReadInt(wf_entity, "laser_return",
 			laser_return);
+	cyzxlaser_return = (stg_cyzxlaser_return_t) wf->ReadInt(wf_entity, "cyzxlaser_return",
+			cyzxlaser_return);
 	obstacle_return = wf->ReadInt(wf_entity, "obstacle_return",
 			obstacle_return);
 	ranger_return = wf->ReadInt(wf_entity, "ranger_return", ranger_return);
