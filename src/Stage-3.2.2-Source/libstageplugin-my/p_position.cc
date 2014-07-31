@@ -44,6 +44,7 @@
 using namespace Stg;
 #include <string.h>
 
+//extern OpaqueModel opaquem;
 
 InterfacePosition::InterfacePosition(player_devaddr_t addr, StgDriver* driver,
 		ConfigFile* cf, int section) :

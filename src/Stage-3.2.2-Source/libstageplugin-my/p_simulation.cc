@@ -62,6 +62,7 @@
 #include "p_driver.h"
 using namespace Stg;
 
+// these are Player globals
 extern bool player_quiet_startup;
 extern PlayerTime* GlobalTime;
 extern bool usegui;

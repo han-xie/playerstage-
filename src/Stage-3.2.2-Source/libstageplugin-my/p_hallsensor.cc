@@ -37,7 +37,6 @@
 
 #include "p_driver.h"
 using namespace Stg;
-#include <libplayercore/globals.h>
 
 extern bool PXAupdate[PXA270PORTS];
 extern uint32_t PXAcount[PXA270PORTS];
@@ -49,9 +48,9 @@ InterfaceHallsensor::InterfaceHallsensor( player_devaddr_t addr,
 				int section )
   : InterfaceModel( addr, driver, cf, section, "hallsensor" )
 {
-	ModelHallsensor* hallmod = (ModelHallsensor*)this->mod;
-	PXAupdate[hallmod->port]=true;
   // nothing to do for now
+	ModelHallsensor* hallmod = (ModelHallsensor*)this->mod;
+		PXAupdate[hallmod->port]=true;
 }
 
 

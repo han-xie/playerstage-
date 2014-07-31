@@ -40,9 +40,7 @@
 using namespace Stg;
 #include <string.h>
 #include <math.h>
-#include <libplayercore/globals.h>
 
-#define maxAioValue 32767
 extern bool PXAupdate[PXA270PORTS];
 extern uint32_t PXAcount[PXA270PORTS];
 extern float PXAvalue[PXA270PORTS];
@@ -53,6 +51,62 @@ InterfaceLaser::InterfaceLaser(player_devaddr_t addr, StgDriver* driver,
 		ConfigFile* cf, int section) :
 		InterfaceModel(addr, driver, cf, section, "laser") {
 	this->scan_id = 0;
+	/*std::string laserType = "infroProxSensor";
+	laserType = cf->ReadString(section, "lasertype", laserType.data());
+	const char *p = laserType.data();
+	if (strcmp(p, "infroProxSen") == 0)
+		this->conf.macroName = infrProxSensor;
+	else if (strcmp(p, "colliSen") == 0)
+		this->conf.macroName = colliSensor;
+	else if (strcmp(p, "soundSen") == 0)
+		this->conf.macroName = soundSensor;
+	else if (strcmp(p, "gestSen") == 0)
+		this->conf.macroName = gestSensor;
+	else if (strcmp(p, "hallSen") == 0)
+		this->conf.macroName = hallSensor;
+	else if (strcmp(p, "dout") == 0)
+		this->conf.macroName = doutSensor;
+	else if (strcmp(p, "infrDistSen") == 0)
+		this->conf.macroName = infrDistSensor;
+	else if (strcmp(p, "tempSen") == 0)
+		this->conf.macroName = tempSensor;
+	else if (strcmp(p, "graySen") == 0)
+		this->conf.macroName = graySensor;
+	else if (strcmp(p, "lightSen") == 0)
+		this->conf.macroName = lightSensor;
+	else if (strcmp(p, "RS422Sen") == 0)
+		this->conf.macroName = RS422Sensor;
+	else
+		this->conf.macroName = DONTKNOW;
+	int type = this->conf.macroName;
+	if (type == infrProxSensor)
+		this->conf.type = DIOIN;
+	else if (type == colliSensor)
+		this->conf.type = DIOIN;
+	else if (type == soundSensor)
+		this->conf.type = DIOIN;
+	else if (type == gestSensor)
+		this->conf.type = DIOIN;
+	else if (type == hallSensor)
+		this->conf.type = DIOIN;
+	else if (type == doutSensor)
+		this->conf.type = DIOOUT;
+	else if (type == infrDistSensor)
+		this->conf.type = AIO;
+	else if (type == tempSensor)
+		this->conf.type = AIO;
+	else if (type == graySensor)
+		this->conf.type = AIO;
+	else if (type == lightSensor)
+		this->conf.type = AIO;
+	else if (type == RS422Sensor)
+		this->conf.type = RS422;
+	else
+		this->conf.type = DONTKNOW;*/
+	//opaquem.laserModel = (Stg::ModelLaser*) this->mod;
+	/*memset(&this->opaque_addr, 0, sizeof(player_devaddr_t));
+	 cf->ReadDeviceAddr(&this->opaque_addr, section, "requires",
+	 PLAYER_OPAQUE_CODE, -1, NULL);*/
 }
 
 void InterfaceLaser::Publish(void) {
@@ -117,9 +171,7 @@ void InterfaceLaser::Publish(void) {
 			}
 
 		}else if(strcmp(cyzxlc[i].type.data(),"hallSen")==0){
-
 		}else if (strcmp(cyzxlc[i].type.data(),"soundSen")==0 ) {
-
 		} else if (strcmp(cyzxlc[i].type.data(),"gestSen")==0 ) {
 
 		} else if (strcmp(cyzxlc[i].type.data(),"dout")==0 ) {
@@ -134,12 +186,10 @@ void InterfaceLaser::Publish(void) {
 				pdata.ranges[i]=sqrt(pow(sp.x-temp.x,2)+pow(sp.y-temp.y,2));
 			}
 			else{
-				pdata.ranges[i]=maxAioValue;
+				pdata.ranges[i]=0;
 			}
 		} else if (strcmp(cyzxlc[i].type.data(),"graySen")==0 ) {
-
 		} else if (strcmp(cyzxlc[i].type.data(),"lightSen")==0 ) {
-
 		} else if (strcmp(cyzxlc[i].type.data(),"RS422Sen")==0 ) {
 
 		}
@@ -161,10 +211,10 @@ void InterfaceLaser::Publish(void) {
 	//0 -no data , 1-data
 
 	// Write laser data
-	for(unsigned int i=0;i<cfg.cyzxlaserc_count;i++){
-		if(PXAupdate[i]==true)
-			pdata.ranges[i]=PXAvalue[i];
-	}
+	for (unsigned int i = 0; i < cfg.cyzxlaserc_count; i++) {
+			if (PXAupdate[i] == true)
+				pdata.ranges[i] = PXAvalue[i];
+		}
 	this->driver->Publish(this->addr, PLAYER_MSGTYPE_DATA,
 			PLAYER_LASER_DATA_SCAN, (void*) &pdata, sizeof(pdata), NULL);
 

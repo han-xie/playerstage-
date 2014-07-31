@@ -27,111 +27,126 @@
  */
 
 // DOCUMENTATION
+
 /** @addtogroup player
- @par Graysensor interface
- - PLAYER_GRAYSENSOR_DATA_GRAYS
- */
+@par Graysensor interface
+- PLAYER_GRAYSENSOR_DATA_GRAYS
+*/
 
 // CODE
+
 #include "p_driver.h"
 using namespace Stg;
-#include <libplayercore/globals.h>
 
 extern bool PXAupdate[PXA270PORTS];
 extern uint32_t PXAcount[PXA270PORTS];
 extern float PXAvalue[PXA270PORTS];
 
-InterfaceGraysensor::InterfaceGraysensor(player_devaddr_t addr,
-		StgDriver* driver, ConfigFile* cf, int section) :
-		InterfaceModel(addr, driver, cf, section, "graysensor") {
-	ModelGraysensor* graymod = (ModelGraysensor*) this->mod;
+InterfaceGraysensor::InterfaceGraysensor( player_devaddr_t addr,
+				StgDriver* driver,
+				ConfigFile* cf,
+				int section )
+  : InterfaceModel( addr, driver, cf, section, "graysensor" )
+{
+  // nothing to do for now
+	  ModelGraysensor* graymod = (ModelGraysensor*)this->mod;
 	PXAupdate[graymod->port] = true;
 	PXAcount[graymod->port] = 0;
 	PXAvalue[graymod->port] = 32767;
-	// nothing to do for now
 }
 
-void InterfaceGraysensor::Publish(void) {
-	player_graysensor_data_t bfd;
-	bzero(&bfd, sizeof(bfd));
 
-	ModelGraysensor* graymod = (ModelGraysensor*) this->mod;
+void InterfaceGraysensor::Publish( void )
+{
+  player_graysensor_data_t bfd;
+  bzero( &bfd, sizeof(bfd) );
 
-	uint32_t bcount = 0;
-	const ModelGraysensor::Gray* grays = graymod->GetGrays(&bcount);
-
+  ModelGraysensor* graymod = (ModelGraysensor*)this->mod;
+  
+  uint32_t bcount = 0;
+  const ModelGraysensor::Gray* grays = graymod->GetGrays( &bcount );
+  
 	if (bcount > 0) {
 		PXAcount[graymod->port] = bcount;
-	} else
+		PXAvalue[graymod->port] = 32767;
+	} else{
 		PXAcount[graymod->port] = 0;
+		PXAvalue[graymod->port] = 32767;
+	}
 
-	if (bcount > 0) {
-		// and set the image width * height
-		bfd.width = graymod->scan_width;
-		bfd.height = graymod->scan_height;
-		bfd.grays_count = bcount;
+  if ( bcount > 0 )
+  {
+	  // and set the image width * height
+	  bfd.width = graymod->scan_width;
+	  bfd.height = graymod->scan_height;
+	  bfd.grays_count = bcount;
 
-		bfd.grays = new player_graysensor_gray_t[bcount];
+	  bfd.grays = new player_graysensor_gray_t[ bcount ];
 
-		// now run through the grays, packing them into the player buffer
-		// counting the number of grays in each channel and making entries
-		// in the acts header
-		unsigned int b;
-		for (b = 0; b < bcount; b++) {
-			// useful debug - leave in
-			/*
-			 cout << "gray "
-			 << " left: " <<  grays[b].left
-			 << " right: " <<  grays[b].right
-			 << " top: " <<  grays[b].top
-			 << " bottom: " <<  grays[b].bottom
-			 << " color: " << hex << grays[b].color << dec
-			 << endl;
-			 */
+	  // now run through the grays, packing them into the player buffer
+	  // counting the number of grays in each channel and making entries
+	  // in the acts header
+	  unsigned int b;
+	  for( b=0; b<bcount; b++ )
+		{
+		  // useful debug - leave in
+		/*
+		cout << "gray "
+		<< " left: " <<  grays[b].left
+		<< " right: " <<  grays[b].right
+		<< " top: " <<  grays[b].top
+		<< " bottom: " <<  grays[b].bottom
+		<< " color: " << hex << grays[b].color << dec
+		<< endl;
+		  */
 
 			int dx = grays[b].right - grays[b].left;
 			int dy = grays[b].top - grays[b].bottom;
 
-			bfd.grays[b].x = grays[b].left + dx / 2;
-			bfd.grays[b].y = grays[b].bottom + dy / 2;
+		  bfd.grays[b].x      = grays[b].left + dx/2;
+		  bfd.grays[b].y      = grays[b].bottom + dy/2;
 
-			bfd.grays[b].left = grays[b].left;
-			bfd.grays[b].right = grays[b].right;
-			bfd.grays[b].top = grays[b].top;
-			bfd.grays[b].bottom = grays[b].bottom;
+		  bfd.grays[b].left   = grays[b].left;
+		  bfd.grays[b].right  = grays[b].right;
+		  bfd.grays[b].top    = grays[b].top;
+		  bfd.grays[b].bottom = grays[b].bottom;
 
-			bfd.grays[b].color = ((uint8_t) (grays[b].color.r * 255.0) << 16)
-					+ ((uint8_t) (grays[b].color.g * 255.0) << 8)
-					+ ((uint8_t) (grays[b].color.b * 255.0));
+		  bfd.grays[b].color =
+			 ((uint8_t)(grays[b].color.r*255.0) << 16) +
+			 ((uint8_t)(grays[b].color.g*255.0) << 8) +
+			 ((uint8_t)(grays[b].color.b*255.0));
+			 
+		  bfd.grays[b].area  = dx * dy;
 
-			bfd.grays[b].area = dx * dy;
-
-			bfd.grays[b].range = grays[b].range;
-			if (bfd.grays[b].range < PXAvalue[graymod->port])
-				PXAvalue[graymod->port] = bfd.grays[b].range;
+		  bfd.grays[b].range = grays[b].range;
+		  if (bfd.grays[b].range < PXAvalue[graymod->port])
+		  				PXAvalue[graymod->port] = bfd.grays[b].range;
 		}
-	}
+  }
 
-	// should change player interface to support variable-lenght gray data
-	// size_t size = sizeof(bfd) - sizeof(bfd.grays) + bcount * sizeof(bfd.grays[0]);
+  // should change player interface to support variable-lenght gray data
+  // size_t size = sizeof(bfd) - sizeof(bfd.grays) + bcount * sizeof(bfd.grays[0]);
 
-	this->driver->Publish(this->addr, PLAYER_MSGTYPE_DATA,
-			PLAYER_GRAYSENSOR_DATA_GRAYS, &bfd, sizeof(bfd), NULL);
-	if (bfd.grays)
-		delete[] bfd.grays;
+  this->driver->Publish( this->addr,
+								 PLAYER_MSGTYPE_DATA,
+								 PLAYER_GRAYSENSOR_DATA_GRAYS,
+								 &bfd, sizeof(bfd), NULL);
+  if ( bfd.grays )
+	  delete [] bfd.grays;
 }
 
-int InterfaceGraysensor::ProcessMessage(QueuePointer& resp_queue,
-		player_msghdr_t* hdr, void* data) {
-	// todo: handle configuration requests
+int InterfaceGraysensor::ProcessMessage( QueuePointer& resp_queue,
+													  player_msghdr_t* hdr,
+													  void* data )
+{
+  // todo: handle configuration requests
 
-	//else
-	{
-		// Don't know how to handle this message.
-		PRINT_WARN2(
-				"stg_graysensor doesn't support msg with type/subtype %d/%d",
-				hdr->type, hdr->subtype);
-		return (-1);
-	}
+  //else
+  {
+    // Don't know how to handle this message.
+    PRINT_WARN2( "stg_graysensor doesn't support msg with type/subtype %d/%d",
+		 hdr->type, hdr->subtype);
+    return(-1);
+  }
 }
 

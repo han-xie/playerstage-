@@ -3,7 +3,7 @@ resolution     0.02
 include "pioneer.inc"
 include "irobot.inc"
 include "map.inc"
-#include "demo-sick-light.inc"
+include "demo-sick-hall.inc"
 
 
 window
@@ -38,12 +38,15 @@ model(
 )
 
 position(
-localization "gps"
-localization_origin [ 0 0 0 0 ]
-size [0.330 0.280 0.25]
-color "red"
+  localization "gps"
+  localization_origin [ 0 0 0 0 ]
+  size [0.330 0.280 0.25]
+  color "red"
   name "robot1"
   pose [-2.64 -7.01 0 0]
+  sicklaser( 
+	pose [0.075 0 0 0 ] 
+        alwayson 1)
 
   #gripper( pose [0.23 0.000 -0.20 0.000] color "gray" )
 
@@ -54,6 +57,7 @@ color "red"
         colors_count 1 
         colors ["cyan"]  
 	alwayson 1
+	port "a0"
     )
 
   hallsensor( 
@@ -63,6 +67,7 @@ color "red"
         colors_count 1 
         colors ["cyan"]  
 	alwayson 1
+	port "a1"
   )
 
   hallsensor( 
@@ -72,6 +77,7 @@ color "red"
         colors_count 1 
         colors ["cyan"]  
 	alwayson 1
+	port "a2"
   )
 )
 

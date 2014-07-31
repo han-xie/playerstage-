@@ -12,12 +12,6 @@ define sicklaser laser
   # generic model properties
   color "blue"
   size [ 0.156 0.155 0.19 ] # dimensions from LMS200 data sheet	
-
-a0 ["infrDistSen" 130 140 0 3]
-a1 ["infrDistSen" 175 185 0 3]
-a2 ["infrDistSen" 220 230 0 3]
-#a3 ["lightSen"    0   180 0 2]
-#a4 ["lightSen"    180 360 0 2]
 )
 
 define sicklaser2 laser

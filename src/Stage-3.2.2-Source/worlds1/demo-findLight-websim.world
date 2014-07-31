@@ -69,6 +69,7 @@ trickedoutpioneer
         colors_count 6 
         colors [ "red" "blue" "green" "cyan" "yellow" "magenta" ]  
 		  alwayson 1
+        port "a3"
     )
 
   lightsensor( 
@@ -78,6 +79,7 @@ trickedoutpioneer
         colors_count 6 
         colors [ "red" "blue" "green" "cyan" "yellow" "magenta" ]  
 		  alwayson 1
+        port "a4"
   )
 
 )

@@ -49,7 +49,7 @@ define trickedoutpioneer pioneer2dx
 trickedoutpioneer
 (
   name "robot1"
-  pose [6.75 4.87 0 -90]
+  pose [2.99 1.33 0 -90]
 
   #gripper( pose [0.23 0.000 -0.20 0.000] color "gray" )
 

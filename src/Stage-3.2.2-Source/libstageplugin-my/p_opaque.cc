@@ -16,6 +16,7 @@
 using namespace Stg;
 #include "CYZXInter.h"
 
+//extern OpaqueModel opaquem;
 extern bool player_quiet_startup;
 extern PlayerTime* GlobalTime;
 extern bool usegui;
@@ -306,7 +307,7 @@ int InterfaceOpaque::dealOpaquePosition2d(QueuePointer & resp_queue,
 	int Aratio = 57;
 
 	Stg::ModelPosition *mod = (Stg::ModelPosition *) StgDriver::world->GetModel(
-			popa->name);
+			(char*)popa->name);
 
 	switch (popa->subtype) {
 	case POS2DSET4TIRESF: {

@@ -147,6 +147,8 @@
 #include "config.h"
 #include "p_driver.h"
 using namespace Stg;
+//#include <libplayercore/globals.h>
+
 
 const char* copyright_notice =
 		"\n * Part of the Player Project [http://playerstage.sourceforge.net]\n"
@@ -156,11 +158,18 @@ const char* copyright_notice =
 #define STG_DEFAULT_WORLDFILE "default.world"
 #define DRIVER_ERROR(X) printf( "Stage driver error: %s\n", X )
 
-
+// globals from Player
 extern PlayerTime* GlobalTime;
+//extern int global_argc;
+//extern char** global_argv;
 extern bool player_quiet_startup;
 extern bool player_quit;
+//OpaqueModel opaquem;
 int globalMyupdateSign = 0;
+
+extern bool PXAupdate[PXA270PORTS];
+extern uint32_t PXAcount[PXA270PORTS];
+extern float PXAvalue[PXA270PORTS];
 
 // init static vars
 World* StgDriver::world = NULL;
