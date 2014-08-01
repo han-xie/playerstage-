@@ -75,6 +75,16 @@ void InterfacecyzxLaser::Publish(void) {
 		pdata.ranges[i] = PXAvalue[i];
 	}
 
+	/*ModelcyzxLaser::FixModel temp = mod->GetTempModelPos();
+	Model* pos = mod->Parent();
+	if (pos != NULL) {
+		Stg::Pose sp = pos->GetPose();
+		pdata.ranges[i] = sqrt(
+				pow(sp.x - temp.x, 2) + pow(sp.y - temp.y, 2));
+	} else {
+		pdata.ranges[i] = maxAioValue;
+	}*/
+
 	this->driver->Publish(this->addr, PLAYER_MSGTYPE_DATA,
 			PLAYER_CYZXLASER_DATA_SCAN, (void*) &pdata, sizeof(pdata), NULL);
 

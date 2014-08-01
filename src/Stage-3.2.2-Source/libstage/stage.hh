@@ -2721,15 +2721,8 @@ namespace Stg
 	 };
 
 	 enum portaiodio{
-		 AIO=0,
-		 DIO,
-	 };
-
-	 class FixModel{
-	 public:
-		 stg_meters_t x;
-		 stg_meters_t y;
-		 stg_meters_t z;
+		 PAIO=0,
+		 PDIO,
 	 };
 		
 	 /** Convenience object for setting parameters using SetConfig/GetConfig */
@@ -2746,6 +2739,8 @@ namespace Stg
 	 portaiodio porttype;
 	 stg_meters_t range_max;
 	 stg_meters_t range_min;
+	 int special;
+	 Pose fixpose;
 		
   private:	 
 	 class Vis : public Visualizer 
@@ -2766,7 +2761,6 @@ namespace Stg
 	 unsigned int laserAngle ;
 
 	 std::vector<Sample> samples;
-	 FixModel tempModel;
 
 
 	 stg_radians_t fov;
@@ -2775,8 +2769,6 @@ namespace Stg
     
 	 // set up data buffers after the config changes
 	 void SampleConfig();
-	 void LoadFixModel();/*it's very bad to do like this,
-	                       actually I should add a model for temperature and so on .*/
 
   public:
 	 // constructor
@@ -2802,7 +2794,6 @@ namespace Stg
 	 
 	 /** Get the user-tweakable configuration of the laser */
 	 Config GetConfig( );
-	 FixModel GetTempModelPos();
 	 
 	 /** Set the user-tweakable configuration of the laser */
 	 void SetConfig( Config& cfg );  

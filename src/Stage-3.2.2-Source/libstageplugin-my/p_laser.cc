@@ -51,7 +51,7 @@ InterfaceLaser::InterfaceLaser(player_devaddr_t addr, StgDriver* driver,
 		ConfigFile* cf, int section) :
 		InterfaceModel(addr, driver, cf, section, "laser") {
 	this->scan_id = 0;
-	ModelLaser* lasermod = (ModelLaser*)this->mod;
+	ModelLaser* lasermod = (ModelLaser*) this->mod;
 	PXAupdate[lasermod->port] = true;
 	PXAcount[lasermod->port] = 0;
 	PXAvalue[lasermod->port] = MAXRANGE;
@@ -59,56 +59,94 @@ InterfaceLaser::InterfaceLaser(player_devaddr_t addr, StgDriver* driver,
 
 void InterfaceLaser::Publish(void) {
 	ModelLaser* mod = (ModelLaser*) this->mod;
-	ModelLaser::Sample* samples = mod->GetSamples(NULL);
+	if (mod->porttype == Stg::ModelLaser::PDIO){
+		PXAcount[mod->port] = 0;
+		PXAvalue[mod->port] = 0;
+	}
+	else{
+		PXAcount[mod->port] = 0;
+		PXAvalue[mod->port] = MAXRANGE;
+	}
 
-	// don't publish anything until we have some real data
-	if (samples == NULL)
-		return;
+	if (mod->special == 1) {
+					Model* pos = mod->Parent();
+					if (pos != NULL) {
+						Stg::Pose sp = pos->GetPose();
+						float temp = sqrt(pow(sp.x - mod->fixpose.x, 2) + pow(sp.y - mod->fixpose.y, 2));
+						if(temp <=mod->range_max && temp >=mod->range_min){
+							if(mod->porttype == Stg::ModelLaser::PAIO){
+								PXAcount[mod->port] = 1;
+								PXAvalue[mod->port] = temp;
+							}
+							else{
+								PXAcount[mod->port] = 1;
+								PXAvalue[mod->port] = 1;
+							}
+						}
+					}
 
-	if(mod->porttype==DIO)PXAvalue[mod->port]=0;
-	else PXAvalue[mod->port]=MAXRANGE;
+	} else {
+		ModelLaser::Sample* samples = mod->GetSamples(NULL);
 
-	player_laser_data_t pdata;
-	memset(&pdata, 0, sizeof(pdata));
+		// don't publish anything until we have some real data
+		if (samples == NULL)
+			return;
 
-	ModelLaser::Config cfg = mod->GetConfig();
-	pdata.min_angle = -cfg.fov / 2.0;
+		player_laser_data_t pdata;
+		memset(&pdata, 0, sizeof(pdata));
+
+		ModelLaser::Config cfg = mod->GetConfig();
+		pdata.min_angle = -cfg.fov / 2.0;
 		pdata.max_angle = +cfg.fov / 2.0;
 		pdata.resolution = cfg.fov / cfg.sample_count;
 		pdata.max_range = cfg.range_bounds.max;
 		pdata.ranges_count = pdata.intensity_count = cfg.sample_count;
 		pdata.id = this->scan_id++;
 
-	pdata.ranges = new float[pdata.ranges_count];
-	pdata.intensity = new uint8_t[pdata.ranges_count];
+		pdata.ranges = new float[pdata.ranges_count];
+		pdata.intensity = new uint8_t[pdata.ranges_count];
 
-	for(int i=0;i<pdata.ranges_count;i++){
-		if(samples[i].range<mod->range_max&&samples[i].range>mod->range_min){
-			if(mod->porttype == DIO){ PXAvalue[mod->port]=1;break;}
-			if(PXAvalue[mod->port]<samples[i].range)PXAvalue[mod->port]=samples[i].range;
+		for (int i = 0; i < pdata.ranges_count; i++) {
+			if (samples[i].range <= mod->range_max
+					&& samples[i].range >= mod->range_min) {
+				if (mod->porttype == Stg::ModelLaser::PDIO) {
+					PXAcount[mod->port] = 1;
+					PXAvalue[mod->port] = 1;
+					break;
+				}
+				if (samples[i].range < PXAvalue[mod->port]){
+					PXAcount[mod->port] = 1;
+					PXAvalue[mod->port] = samples[i].range;
+				}
+			}
 		}
+
+		for (unsigned int i = 0; i < cfg.sample_count; i++) {
+			pdata.ranges[i] = samples[i].range;
+			pdata.intensity[i] = (uint8_t) samples[i].reflectance;
+		}
+
+		/*
+		 #define  infrProxSen 0 //#DIO：红外接近传感器端口号
+		 #define colliSen 1  //#DIO：碰撞传感器端口号
+		 #define soundSen 2  //#DIO：声音传感器端口号
+		 #define gestSen 3   //#DIO：姿态传感器端口号
+		 #define hallSen 4   //#DIO：霍尔接近传感器端口号
+		 #define dout 5 //#DIO：输出端口端口号
+		 #define infrDistSen 100 //#AIO：红外测距传感器端口号
+		 #define tempSen 101 //#AIO：温度传感器端口号
+		 #define graySen 102  //#AIO：灰度传感器端口号
+		 #define lightSen 103  //#AIO：光强传感器端口号
+		 #define RS422Sen 200     //RS422
+		 */
+		//0 -no data , 1-data
+		// Write laser data
+		this->driver->Publish(this->addr, PLAYER_MSGTYPE_DATA,
+				PLAYER_LASER_DATA_SCAN, (void*) &pdata, sizeof(pdata), NULL);
+
+		delete[] pdata.ranges;
+		delete[] pdata.intensity;
 	}
-	/*
-	 #define  infrProxSen 0 //#DIO：红外接近传感器端口号
-	 #define colliSen 1  //#DIO：碰撞传感器端口号
-	 #define soundSen 2  //#DIO：声音传感器端口号
-	 #define gestSen 3   //#DIO：姿态传感器端口号
-	 #define hallSen 4   //#DIO：霍尔接近传感器端口号
-	 #define dout 5 //#DIO：输出端口端口号
-	 #define infrDistSen 100 //#AIO：红外测距传感器端口号
-	 #define tempSen 101 //#AIO：温度传感器端口号
-	 #define graySen 102  //#AIO：灰度传感器端口号
-	 #define lightSen 103  //#AIO：光强传感器端口号
-	 #define RS422Sen 200     //RS422
-	 */
-	//0 -no data , 1-data
-
-	// Write laser data
-	this->driver->Publish(this->addr, PLAYER_MSGTYPE_DATA,
-			PLAYER_LASER_DATA_SCAN, (void*) &pdata, sizeof(pdata), NULL);
-
-	delete[] pdata.ranges;
-	delete[] pdata.intensity;
 }
 
 int InterfaceLaser::ProcessMessage(QueuePointer & resp_queue,
@@ -141,7 +179,6 @@ int InterfaceLaser::ProcessMessage(QueuePointer & resp_queue,
 	// Is it a request to set the laser's config?
 	if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_REQ,
 			PLAYER_LASER_REQ_SET_CONFIG, this->addr)) {
-
 
 		player_laser_config_t* plc = (player_laser_config_t*) data;
 

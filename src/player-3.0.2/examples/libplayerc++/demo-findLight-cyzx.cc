@@ -232,6 +232,9 @@ int main(int argc, char **argv) {
 		pp = new Position2dProxy(robot,gIndex);
 		lp = new cyzxLaserProxy(robot, gIndex);
 
+		PlayerCc::LightsensorProxy *lspLeft;
+		PlayerCc::LightsensorProxy *lspRight;
+
 		double minR = 2;
 		double minL = 2;
 		double minF = 2;

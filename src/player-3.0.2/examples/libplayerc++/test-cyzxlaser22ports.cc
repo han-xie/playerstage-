@@ -101,8 +101,8 @@ main(int argc, char *argv[])
   parse_args(argc, argv);
 
   PlayerClient    robot(gHostname, gPort);
-  LaserProxy      lp(&robot,gIndex);
-  //Position2dProxy pp(&robot,gIndex);
+  cyzxLaserProxy      lp(&robot,0);
+  Position2dProxy pp(&robot,0);
 
   char i;
 

@@ -122,12 +122,17 @@ void ModelLaser::Load(void) {
 	 //fov =  6.2831853071795862; 	//there not 360 degree*/
 
 	range_max = wf->ReadLength(wf_entity, "range_max", range_max);
-	range_min = wf->ReadLength(wf_entity,"range_min",0);
+	range_min = wf->ReadLength(wf_entity,"range_min",0.0001);
 	resolution = wf->ReadInt(wf_entity, "resolution", resolution);
 	std::string portname=wf->ReadString(wf_entity,"port","a0");
 	port=Model::GetCYZXPort(portname.c_str());
-	if(port>=8&&port<=19) porttype=DIO;
-	else porttype=AIO;
+	if(port>=8&&port<=19) porttype=PDIO;
+	else porttype=PAIO;
+	special = wf->ReadInt(wf_entity,"special",0);
+	fixpose.x= wf->ReadTupleFloat(wf_entity, "spose", 0, 0);
+	fixpose.y = wf->ReadTupleFloat(wf_entity, "spose", 1, 0);
+	fixpose.z = wf->ReadTupleFloat(wf_entity, "spose", 2, 0);
+	fixpose.a = wf->ReadTupleFloat(wf_entity, "spose", 3, 0);
 
 	if (resolution < 1) {
 		PRINT_WARN( "laser resolution set < 1. Forcing to 1");
@@ -137,8 +142,6 @@ void ModelLaser::Load(void) {
 	Model::Load();
 
 	SampleConfig();
-
-	LoadFixModel();
 }
 
 ModelLaser::Config ModelLaser::GetConfig() {
@@ -181,12 +184,7 @@ void ModelLaser::openHiddenModel() {
 	 grayupdate = true;
 	 }*/
 }
-void ModelLaser::LoadFixModel() {
-	//load temperature model
-	tempModel.x = wf->ReadTupleFloat(wf_entity, "temperaturesource", 0, 0);
-	tempModel.y = wf->ReadTupleFloat(wf_entity, "temperaturesource", 1, 0);
-	tempModel.z = wf->ReadTupleFloat(wf_entity, "temperaturesource", 2, 0);
-}
+
 /*
 void ModelLaser::CYZXLaserConfig() {
 	cyzxlaserc.resize(DEFAULT_CYZXLASER);
@@ -435,14 +433,6 @@ ModelLaser::Sample* ModelLaser::GetSamples(uint32_t* count) {
 	if (count)
 		*count = sample_count;
 	return &samples[0];
-}
-
-ModelLaser::FixModel ModelLaser::GetTempModelPos() {
-	FixModel temp;
-	temp.x = tempModel.x;
-	temp.y = tempModel.y;
-	temp.z = tempModel.z;
-	return temp;
 }
 
 const std::vector<ModelLaser::Sample>& ModelLaser::GetSamples() {
