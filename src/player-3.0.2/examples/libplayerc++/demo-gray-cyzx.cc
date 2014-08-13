@@ -71,8 +71,8 @@ const double findHallturnRate = 0.3;
 const double backTurn = 0.1;
 const double backTrail = 0.4;
 
-#define havehall 1
-#define nohall 0
+#define hallgray 1
+#define nogray 0
 
 bool gMotorEnable(false);
 bool gGotoDone(false);
@@ -239,9 +239,9 @@ int main(int argc, char **argv) {
 
 		double newspeed = 0;
 		double newturnrate = 0;
-		int lhv = nohall; //
-		int rhv = nohall;
-		int mhv = nohall;
+		int lhv = nogray; //
+		int rhv = nogray;
+		int mhv = nogray;
 		bool tb = true;
 
 		// go into read-think-act loop
@@ -250,9 +250,9 @@ int main(int argc, char **argv) {
 			robot->Read();
 
 			if (lp->GetCount() == 22) {
-				lhv = lp->GetRange(0)< 0.5 ? nohall : havehall;
-				rhv = lp->GetRange(1)< 0.5 ? nohall : havehall;
-				mhv = lp->GetRange(2)< 0.5 ? nohall : havehall;
+				lhv = lp->GetRange(0)< 0.2 ? hallgray : nogray;
+				rhv = lp->GetRange(1)< 0.2 ? hallgray : nogray;
+				mhv = lp->GetRange(2)< 0.2 ? hallgray : nogray;
 			}else continue;
 
 			std::cout << " left hall: " << lhv << " right hall: " << rhv
@@ -261,21 +261,21 @@ int main(int argc, char **argv) {
 			newspeed = 0;
 			newturnrate = 0;
 
-			if (mhv == havehall) {
-				if((lhv == havehall && rhv == havehall)||(lhv == nohall && rhv == nohall)){
+			if (mhv == hallgray) {
+				if((lhv == hallgray && rhv == hallgray)||(lhv == nogray && rhv == nogray)){
 					newspeed = cruisespeed;
 					newturnrate = 0;
-				}else if(lhv == havehall && rhv == nohall){
+				}else if(lhv == hallgray && rhv == nogray){
 					newspeed = backTrail;
 					newturnrate = -backTurn;
 				}else{
 					newspeed = backTrail;
 					newturnrate = backTurn;
 				}
-			} else if (lhv == havehall && rhv == nohall) {
+			} else if (lhv == hallgray && rhv == nogray) {
 				newspeed = 0;
 				newturnrate = -findHallturnRate;
-			} else if (rhv == havehall && lhv == nohall) {
+			} else if (rhv == hallgray && lhv == nogray) {
 				newspeed = 0;
 				newturnrate = findHallturnRate;
 			} else {

@@ -62,17 +62,21 @@ PlayerCc::cyzxLaserProxy* lp;
 PlayerCc::LightsensorProxy *lspLeft;
 PlayerCc::LightsensorProxy *lspRight;
 
-#define RAYS 32
-const double minfrontdistance = 1.0;
-const double minlfdistance = 0.5;
-const double cruisespeed = 0.5;
-const double avoidspeed = 0;
-const double avoidturn = 0.5;
-const double lightturn = 0.4;
+const double lightturn = 0.2;
 const double avoidlrspeed = 0.1;
+
+#define RAYS 32
+const double minfrontdistance = 0.35;
+const double minlfdistance = 0.30;
+const double exminlfdistance = 0.20;
+const double cruisespeed = 0.4;
+const double avoidspeed = 0;
+const double avoidturn = 0.2;
+const double baturn = 0.2;
+const double littlechange = 0.1;
 double reward = false;
 const float lightrangemax = 1000;
-const double findlightsensorDis = 0.4;
+const double findlightsensorDis = 0.5;
 
 bool gMotorEnable(false);
 bool gGotoDone(false);
@@ -229,11 +233,11 @@ int main(int argc, char **argv) {
 		using namespace PlayerCc;
 		parse_args(argc, argv);
 		robot = new PlayerClient(gHostname, gPort);
-		pp = new Position2dProxy(robot,gIndex);
+		pp = new Position2dProxy(robot, gIndex);
 		lp = new cyzxLaserProxy(robot, gIndex);
 
-		PlayerCc::LightsensorProxy *lspLeft;
-		PlayerCc::LightsensorProxy *lspRight;
+		//PlayerCc::LightsensorProxy *lspLeft;
+		//PlayerCc::LightsensorProxy *lspRight;
 
 		double minR = 2;
 		double minL = 2;
@@ -255,24 +259,35 @@ int main(int argc, char **argv) {
 				minL = lp->GetRange(2);
 				minR = lp->GetRange(0);
 				minF = lp->GetRange(1);
-			}
-			if ((llc = lspLeft->GetCount()) > 0) {
-				for (int i = 0; i < llc; i++) {
-					if (lspLeft->GetLight(i).range < lrange)
-						lrange = lspLeft->GetLight(i).range;
-				}
+				lrange = lp->GetRange(3);
+				rrange = lp->GetRange(4);
+				if(lrange < lightrangemax)
+					llc = 1;
+				else llc = 0;
+				if(rrange < lightrangemax)
+					rlc = 1;
+				else rlc = 0;
 			} else
-				lrange = lightrangemax;
-			if ((rlc = lspRight->GetCount()) > 0) {
-				for (int i = 0; i < rlc; i++) {
-					if (lspRight->GetLight(i).range < rrange)
-						rrange = lspRight->GetLight(i).range;
-				}
-			} else
-				rrange = lightrangemax;
+				continue;
+			/*if ((llc = lspLeft->GetCount()) > 0) {
+			 for (int i = 0; i < llc; i++) {
+			 if (lspLeft->GetLight(i).range < lrange)
+			 lrange = lspLeft->GetLight(i).range;
+			 }
+			 } else
+			 lrange = lightrangemax;*/
+
+			/*if ((rlc = lspRight->GetCount()) > 0) {
+			 for (int i = 0; i < rlc; i++) {
+			 if (lspRight->GetLight(i).range < rrange)
+			 rrange = lspRight->GetLight(i).range;
+			 }
+			 } else
+			 rrange = lightrangemax;*/
+
 			//find the lightsensor , so stop wander
-			if(lrange <findlightsensorDis || rrange < findlightsensorDis){
-				pp->SetSpeed(0,0);
+			if (lrange < findlightsensorDis || rrange < findlightsensorDis) {
+				pp->SetSpeed(0, 0);
 				sleep(1);
 				break;
 			}
@@ -282,42 +297,48 @@ int main(int argc, char **argv) {
 					<< rrange << std::endl;
 
 			if (minF > minfrontdistance) {
-				if (minL > minfrontdistance && minR > minfrontdistance) {
+				if (minL > minlfdistance && minR > minlfdistance) {
 					//turn to lights
 					if (llc > 0 && rlc > 0) {
 						newspeed = cruisespeed;
 						newturnrate = lrange < rrange ? lightturn : -lightturn;
 					} else if (llc > 0) {
 						newspeed = cruisespeed;
-						newturnrate = lightturn;
+						newturnrate = -lightturn;
 					} else if (rlc > 0) {
 						newspeed = cruisespeed;
-						newturnrate = -lightturn;
+						newturnrate = lightturn;
 					} else {
 						newspeed = cruisespeed;
 						newturnrate = 0;
 					}
-				} else if (minL > minR) {
-					//turn left
+				} else if (minL > minlfdistance && minR > exminlfdistance) {
 					newspeed = cruisespeed;
-					newturnrate = avoidturn;
+					newturnrate = -littlechange;
+				} else if (minR > minlfdistance && minL > exminlfdistance) {
+					newspeed = cruisespeed;
+					newturnrate = littlechange;
 				} else {
-					//turn right
-					newspeed = cruisespeed;
-					newturnrate = -avoidturn;
+					newspeed = 0;
+					newturnrate = avoidturn;
 				}
-			} else if (minL > minfrontdistance && minR > minfrontdistance) {
-				newspeed = cruisespeed;
-				newturnrate = lrange < rrange ? lightturn : -lightturn;
-			} else if (minL > minfrontdistance) {
+			} else if (minL > minlfdistance && minR > minlfdistance) {
 				newspeed = 0;
-				newturnrate = avoidturn;
-			} else if (minR > minfrontdistance) {
+				newturnrate = -baturn;
+			} else if (minL > minlfdistance) {
+				//turn to left
+				pp->SetSpeed(0, -0.75);
+				sleep(2);
 				newspeed = 0;
-				newturnrate = -avoidturn;
+				newturnrate = 0;
+			} else if (minR > minlfdistance) {
+				pp->SetSpeed(0, 0.75);
+				sleep(2);
+				newspeed = 0;
+				newturnrate = 0;
 			} else {
-				pp->SetSpeed(0, 3.14);
-				sleep(1);
+				pp->SetSpeed(0, -0.75);
+				sleep(4);
 				newspeed = 0;
 				newturnrate = 0;
 			}
@@ -333,7 +354,8 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
-	std::cin>>llc;
+	int i;
+	std::cin >> i;
 
 	return (0);
 }
