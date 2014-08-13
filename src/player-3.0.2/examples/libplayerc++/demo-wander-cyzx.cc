@@ -63,9 +63,9 @@ PlayerCc::LightsensorProxy *lspLeft;
 PlayerCc::LightsensorProxy *lspRight;
 
 #define RAYS 32
-const double minfrontdistance = 0.35;
-const double minlfdistance = 0.30;
-const double exminlfdistance = 0.20;
+const double minfrontdistance = 35;
+const double minlfdistance = 30;
+const double exminlfdistance = 20;
 const double cruisespeed = 0.4;
 const double avoidspeed = 0;
 const double avoidturn = 0.2;
@@ -73,7 +73,7 @@ const double baturn = 0.2;
 const double littlechange = 0.1;
 double reward = false;
 const float lightrangemax = 1000;
-const double findlightsensorDis = 0.2;
+const double findlightsensorDis = 20;
 
 bool gMotorEnable(false);
 bool gGotoDone(false);
