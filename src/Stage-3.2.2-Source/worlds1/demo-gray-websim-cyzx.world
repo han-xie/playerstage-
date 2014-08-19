@@ -65,7 +65,7 @@ position(
         colors_count 1 
         colors ["cyan"]  
 	alwayson 1
-        port "a0"
+        port "a3"
     )
 
   graysensor( 
@@ -75,7 +75,7 @@ position(
         colors_count 1 
         colors ["cyan"]  
 	alwayson 1
-	port "a1"
+	port "a5"
   )
 
   graysensor( 
@@ -85,7 +85,7 @@ position(
         colors_count 1 
         colors ["cyan"]  
 	alwayson 1
-        port "a2"
+        port "a4"
   )
 )
 

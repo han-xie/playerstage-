@@ -59,20 +59,24 @@
 PlayerCc::PlayerClient* robot;
 PlayerCc::Position2dProxy* pp;
 PlayerCc::cyzxLaserProxy* lp;
-PlayerCc::HallsensorProxy *hpLeft;
-PlayerCc::HallsensorProxy *hpRight;
-PlayerCc::HallsensorProxy *hpMiddle;
+PlayerCc::LightsensorProxy *lspLeft;
+PlayerCc::LightsensorProxy *lspRight;
+
+const double lightturn = 0.2;
+const double avoidlrspeed = 0.1;
 
 #define RAYS 32
-const double cruisespeed = 0.5;
-const double findHallturnRate = 0.3;
-//const double backTurn = 0.25;
-//const double backTrail = 0.25;
-const double backTurn = 0.1;
-const double backTrail = 0.4;
-
-#define havegray 1
-#define nogray 0
+const double minfrontdistance = 0.35;
+const double minlfdistance = 0.30;
+const double exminlfdistance = 0.20;
+const double cruisespeed = 0.4;
+const double avoidspeed = 0;
+const double avoidturn = 0.2;
+const double baturn = 0.2;
+const double littlechange = 0.1;
+double reward = false;
+const float lightrangemax = 1000;
+const double findlightsensorDis = 0.5;
 
 bool gMotorEnable(false);
 bool gGotoDone(false);
@@ -230,19 +234,21 @@ int main(int argc, char **argv) {
 		parse_args(argc, argv);
 		robot = new PlayerClient(gHostname, gPort);
 		pp = new Position2dProxy(robot, gIndex);
-		lp = new cyzxLaserProxy(robot,0);
+		lp = new cyzxLaserProxy(robot, gIndex);
 
-		/*hpLeft = new HallsensorProxy(robot, 0);
-		hpRight = new HallsensorProxy(robot, 1);
-		hpMiddle = new HallsensorProxy(robot, 2);
-		*/
+		//PlayerCc::LightsensorProxy *lspLeft;
+		//PlayerCc::LightsensorProxy *lspRight;
 
+		double minR = 2;
+		double minL = 2;
+		double minF = 2;
 		double newspeed = 0;
 		double newturnrate = 0;
-		int lhv = nogray; //
-		int rhv = nogray;
-		int mhv = nogray;
-		bool tb = true;
+
+		int llc = 0;
+		int rlc = 0;
+		float lrange = lightrangemax;
+		float rrange = lightrangemax;
 
 		// go into read-think-act loop
 		for (;;) {
@@ -250,37 +256,91 @@ int main(int argc, char **argv) {
 			robot->Read();
 
 			if (lp->GetCount() == 22) {
-				lhv = lp->GetRange(0)< 0.2 ? havegray : nogray;
-				rhv = lp->GetRange(1)< 0.2 ? havegray : nogray;
-				mhv = lp->GetRange(2)< 0.2 ? havegray : nogray;
-			}else continue;
+				minL = lp->GetRange(2);
+				minR = lp->GetRange(0);
+				minF = lp->GetRange(1);
+				lrange = lp->GetRange(3);
+				rrange = lp->GetRange(4);
+				if(lrange < lightrangemax)
+					llc = 1;
+				else llc = 0;
+				if(rrange < lightrangemax)
+					rlc = 1;
+				else rlc = 0;
+			} else
+				continue;
+			/*if ((llc = lspLeft->GetCount()) > 0) {
+			 for (int i = 0; i < llc; i++) {
+			 if (lspLeft->GetLight(i).range < lrange)
+			 lrange = lspLeft->GetLight(i).range;
+			 }
+			 } else
+			 lrange = lightrangemax;*/
 
-			std::cout << " left hall: " << lhv << " right hall: " << rhv
-					<< " middle hall: " << mhv << std::endl;
+			/*if ((rlc = lspRight->GetCount()) > 0) {
+			 for (int i = 0; i < rlc; i++) {
+			 if (lspRight->GetLight(i).range < rrange)
+			 rrange = lspRight->GetLight(i).range;
+			 }
+			 } else
+			 rrange = lightrangemax;*/
 
-			newspeed = 0;
-			newturnrate = 0;
+			//find the lightsensor , so stop wander
+			if (lrange < findlightsensorDis || rrange < findlightsensorDis) {
+				pp->SetSpeed(0, 0);
+				sleep(1);
+				break;
+			}
 
-			if (mhv == havegray) {
-				if((lhv == havegray && rhv == havegray)||(lhv == nogray && rhv == nogray)){
+			std::cout << "minR: " << minR << "minL: " << minL << "minF: "
+					<< minF << " left range:" << lrange << " right range:"
+					<< rrange << std::endl;
+
+			if (minF > minfrontdistance) {
+				if (minL > minlfdistance && minR > minlfdistance) {
+					//turn to lights
+					if (llc > 0 && rlc > 0) {
+						newspeed = cruisespeed;
+						newturnrate = lrange < rrange ? lightturn : -lightturn;
+					} else if (llc > 0) {
+						newspeed = cruisespeed;
+						newturnrate = -lightturn;
+					} else if (rlc > 0) {
+						newspeed = cruisespeed;
+						newturnrate = lightturn;
+					} else {
+						newspeed = cruisespeed;
+						newturnrate = 0;
+					}
+				} else if (minL > minlfdistance && minR > exminlfdistance) {
 					newspeed = cruisespeed;
-					newturnrate = 0;
-				}else if(lhv == havegray && rhv == nogray){
-					newspeed = backTrail;
-					newturnrate = -backTurn;
-				}else{
-					newspeed = backTrail;
-					newturnrate = backTurn;
+					newturnrate = -littlechange;
+				} else if (minR > minlfdistance && minL > exminlfdistance) {
+					newspeed = cruisespeed;
+					newturnrate = littlechange;
+				} else {
+					newspeed = 0;
+					newturnrate = avoidturn;
 				}
-			} else if (lhv == havegray && rhv == nogray) {
+			} else if (minL > minlfdistance && minR > minlfdistance) {
 				newspeed = 0;
-				newturnrate = -findHallturnRate;
-			} else if (rhv == havegray && lhv == nogray) {
+				newturnrate = -baturn;
+			} else if (minL > minlfdistance) {
+				//turn to left
+				pp->SetSpeed(0, -0.75);
+				sleep(2);
 				newspeed = 0;
-				newturnrate = findHallturnRate;
+				newturnrate = 0;
+			} else if (minR > minlfdistance) {
+				pp->SetSpeed(0, 0.75);
+				sleep(2);
+				newspeed = 0;
+				newturnrate = 0;
 			} else {
+				pp->SetSpeed(0, -0.75);
+				sleep(4);
 				newspeed = 0;
-				newturnrate = -findHallturnRate;
+				newturnrate = 0;
 			}
 
 			std::cout << "speed: " << newspeed << "turn: " << newturnrate
@@ -293,6 +353,9 @@ int main(int argc, char **argv) {
 		std::cerr << e << std::endl;
 		return -1;
 	}
+
+	int i;
+	std::cin >> i;
 
 	return (0);
 }

@@ -41,6 +41,8 @@ using namespace Stg;
 extern bool PXAupdate[PXA270PORTS];
 extern uint32_t PXAcount[PXA270PORTS];
 extern float PXAvalue[PXA270PORTS];
+#define havegray 550
+#define nogray 300
 
 InterfaceGraysensor::InterfaceGraysensor( player_devaddr_t addr,
 				StgDriver* driver,
@@ -71,7 +73,7 @@ void InterfaceGraysensor::Publish( void )
 		PXAvalue[graymod->port] = 32767;
 	} else{
 		PXAcount[graymod->port] = 0;
-		PXAvalue[graymod->port] = 32767;
+		PXAvalue[graymod->port] = nogray;
 	}
 
   if ( bcount > 0 )
@@ -120,7 +122,7 @@ void InterfaceGraysensor::Publish( void )
 
 		  bfd.grays[b].range = grays[b].range;
 		  if (bfd.grays[b].range < PXAvalue[graymod->port])
-		  				PXAvalue[graymod->port] = bfd.grays[b].range;
+		  				PXAvalue[graymod->port] = havegray+100*bfd.grays[b].range;
 		}
   }
 

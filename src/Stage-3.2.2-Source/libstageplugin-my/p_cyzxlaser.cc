@@ -72,7 +72,7 @@ void InterfacecyzxLaser::Publish(void) {
 	pdata.intensity = new uint8_t[pdata.ranges_count];
 
 	for (unsigned int i = 0; i < cfg.sample_count; i++) {
-		pdata.ranges[i] = PXAvalue[i]*100; //from m to cm
+		pdata.ranges[i] = PXAvalue[i];
 	}
 
 	/*ModelcyzxLaser::FixModel temp = mod->GetTempModelPos();

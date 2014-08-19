@@ -64,15 +64,18 @@ PlayerCc::HallsensorProxy *hpRight;
 PlayerCc::HallsensorProxy *hpMiddle;
 
 #define RAYS 32
-const double cruisespeed = 0.5;
-const double findHallturnRate = 0.3;
+const double cruisespeed = 0.25;
+const double veryslowspeed = 0.2;
+const double findHallturnRate = 0.2;
 //const double backTurn = 0.25;
 //const double backTrail = 0.25;
-const double backTurn = 0.1;
+const double backTurn = 0.2;
 const double backTrail = 0.4;
 
 #define havegray 1
 #define nogray 0
+#define grayValue 530
+#define grayBigFall 100
 
 bool gMotorEnable(false);
 bool gGotoDone(false);
@@ -244,15 +247,28 @@ int main(int argc, char **argv) {
 		int mhv = nogray;
 		bool tb = true;
 
+		float logray=600,lngray=600;
+		float rogray=600,rngray=600;
+		float mogray=600,mngray=600;
+
+
 		// go into read-think-act loop
 		for (;;) {
 			// this blocks until new data comes; 10Hz by default
+			logray=lngray;
+			rogray=rngray;
+			mogray=mngray;
 			robot->Read();
+			if(lp->GetCount()==22){
+				lngray = lp->GetRange(3);
+				rngray = lp->GetRange(5);
+				mngray = lp->GetRange(4);
+			}else continue;
 
 			if (lp->GetCount() == 22) {
-				lhv = lp->GetRange(0)< 0.2 ? havegray : nogray;
-				rhv = lp->GetRange(1)< 0.2 ? havegray : nogray;
-				mhv = lp->GetRange(2)< 0.2 ? havegray : nogray;
+				lhv = lp->GetRange(3)> grayValue ? havegray : nogray;
+				rhv = lp->GetRange(5)> grayValue ? havegray : nogray;
+				mhv = lp->GetRange(4)> grayValue ? havegray : nogray;
 			}else continue;
 
 			std::cout << " left hall: " << lhv << " right hall: " << rhv
@@ -263,18 +279,36 @@ int main(int argc, char **argv) {
 
 			if (mhv == havegray) {
 				if((lhv == havegray && rhv == havegray)||(lhv == nogray && rhv == nogray)){
-					newspeed = cruisespeed;
-					newturnrate = 0;
+					if(mngray - mogray > grayBigFall){
+						newspeed = veryslowspeed;
+						newturnrate = 0;
+					} else{
+						newspeed = cruisespeed;
+						newturnrate = 0;
+					}
 				}else if(lhv == havegray && rhv == nogray){
-					newspeed = backTrail;
+					newspeed = 0;
 					newturnrate = -backTurn;
-				}else{
-					newspeed = backTrail;
+				}else if(rhv == havegray && lhv == nogray){
+					newspeed = 0;
 					newturnrate = backTurn;
+				}else{
+					if(rngray>lngray&&rngray-lngray>50){
+						newspeed = 0.3;
+						newturnrate = 0.1;
+					}else if(lngray>rngray&&lngray-rngray>50){
+						newspeed = 0.3;
+						newturnrate = -0.1;
+					}else{
+						newspeed = veryslowspeed;
+						newturnrate = 0;
+					}
 				}
+			//} else if (lhv == havegray && rhv == nogray) {
 			} else if (lhv == havegray && rhv == nogray) {
 				newspeed = 0;
 				newturnrate = -findHallturnRate;
+			//} else if (rhv == havegray && lhv == nogray) {
 			} else if (rhv == havegray && lhv == nogray) {
 				newspeed = 0;
 				newturnrate = findHallturnRate;
