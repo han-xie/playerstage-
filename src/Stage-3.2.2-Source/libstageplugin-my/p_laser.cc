@@ -114,9 +114,9 @@ void InterfaceLaser::Publish(void) {
 					PXAvalue[mod->port] = 1;
 					break;
 				}
-				if (samples[i].range < PXAvalue[mod->port]){
+				if (100*samples[i].range < PXAvalue[mod->port]){
 					PXAcount[mod->port] = 1;
-					PXAvalue[mod->port] = samples[i].range;
+					PXAvalue[mod->port] = 100*samples[i].range; //m to cm
 				}
 			}
 		}
