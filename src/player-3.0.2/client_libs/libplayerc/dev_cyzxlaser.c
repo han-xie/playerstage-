@@ -359,3 +359,27 @@ void playerc_cyzxlaser_printout( playerc_cyzxlaser_t * device,
   puts( "" );
 
 }
+
+
+void playerc_cyzxlaser_WifiSetWeibo(playerc_cyzxlaser_t *device,
+		player_cyzxlaser_opaque_data_t *data){
+	 playerc_client_write(device->info.client, &device->info,
+			 PLAYER_CYZXLASER_CMD_SETWEIBO, data, NULL);
+}
+void playerc_cyzxlaser_WifiSetLCD(playerc_cyzxlaser_t *device,
+		player_cyzxlaser_opaque_data_t *data){
+	playerc_client_write(device->info.client, &device->info,
+			PLAYER_CYZXLASER_CMD_SETLCD, data, NULL);
+}
+void playerc_cyzxlaser_WifiSetSound(playerc_cyzxlaser_t *device,
+		player_cyzxlaser_opaque_data_t *data){
+	playerc_client_write(device->info.client, &device->info,
+			PLAYER_CYZXLASER_CMD_SETSOUND, data, NULL);
+}
+int  playerc_cyzxlaser_WifiGetWeibo(playerc_cyzxlaser_t *device,
+		player_cyzxlaser_opaque_data_t *request,
+		player_cyzxlaser_opaque_data_t *reply){
+	  return playerc_client_request(device->info.client, &device->info,
+			  PLAYER_CYZXLASER_REQ_GETWEIBO,
+	                            (void*)request, (void**)reply);
+}

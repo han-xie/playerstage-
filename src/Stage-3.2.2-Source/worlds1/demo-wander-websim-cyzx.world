@@ -43,6 +43,8 @@ define trickedoutpioneer pioneer2dx
 	  pose [0 0 -0.2 0]
 	  alwayson 1
 	  #tempsen ["a0" 0 0 0 180]
+	  lcd 1
+	  sound 1
 	)
   infrDistSen(
 	   pose [0.2 -0.18 -0.12 -45]  

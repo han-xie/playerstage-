@@ -134,6 +134,7 @@ void ModelLaser::Load(void) {
 	fixpose.z = wf->ReadTupleFloat(wf_entity, "spose", 2, 0);
 	fixpose.a = wf->ReadTupleFloat(wf_entity, "spose", 3, 0);
 
+
 	if (resolution < 1) {
 		PRINT_WARN( "laser resolution set < 1. Forcing to 1");
 		resolution = 1;

@@ -51,6 +51,7 @@
 #include <set>
 #include <queue>
 #include <algorithm>
+#include <string>
 
 // FLTK Gui includes
 #include <FL/Fl.H>
@@ -2630,6 +2631,13 @@ namespace Stg
 		 stg_meters_t y;
 		 stg_meters_t z;
 	 };
+
+	 bool lcdswitch;
+	 bool soundswitch;
+	 int lcd;
+	 std::string lcdcontent;
+	 std::string soundcontent;
+	 int sound;
 		
 	 /** Convenience object for setting parameters using SetConfig/GetConfig */
 	 class Config

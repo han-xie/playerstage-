@@ -59,6 +59,7 @@ Geoffrey Biggs, Richard Vaughan.
 
 #include <playerconfig.h>
 
+
 /* Get the message structures from Player*/
 #include <libplayercommon/playercommon.h>
 #include <libplayerinterface/player.h>
@@ -2400,6 +2401,11 @@ PLAYERC_EXPORT int playerc_cyzxlaser_get_id (playerc_cyzxlaser_t *device);
 PLAYERC_EXPORT void playerc_cyzxlaser_printout( playerc_cyzxlaser_t * device,
         const char* prefix );
 
+
+ PLAYERC_EXPORT void playerc_cyzxlaser_WifiSetWeibo(playerc_cyzxlaser_t *device,player_cyzxlaser_opaque_data_t *pdata);
+ PLAYERC_EXPORT void playerc_cyzxlaser_WifiSetLCD(playerc_cyzxlaser_t *device,player_cyzxlaser_opaque_data_t *pdata);
+ PLAYERC_EXPORT void playerc_cyzxlaser_WifiSetSound(playerc_cyzxlaser_t *device,player_cyzxlaser_opaque_data_t *pdata);
+ PLAYERC_EXPORT int  playerc_cyzxlaser_WifiGetWeibo(playerc_cyzxlaser_t *device, player_cyzxlaser_opaque_data_t *request, player_cyzxlaser_opaque_data_t *reply);
 /** @} */
 /**************************************************************************/
 

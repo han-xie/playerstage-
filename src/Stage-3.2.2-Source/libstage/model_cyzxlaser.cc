@@ -121,6 +121,9 @@ void ModelcyzxLaser::Load(void) {
 
 	range_max = wf->ReadLength(wf_entity, "range_max", range_max);
 	resolution = wf->ReadInt(wf_entity, "resolution", resolution);
+	lcd = wf->ReadInt(wf_entity,"lcd",1);
+	sound = wf->ReadInt(wf_entity,"sound",1);
+
 
 	if (resolution < 1) {
 		PRINT_WARN( "cyzxlaser resolution set < 1. Forcing to 1");

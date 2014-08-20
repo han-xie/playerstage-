@@ -154,3 +154,204 @@ std::operator << (std::ostream &os, const PlayerCc::cyzxLaserProxy &c)
 }
 
 
+void cyzxLaserProxy::WifiSetWeibo(char *ip){
+		player_cyzxlaser_opaque_data_t popa;
+		uint32_t wifiID = 7;
+		uint32_t subtype = 1;
+		uint8_t temp[50];
+		int iplength=30;
+		for(int i=0;i<50;i++)
+			temp[i]='\0';
+		uint8_t *from,*to;
+		to=temp;
+
+		from=(uint8_t*)&wifiID;
+		for(int i=0;i<4;i++){
+			*to=*from;
+			from++;
+			to++;
+		}
+		from=(uint8_t*)&subtype;
+		for(int i=4;i<8;i++){
+			*to=*from;
+			from++;
+			to++;
+		}
+		if(ip!=NULL){
+			from=(uint8_t*)ip;
+			for(int i=0;i<iplength&&(*from)!='\0';i++){
+				*to=*from;
+				from++;
+				to++;
+			}
+		}
+		to=&temp[8+iplength];
+		popa.data_count = 8+iplength;
+		popa.data = (uint8_t *) &temp[0];
+		playerc_cyzxlaser_WifiSetWeibo(mDevice,&popa);
+		return;
+}
+void cyzxLaserProxy::WifiSetLCD(char *display,char *ip){
+	player_cyzxlaser_opaque_data_t popa;
+	uint32_t wifiID = 7;
+	uint32_t subtype = 2;
+	uint8_t temp[1024];
+	int iplength=30;
+	for(int i=0;i<1024;i++)
+		temp[i]='\0';
+	uint8_t *from,*to;
+	to=temp;
+
+	from=(uint8_t*)&wifiID;
+	for(int i=0;i<4;i++){
+		*to=*from;
+		from++;
+		to++;
+	}
+	from=(uint8_t*)&subtype;
+	for(int i=4;i<8;i++){
+		*to=*from;
+		from++;
+		to++;
+	}
+	if(ip!=NULL){
+		from=(uint8_t*)ip;
+		for(int i=0;i<iplength&&(*from)!='\0';i++){
+			*to=*from;
+			from++;
+			to++;
+		}
+	}/*else{
+		for(int i=0;i<iplength;i++){
+			*to=' ';
+			to++;
+		}
+	}*/
+	to=&temp[8+iplength];
+	popa.data_count = 8+iplength;
+	if(display){
+		int i=0;
+		from=(uint8_t*)display;
+		for(i=0;i<900&&*from!='\0';i++){
+			*to=*from;
+			from++;
+			to++;
+		}
+		popa.data_count+=i;
+	}
+	popa.data = (uint8_t *) &temp[0];
+	playerc_cyzxlaser_WifiSetLCD(mDevice,&popa);
+}
+void cyzxLaserProxy::WifiSetSound(char *type,char *ip){
+	player_cyzxlaser_opaque_data_t popa;
+		uint32_t wifiID = 7;
+		uint32_t subtype = 3;
+		int iplength=30;
+		uint8_t temp[1024];
+		for(int i=0;i<1024;i++)
+			temp[i]='\0';
+		uint8_t *from,*to;
+		to=temp;
+
+		from=(uint8_t*)&wifiID;
+		for(int i=0;i<4;i++){
+			*to=*from;
+			from++;
+			to++;
+		}
+		from=(uint8_t*)&subtype;
+		for(int i=4;i<8;i++){
+			*to=*from;
+			from++;
+			to++;
+		}
+		if(ip!=NULL){
+			from=(uint8_t*)ip;
+			for(int i=0;i<iplength&&*from!='\0';i++){
+				*to=*from;
+				from++;
+				to++;
+			}
+		}
+		to=&temp[8+iplength];
+		popa.data_count = 8+iplength;
+		if(type){
+			int i=0;
+			from=(uint8_t*)type;
+			for(i=0;i<900&&*from!='\0';i++){
+				*to=*from;
+				from++;
+				to++;
+			}
+			popa.data_count+=i;
+		}
+		popa.data = (uint8_t *) &temp[0];
+		playerc_cyzxlaser_WifiSetSound(mDevice,&popa);
+
+}
+int  cyzxLaserProxy::WifiGetWeibo(std::string &content,
+		char *cmd,char *ip){
+
+	player_cyzxlaser_opaque_data_t popa;
+	uint32_t wifiID = 7;
+	uint32_t subtype = 4;
+	int iplength=30;
+	uint8_t temp[4096];
+	for(int i=0;i<1024;i++)
+		temp[i]='\0';
+	uint8_t *from,*to;
+	to=temp;
+
+	from=(uint8_t*)&wifiID;
+	for(int i=0;i<4;i++){
+		*to=*from;
+		from++;
+		to++;
+	}
+	from=(uint8_t*)&subtype;
+	for(int i=4;i<8;i++){
+		*to=*from;
+		from++;
+		to++;
+	}
+	if(ip!=NULL){
+		from=(uint8_t*)ip;
+		for(int i=0;i<iplength&&*from!='\0';i++){
+			*to=*from;
+			from++;
+			to++;
+		}
+	}
+	to=&temp[8+iplength];
+	popa.data_count = 8+iplength;
+	if(cmd){
+		int i=0;
+		from=(uint8_t*)cmd;
+		for(i=0;i<900&&(*from!='\0');i++){
+			*to=*from;
+			from++;
+			to++;
+		}
+		popa.data_count+=i;
+	}
+	popa.data = (uint8_t *) &temp[0];
+	char rtemp[10240];
+	//tempSizeForData((uint8_t*)rtemp);
+	//this->opaquep->newSizeFormDevice(1024);
+	player_cyzxlaser_opaque_data_t *aReply=new player_cyzxlaser_opaque_data_t();
+	aReply->data=(uint8_t*)rtemp;
+	//std::string *aReply;
+	if(0 !=playerc_cyzxlaser_WifiGetWeibo(mDevice,&popa,aReply)){
+		return -1;
+	}
+
+	//memcpy(mDevice->data, aReply->data, aReply->data_count);
+	//mDevice->data_count = aReply->data_count;
+	content = (char*)aReply->data;
+
+	//player_opaque_data_t_free(aReply);
+	return 1;
+
+}
+
+

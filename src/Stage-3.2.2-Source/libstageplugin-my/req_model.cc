@@ -470,7 +470,98 @@ void WebSim::GetAttribute(const std::string& name,Time&  t,std::string& bitmap,
 			}
 	}
 }
+void WebSim::GetLcd(const std::string& content,const bool& lcdswitch,
+		Format format,std::string& response,void* xmlnode){
+	if(format==TEXT){
+		response.clear();
+	}else if(format ==XML){
+		xmlNodePtr root_node = NULL;
+		xmlDocPtr doc = NULL;
+		xmlNodePtr node;
+		xmlChar *tmp;
+		char str[128];
 
+		if (xmlnode == NULL) {
+
+			doc = xmlNewDoc(BAD_CAST "1.0");
+			root_node = xmlNewNode(NULL, BAD_CAST "root");
+			xmlDocSetRootElement(doc, root_node);
+		node = xmlNewChild(root_node, NULL, BAD_CAST "Model", NULL);
+	} else {
+		node = (xmlNodePtr) xmlnode;
+		xmlNodeSetName(node, xmlCharStrdup("Model"));
+		//node = xmlNewChild((xmlNodePtr)parent, NULL, BAD_CAST "PVA", NULL);
+		//root_node = (xmlNodePtr)parent;
+	}
+
+	xmlNewProp(node, BAD_CAST "Type", BAD_CAST "nonpva");
+
+	tmp = ConvertInput(content.c_str(), MY_ENCODING);
+	xmlNewProp(node, BAD_CAST "content", BAD_CAST tmp);
+
+	sprintf(str, "%d", lcdswitch);
+	tmp = ConvertInput(str, MY_ENCODING);
+	xmlNewProp(node, BAD_CAST "switch", BAD_CAST tmp);
+
+	xmlNewProp(node, BAD_CAST "modeltype",BAD_CAST "LCD");
+
+	if (xmlnode == NULL) {
+		xmlBufferPtr buf = xmlBufferCreate();
+		xmlKeepBlanksDefault(0);
+		xmlNodeDump(buf, doc, node, 0, 1);
+		response = (const char*) buf->content;
+		puts(response.c_str());
+		xmlBufferFree(buf);
+		xmlFreeDoc(doc);
+	}
+	}
+}
+void WebSim::GetSound(const std::string& content,const bool& soundswitch,
+		Format format,std::string& response,void* xmlnode){
+	if(format==TEXT){
+			response.clear();
+		}else if(format ==XML){
+			xmlNodePtr root_node = NULL;
+			xmlDocPtr doc = NULL;
+			xmlNodePtr node;
+			xmlChar *tmp;
+			char str[128];
+
+			if (xmlnode == NULL) {
+
+				doc = xmlNewDoc(BAD_CAST "1.0");
+				root_node = xmlNewNode(NULL, BAD_CAST "root");
+				xmlDocSetRootElement(doc, root_node);
+			node = xmlNewChild(root_node, NULL, BAD_CAST "Model", NULL);
+		} else {
+			node = (xmlNodePtr) xmlnode;
+			xmlNodeSetName(node, xmlCharStrdup("Model"));
+			//node = xmlNewChild((xmlNodePtr)parent, NULL, BAD_CAST "PVA", NULL);
+			//root_node = (xmlNodePtr)parent;
+		}
+
+		xmlNewProp(node, BAD_CAST "Type", BAD_CAST "nonpva");
+
+		tmp = ConvertInput(content.c_str(), MY_ENCODING);
+		xmlNewProp(node, BAD_CAST "content", BAD_CAST tmp);
+
+		sprintf(str, "%d", soundswitch);
+		tmp = ConvertInput(str, MY_ENCODING);
+		xmlNewProp(node, BAD_CAST "switch", BAD_CAST tmp);
+
+		xmlNewProp(node, BAD_CAST "modeltype",BAD_CAST "Sound");
+
+		if (xmlnode == NULL) {
+			xmlBufferPtr buf = xmlBufferCreate();
+			xmlKeepBlanksDefault(0);
+			xmlNodeDump(buf, doc, node, 0, 1);
+			response = (const char*) buf->content;
+			puts(response.c_str());
+			xmlBufferFree(buf);
+			xmlFreeDoc(doc);
+		}
+		}
+}
 void WebSim::GetPVA(const std::string& name, Time& t, const Pose& p,
 		const Velocity& v, const Acceleration& a,const std::string& modeltype,
 		Format format,std::string& response, void* xmlnode) {
@@ -1158,6 +1249,35 @@ bool everything) {
 		GetModelPVA(model, t, p, v, a,modeltype, response);
 		GetPVA(model, t, p , v, a, modeltype,XML,response, node);
 		xmlNodeSetName(node, xmlCharStrdup("Model"));
+
+		//below just for temp add Lcd/sound model , it's so angly
+		if(strcmp(modeltype.c_str(),"cyzxlaser")==0){
+			std::string content;
+			bool lcdswitch;
+			int lcdexist;
+			GetModelLcdcontent(model,content,lcdswitch,lcdexist);
+			std::cout<<lcdexist<<"---"<<std::endl;
+			if(lcdexist == 1){
+				node = xmlNewChild((xmlNodePtr)xmlparent, NULL, BAD_CAST "Model", NULL);
+				response.clear();
+				GetLcd(content,lcdswitch,XML,response,node);
+				xmlNodeSetName(node, xmlCharStrdup("Model"));
+			}
+
+			bool soundswitch;
+			int soundexist;
+			content.clear();
+			GetModelSoundcontent(model,content,soundswitch,soundexist);
+			std::cout<<lcdexist<<"---"<<std::endl;
+			if(soundexist == 1){
+				node = xmlNewChild((xmlNodePtr)xmlparent, NULL, BAD_CAST "Model", NULL);
+				response.clear();
+				GetSound(content,soundswitch,XML,response,node);
+				xmlNodeSetName(node,xmlCharStrdup("Model"));
+			}
+
+			return true;
+		}
 	} else
 		node = (xmlNodePtr) xmlparent;
 

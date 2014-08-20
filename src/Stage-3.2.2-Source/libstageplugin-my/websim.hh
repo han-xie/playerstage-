@@ -168,6 +168,10 @@ public:
 
 	 @returns TRUE if the method is successful anf FALSE otherwise.
 	 */
+	virtual bool GetModelLcdcontent(const std::string& name,std::string& content,
+			bool& lcdswitch,int& lcdexist)=0;
+	virtual bool GetModelSoundcontent(const std::string& name,std::string& content,
+				bool& soundswitch,int& soundexist)=0;
 	virtual bool GetModelPVA(const std::string& name, Time& t, Pose& p,
 			Velocity& v, Acceleration& a,std::string&modeltype, std::string& response) = 0;
 
@@ -351,6 +355,10 @@ protected:
 	 @param response the string output
 	 @param xmlnode the xml node output
 	 */
+	void GetLcd(const std::string& content,const bool& lcdswitch,
+			Format format,std::string& response,void* xmlnode);
+	void GetSound(const std::string& content,const bool& soundswitch,
+			Format format,std::string& response,void* xmlnode);
 	void GetPVA(const std::string& name, Time& t, const Pose& p,
 			const Velocity& v, const Acceleration& a,const std::string& modeltype, Format format,
 			std::string& response, void* xmlnode);

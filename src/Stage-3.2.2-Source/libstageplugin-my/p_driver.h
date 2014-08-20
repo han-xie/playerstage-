@@ -941,6 +941,25 @@ public:
 		return true;
 	}
 
+	virtual bool GetModelLcdcontent(const std::string& name,std::string& content,
+				bool& lcdswitch,int& lcdexist){
+		Model* mod = world->GetModel(name.c_str());
+		ModelcyzxLaser* cyzxmod = (ModelcyzxLaser *)mod;
+		content=cyzxmod->lcdcontent;
+		lcdswitch=cyzxmod->lcdswitch;
+		lcdexist=cyzxmod->lcd;
+		return true;
+	}
+	virtual bool GetModelSoundcontent(const std::string& name,std::string& content,
+					bool& soundswitch,int& soundexist){
+		Model* mod = world->GetModel(name.c_str());
+		ModelcyzxLaser* cyzxmod = (ModelcyzxLaser *)mod;
+		content=cyzxmod->soundcontent;
+		soundswitch=cyzxmod->soundswitch;
+		soundexist=cyzxmod->sound;
+		return true;
+	}
+
 	virtual bool GetModelPVA(const std::string& name, websim::Time& t,
 			websim::Pose& p, websim::Velocity& v, websim::Acceleration& a,
 			std::string& modeltype,std::string& error) {

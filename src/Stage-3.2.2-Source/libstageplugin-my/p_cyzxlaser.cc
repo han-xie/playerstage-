@@ -46,6 +46,10 @@ extern uint32_t PXAcount[PXA270PORTS];
 extern float PXAvalue[PXA270PORTS];
 
 //extern OpaqueModel opaquem;
+struct myOpaqueHead {
+	uint32_t type;
+	uint32_t subtype;
+};
 
 InterfacecyzxLaser::InterfacecyzxLaser(player_devaddr_t addr, StgDriver* driver,
 		ConfigFile* cf, int section) :
@@ -65,7 +69,7 @@ void InterfacecyzxLaser::Publish(void) {
 	pdata.max_angle = +cfg.fov / 2.0;
 	pdata.resolution = cfg.fov / cfg.sample_count;
 	pdata.max_range = cfg.range_bounds.max;
-	pdata.ranges_count = pdata.intensity_count = cfg.sample_count=PXA270PORTS;
+	pdata.ranges_count = pdata.intensity_count = cfg.sample_count = PXA270PORTS;
 	pdata.id = this->scan_id++;
 
 	pdata.ranges = new float[pdata.ranges_count];
@@ -76,14 +80,14 @@ void InterfacecyzxLaser::Publish(void) {
 	}
 
 	/*ModelcyzxLaser::FixModel temp = mod->GetTempModelPos();
-	Model* pos = mod->Parent();
-	if (pos != NULL) {
-		Stg::Pose sp = pos->GetPose();
-		pdata.ranges[i] = sqrt(
-				pow(sp.x - temp.x, 2) + pow(sp.y - temp.y, 2));
-	} else {
-		pdata.ranges[i] = maxAioValue;
-	}*/
+	 Model* pos = mod->Parent();
+	 if (pos != NULL) {
+	 Stg::Pose sp = pos->GetPose();
+	 pdata.ranges[i] = sqrt(
+	 pow(sp.x - temp.x, 2) + pow(sp.y - temp.y, 2));
+	 } else {
+	 pdata.ranges[i] = maxAioValue;
+	 }*/
 
 	this->driver->Publish(this->addr, PLAYER_MSGTYPE_DATA,
 			PLAYER_CYZXLASER_DATA_SCAN, (void*) &pdata, sizeof(pdata), NULL);
@@ -211,6 +215,201 @@ int InterfacecyzxLaser::ProcessMessage(QueuePointer & resp_queue,
 					(int)hdr->size, 0);
 			return (-1);
 		}
+	} else if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_CMD,
+			PLAYER_CYZXLASER_CMD_SETWEIBO, this->addr)) {
+		player_cyzxlaser_opaque_data_t *opaquedata =
+				(player_cyzxlaser_opaque_data_t *) data;
+		myOpaqueHead head;
+		uint8_t *from, *to;
+		from = (uint8_t*) opaquedata->data;
+		to = (uint8_t*) (&head.type);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+		to = (uint8_t*) (&head.subtype);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+
+		//player_opaque_data_t opaqueRes;
+		int iplength = 30;
+		uint8_t ip[iplength];
+		for (int i = 0; i < iplength; i++) {
+			ip[i] = *from;
+			from++;
+		}
+		ip[iplength] = 0x0;
+		//dealWifiSetweiboCMD(ip);
+		mod->lcdswitch = 1;
+		std::string display = "come form ";
+		std::string stemp = (char *) ip;
+		display += stemp + " content : hello";
+		mod->lcdcontent = display;
+		return 0;
+	} else if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_CMD,
+			PLAYER_CYZXLASER_CMD_SETLCD, this->addr)) {
+		player_cyzxlaser_opaque_data_t *opaquedata =
+				(player_cyzxlaser_opaque_data_t *) data;
+		myOpaqueHead head;
+		uint8_t *from, *to;
+		from = (uint8_t*) opaquedata->data;
+		to = (uint8_t*) (&head.type);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+		to = (uint8_t*) (&head.subtype);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+
+		//player_opaque_data_t opaqueRes;
+		int iplength = 30;
+
+		uint8_t ip[iplength];
+		for (int i = 0; i < iplength; i++) {
+			ip[i] = *from;
+			from++;
+		}
+		ip[iplength] = 0x0;
+		int length = opaquedata->data_count - (8 + iplength) + 1;
+		uint8_t *display = new uint8_t[length];
+		to = display;
+		for (int i = 0; i < length; i++) {
+			*to = *from;
+			from++;
+			to++;
+		}
+		*to = 0x0;
+		//dealWifiSetLCDCMD(ip, display);
+		mod->lcdswitch = 1;
+		std::string stemp;
+		std::string sdisplay = "come form ";
+		stemp = (char*) ip;
+		sdisplay += stemp + " content : ";
+		stemp = (char*) display;
+		sdisplay += stemp;
+		mod->lcdcontent = sdisplay;
+		delete[] display;
+
+		return 0;
+	} else if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_CMD,
+			PLAYER_CYZXLASER_CMD_SETSOUND, this->addr)) {
+		player_cyzxlaser_opaque_data_t *opaquedata =
+				(player_cyzxlaser_opaque_data_t *) data;
+		myOpaqueHead head;
+		uint8_t *from, *to;
+		from = (uint8_t*) opaquedata->data;
+		to = (uint8_t*) (&head.type);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+		to = (uint8_t*) (&head.subtype);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+
+		//player_opaque_data_t opaqueRes;
+		int iplength = 30;
+		uint8_t ip[iplength];
+		for (int i = 0; i < iplength; i++) {
+			ip[i] = *from;
+			from++;
+		}
+		ip[iplength] = 0x0;
+		int length = opaquedata->data_count - (8 + iplength) + 1;
+		uint8_t *type = new uint8_t[length];
+		to = type;
+		for (int i = 0; i < length; i++) {
+			*to = *from;
+			from++;
+			to++;
+		}
+		*to = 0x0;
+		//dealWifiSetSoundCMD(ip, type);
+		mod->soundswitch = 1;
+		std::string sound = "come form ";
+		std::string stemp = (char *) ip;
+		sound += stemp + " content : ";
+		stemp = (char *) type;
+		sound += stemp;
+		mod->soundcontent = sound;
+
+		delete[] type;
+
+		return 0;
+	} else if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_REQ,
+			PLAYER_CYZXLASER_REQ_GETWEIBO, this->addr)) {
+		player_cyzxlaser_opaque_data_t *opaquedata =
+				(player_cyzxlaser_opaque_data_t *) data;
+		myOpaqueHead head;
+		uint8_t *from, *to;
+		from = (uint8_t*) opaquedata->data;
+		to = (uint8_t*) (&head.type);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+		to = (uint8_t*) (&head.subtype);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+
+		//player_opaque_data_t opaqueRes;
+		int iplength = 30;
+
+		uint8_t ip[iplength];
+		for (int i = 0; i < iplength; i++) {
+			ip[i] = *from;
+			from++;
+		}
+		ip[iplength] = 0x0;
+		int length = opaquedata->data_count - (8 + iplength) + 1;
+		uint8_t *cmd = new uint8_t[length];
+		to = cmd;
+		for (int i = 0; i < length; i++) {
+			*to = *from;
+			from++;
+			to++;
+		}
+		*to = 0x0;
+		//dealWifiGetWeibo(ip, cmd);
+
+		/*int test=1;
+
+		this->driver->Publish(this->addr, resp_queue, PLAYER_MSGTYPE_RESP_ACK,
+				PLAYER_CYZXLASER_REQ_GETWEIBO, (void*) &test,
+				sizeof(test), NULL);
+*/
+
+		player_cyzxlaser_opaque_data_t opaqueRes;
+		std::string result = "weibo";
+		opaqueRes.data_count = result.size();
+			uint32_t size = sizeof(opaqueRes) - sizeof(opaqueRes.data)
+					+ opaqueRes.data_count;
+			opaqueRes.data = (uint8_t *) result.c_str();
+			this->driver->Publish(this->Interface::addr, PLAYER_MSGTYPE_RESP_ACK,
+					PLAYER_CYZXLASER_REQ_GETWEIBO, &opaqueRes, size, NULL);
+
+
+
+		delete[] cmd;
+
+		return 0;
 	}
 
 	// Don't know how to handle this message.

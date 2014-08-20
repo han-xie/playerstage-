@@ -1174,6 +1174,7 @@ class PLAYERCC_EXPORT cyzxLaserProxy : public ClientProxy
 
     // libplayerc data structure
     playerc_cyzxlaser_t *mDevice;
+    //player_cyzxlaser_opaque_data_t *opaqudata;
 
     // local storage of config
     double min_angle, max_angle, scan_res, range_res, scanning_frequency;
@@ -1185,6 +1186,12 @@ class PLAYERCC_EXPORT cyzxLaserProxy : public ClientProxy
     cyzxLaserProxy(PlayerClient *aPc, uint32_t aIndex=0);
     /// destructor
     ~cyzxLaserProxy();
+
+  	void WifiSetWeibo(char *ip=NULL);
+  	void WifiSetLCD(char *displayer,char *ip=NULL);
+  	void WifiSetSound(char *type,char *ip=NULL);
+  	int  WifiGetWeibo(std::string &content,char *cmd,char *ip=NULL);
+    //void tempSizeForData(uint8_t* p){opaqudata->data=p;}
 
     /// Number of points in scan
     uint32_t GetCount() const { return GetVar(mDevice->scan_count); };

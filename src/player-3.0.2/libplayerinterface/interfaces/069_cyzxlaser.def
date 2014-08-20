@@ -26,6 +26,10 @@ message { DATA, SCANPOSE, 2, player_cyzxlaser_data_scanpose_t };
 /** Data subtype: angle-stamped scan */
 message { DATA, SCANANGLE, 3, player_cyzxlaser_data_scanangle_t };
 
+message { CMD, SETWEIBO , 1, player_cyzxlaser_opaque_data_t };
+message { CMD, SETLCD , 2, player_cyzxlaser_opaque_data_t };
+message { CMD, SETSOUND , 3, player_cyzxlaser_opaque_data_t };
+
 /** Request/reply subtype: get geometry */
 message { REQ, GET_GEOM, 1, player_cyzxlaser_geom_t };
 /** Request/reply subtype: set configuration */
@@ -38,6 +42,8 @@ message { REQ, POWER, 4, player_cyzxlaser_power_config_t };
 message { REQ, GET_ID, 5, player_cyzxlaser_get_id_config_t };
 /** Request/reply subtype: set filter settings */
 message { REQ, SET_FILTER, 6, player_cyzxlaser_set_filter_config_t };
+message { REQ, GETWEIBO, 7, player_cyzxlaser_opaque_data_t };
+
 
 /** Filter setings */
 #define PLAYER_cyzxLASER_MAX_FILTER_PARAMS 8
@@ -70,6 +76,15 @@ typedef struct player_cyzxlaser_data
   /** A unique, increasing, ID for the scan */
   uint32_t id;
 } player_cyzxlaser_data_t;
+
+
+typedef struct player_cyzxlaser_opaque_data
+{
+  /** Size of data as stored in buffer (bytes) */
+  uint32_t data_count;
+  /** The data we will be sending */
+  uint8_t *data;
+} player_cyzxlaser_opaque_data_t;
 
 /** @brief Data: pose-stamped scan (@ref PLAYER_cyzxLASER_DATA_SCANPOSE)
 
