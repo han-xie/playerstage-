@@ -344,6 +344,10 @@ int  cyzxLaserProxy::WifiGetWeibo(std::string &content,
 	if(0 !=playerc_cyzxlaser_WifiGetWeibo(mDevice,&popa,aReply)){
 		return -1;
 	}
+		/*player_cyzxlaser_opaque_data_t *aReply;
+		if(0 !=playerc_cyzxlaser_WifiGetWeibo(mDevice,&popa,aReply)){
+			return -1;
+		}*/
 
 	//memcpy(mDevice->data, aReply->data, aReply->data_count);
 	//mDevice->data_count = aReply->data_count;

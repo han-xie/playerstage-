@@ -86,6 +86,7 @@ typedef struct player_cyzxlaser_opaque_data
   uint8_t *data;
 } player_cyzxlaser_opaque_data_t;
 
+
 /** @brief Data: pose-stamped scan (@ref PLAYER_cyzxLASER_DATA_SCANPOSE)
 
 A cyzxlaser scan with a pose that indicates the (possibly esimated) pose of the

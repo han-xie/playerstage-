@@ -394,18 +394,14 @@ int InterfacecyzxLaser::ProcessMessage(QueuePointer & resp_queue,
 		this->driver->Publish(this->addr, resp_queue, PLAYER_MSGTYPE_RESP_ACK,
 				PLAYER_CYZXLASER_REQ_GETWEIBO, (void*) &test,
 				sizeof(test), NULL);
-*/
+       */
 
 		player_cyzxlaser_opaque_data_t opaqueRes;
 		std::string result = "weibo";
 		opaqueRes.data_count = result.size();
-			uint32_t size = sizeof(opaqueRes) - sizeof(opaqueRes.data)
-					+ opaqueRes.data_count;
-			opaqueRes.data = (uint8_t *) result.c_str();
-			this->driver->Publish(this->Interface::addr, PLAYER_MSGTYPE_RESP_ACK,
-					PLAYER_CYZXLASER_REQ_GETWEIBO, &opaqueRes, size, NULL);
-
-
+		opaqueRes.data=(uint8_t *)result.c_str();
+		this->driver->Publish(this->Interface::addr, resp_queue,PLAYER_MSGTYPE_RESP_ACK,
+					PLAYER_CYZXLASER_REQ_GETWEIBO, (void *)&opaqueRes, sizeof(opaqueRes), NULL);
 
 		delete[] cmd;
 
