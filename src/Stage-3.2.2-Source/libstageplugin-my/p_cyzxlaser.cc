@@ -245,7 +245,8 @@ int InterfacecyzxLaser::ProcessMessage(QueuePointer & resp_queue,
 		ip[iplength] = 0x0;
 		//dealWifiSetweiboCMD(ip);
 		mod->lcdswitch = 1;
-		std::string display = "come form ";
+		mod->lcdcount++;
+		std::string display = "connect to ";
 		std::string stemp = (char *) ip;
 		display += stemp + " content : hello";
 		mod->lcdcontent = display;
@@ -290,8 +291,9 @@ int InterfacecyzxLaser::ProcessMessage(QueuePointer & resp_queue,
 		*to = 0x0;
 		//dealWifiSetLCDCMD(ip, display);
 		mod->lcdswitch = 1;
+		mod->lcdcount++;
 		std::string stemp;
-		std::string sdisplay = "come form ";
+		std::string sdisplay = "connect to ";
 		stemp = (char*) ip;
 		sdisplay += stemp + " content : ";
 		stemp = (char*) display;
@@ -339,7 +341,8 @@ int InterfacecyzxLaser::ProcessMessage(QueuePointer & resp_queue,
 		*to = 0x0;
 		//dealWifiSetSoundCMD(ip, type);
 		mod->soundswitch = 1;
-		std::string sound = "come form ";
+		mod->soundcount++;
+		std::string sound = "connect to ";
 		std::string stemp = (char *) ip;
 		sound += stemp + " content : ";
 		stemp = (char *) type;

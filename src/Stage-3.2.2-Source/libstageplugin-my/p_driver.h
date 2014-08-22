@@ -942,21 +942,27 @@ public:
 	}
 
 	virtual bool GetModelLcdcontent(const std::string& name,std::string& content,
-				bool& lcdswitch,int& lcdexist){
+				bool& lcdswitch,int& lcdexist,int& lcdcount){
 		Model* mod = world->GetModel(name.c_str());
 		ModelcyzxLaser* cyzxmod = (ModelcyzxLaser *)mod;
 		content=cyzxmod->lcdcontent;
 		lcdswitch=cyzxmod->lcdswitch;
 		lcdexist=cyzxmod->lcd;
+		lcdcount = cyzxmod->lcdcount;
+		cyzxmod->lcdcontent.clear();
+		cyzxmod->lcdswitch=false;
 		return true;
 	}
 	virtual bool GetModelSoundcontent(const std::string& name,std::string& content,
-					bool& soundswitch,int& soundexist){
+					bool& soundswitch,int& soundexist,int& soundcount){
 		Model* mod = world->GetModel(name.c_str());
 		ModelcyzxLaser* cyzxmod = (ModelcyzxLaser *)mod;
 		content=cyzxmod->soundcontent;
 		soundswitch=cyzxmod->soundswitch;
 		soundexist=cyzxmod->sound;
+		soundcount=cyzxmod->soundcount;
+		cyzxmod->soundcontent.clear();
+		cyzxmod->soundswitch=false;
 		return true;
 	}
 

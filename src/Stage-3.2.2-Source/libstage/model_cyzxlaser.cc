@@ -109,6 +109,8 @@ ModelcyzxLaser::ModelcyzxLaser(World* world, Model* parent, const std::string& t
 }
 
 ModelcyzxLaser::~ModelcyzxLaser(void) {
+	int lcdcount=0;
+	int soundcount=0;
 }
 
 void ModelcyzxLaser::Load(void) {

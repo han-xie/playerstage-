@@ -470,7 +470,7 @@ void WebSim::GetAttribute(const std::string& name,Time&  t,std::string& bitmap,
 			}
 	}
 }
-void WebSim::GetLcd(const std::string& content,const bool& lcdswitch,
+void WebSim::GetLcd(int lcdcount,const std::string& content,const bool& lcdswitch,
 		Format format,std::string& response,void* xmlnode){
 	if(format==TEXT){
 		response.clear();
@@ -496,6 +496,9 @@ void WebSim::GetLcd(const std::string& content,const bool& lcdswitch,
 
 	xmlNewProp(node, BAD_CAST "Type", BAD_CAST "nonpva");
 
+	/*std::string tcont=content;
+	tcont+=" ";
+	tcont+=lcdcount;*/
 	tmp = ConvertInput(content.c_str(), MY_ENCODING);
 	xmlNewProp(node, BAD_CAST "content", BAD_CAST tmp);
 
@@ -516,7 +519,7 @@ void WebSim::GetLcd(const std::string& content,const bool& lcdswitch,
 	}
 	}
 }
-void WebSim::GetSound(const std::string& content,const bool& soundswitch,
+void WebSim::GetSound(int soundcount,const std::string& content,const bool& soundswitch,
 		Format format,std::string& response,void* xmlnode){
 	if(format==TEXT){
 			response.clear();
@@ -542,6 +545,9 @@ void WebSim::GetSound(const std::string& content,const bool& soundswitch,
 
 		xmlNewProp(node, BAD_CAST "Type", BAD_CAST "nonpva");
 
+		/*std::string tcont=content;
+		tcont+=" ";
+		tcont+=soundcount;*/
 		tmp = ConvertInput(content.c_str(), MY_ENCODING);
 		xmlNewProp(node, BAD_CAST "content", BAD_CAST tmp);
 
@@ -1255,24 +1261,26 @@ bool everything) {
 			std::string content;
 			bool lcdswitch;
 			int lcdexist;
-			GetModelLcdcontent(model,content,lcdswitch,lcdexist);
-			std::cout<<lcdexist<<"---"<<std::endl;
+			int lcdc;
+			GetModelLcdcontent(model,content,lcdswitch,lcdexist,lcdc);
+
 			if(lcdexist == 1){
 				node = xmlNewChild((xmlNodePtr)xmlparent, NULL, BAD_CAST "Model", NULL);
 				response.clear();
-				GetLcd(content,lcdswitch,XML,response,node);
+				GetLcd(lcdc,content,lcdswitch,XML,response,node);
 				xmlNodeSetName(node, xmlCharStrdup("Model"));
 			}
 
 			bool soundswitch;
 			int soundexist;
+			int soundc;
 			content.clear();
-			GetModelSoundcontent(model,content,soundswitch,soundexist);
-			std::cout<<lcdexist<<"---"<<std::endl;
+			GetModelSoundcontent(model,content,soundswitch,soundexist,soundc);
+
 			if(soundexist == 1){
 				node = xmlNewChild((xmlNodePtr)xmlparent, NULL, BAD_CAST "Model", NULL);
 				response.clear();
-				GetSound(content,soundswitch,XML,response,node);
+				GetSound(soundc,content,soundswitch,XML,response,node);
 				xmlNodeSetName(node,xmlCharStrdup("Model"));
 			}
 

@@ -2633,7 +2633,9 @@ namespace Stg
 	 };
 
 	 bool lcdswitch;
+	 int lcdcount;
 	 bool soundswitch;
+	 int soundcount;
 	 int lcd;
 	 std::string lcdcontent;
 	 std::string soundcontent;
