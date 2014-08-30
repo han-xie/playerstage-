@@ -292,13 +292,17 @@ int InterfacecyzxLaser::ProcessMessage(QueuePointer & resp_queue,
 		//dealWifiSetLCDCMD(ip, display);
 		mod->lcdswitch = 1;
 		mod->lcdcount++;
-		std::string stemp;
+		/*std::string stemp;
 		std::string sdisplay = "connect to ";
 		stemp = (char*) ip;
 		sdisplay += stemp + " content : ";
 		stemp = (char*) display;
 		sdisplay += stemp;
-		mod->lcdcontent = sdisplay;
+		mod->lcdcontent = sdisplay;*/
+		std::string stemp;
+		stemp = (char*) display;
+		mod->lcdcontent = stemp;
+
 		delete[] display;
 
 		return 0;

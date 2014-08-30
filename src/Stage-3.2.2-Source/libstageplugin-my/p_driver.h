@@ -949,7 +949,7 @@ public:
 		lcdswitch=cyzxmod->lcdswitch;
 		lcdexist=cyzxmod->lcd;
 		lcdcount = cyzxmod->lcdcount;
-		cyzxmod->lcdcontent.clear();
+		//cyzxmod->lcdcontent.clear();
 		cyzxmod->lcdswitch=false;
 		return true;
 	}
@@ -961,7 +961,7 @@ public:
 		soundswitch=cyzxmod->soundswitch;
 		soundexist=cyzxmod->sound;
 		soundcount=cyzxmod->soundcount;
-		cyzxmod->soundcontent.clear();
+		//cyzxmod->soundcontent.clear();
 		cyzxmod->soundswitch=false;
 		return true;
 	}

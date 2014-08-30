@@ -14,6 +14,16 @@ define sicklaser laser
   size [ 0.156 0.155 0.19 ] # dimensions from LMS200 data sheet	
 )
 
+define infrDistSen laser
+(
+  range_max 0.6
+  range_min 0.01
+  fov 10.0
+  samples 2 
+  color "blue"	
+  size [0.001 0.001 0.001]
+)
+
 # extends sicklaser to add nice-looking but relatively expensive geometry
 define fancysicklaser sicklaser
 (

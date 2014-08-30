@@ -211,7 +211,7 @@ int main(int argc, char *argv[]) {
 		
 			cyzxic.WifiSetSound("play","192.168.1.101:7666");
 sleep(2);
-			cyzxic.WifiSetLCD("weather\t成都\t192.168.0.99\t8888\t\0","192.168.1.101:7666");
+			cyzxic.WifiSetLCD("weather\t成都192.168.0.99 8888\t\0","192.168.1.101:7666");
 			
 			sleep(3);
 		}

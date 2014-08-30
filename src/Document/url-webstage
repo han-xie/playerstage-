@@ -38,6 +38,8 @@ http://localhost:8000/sim/tree/get?format=xml
   </Model>
 </ModelTree>
 
+http://localhost:8000/cave/color/set
+
 http://localhost:8000/cave/attribute/get?format=xml
 <Model Time="0.0" Type="attribute" Name="cave" bitmap="bitmaps/cave.bmp" color="0.302,0.302,0.302,1.000"/>
 localhost:8000/source/attribute/get?format=xml

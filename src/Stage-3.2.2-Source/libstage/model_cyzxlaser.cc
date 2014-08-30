@@ -86,6 +86,15 @@ ModelcyzxLaser::ModelcyzxLaser(World* world, Model* parent, const std::string& t
 				DEFAULT_RESOLUTION) {
 	/*PRINT_DEBUG2( "Constructing ModelcyzxLaser %d (%s)\n",
 	 id, typestr );*/
+	lcdcount=0;
+	soundcount=0;
+	lcdswitch=false;
+	soundswitch=false;
+	//int lcd;
+	//int sound;
+	lcdcontent="";
+	soundcontent="";
+
 	PRINT_DEBUG2( "Constructing ModelcyzxLaser %d (%s)\n",
 			id, type.data() );
 
@@ -109,8 +118,7 @@ ModelcyzxLaser::ModelcyzxLaser(World* world, Model* parent, const std::string& t
 }
 
 ModelcyzxLaser::~ModelcyzxLaser(void) {
-	int lcdcount=0;
-	int soundcount=0;
+
 }
 
 void ModelcyzxLaser::Load(void) {

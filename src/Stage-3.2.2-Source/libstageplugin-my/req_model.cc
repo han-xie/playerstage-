@@ -4,7 +4,9 @@
 #include "websim.hh"
 using namespace websim;
 
-#define MY_ENCODING "ISO-8859-1"
+#define MY_ENCODING "UTF-8"
+//"ISO-8859-1"
+//"GBK"
 extern int globalMyupdateSign;
 
 xmlChar *
@@ -222,7 +224,6 @@ bool WebSim::HandleModelAttributeRequest(std::string model, std::string action,
 			return false;
 		}
 	}
-
 	return true;
 }
 
@@ -496,10 +497,15 @@ void WebSim::GetLcd(int lcdcount,const std::string& content,const bool& lcdswitc
 
 	xmlNewProp(node, BAD_CAST "Type", BAD_CAST "nonpva");
 
-	/*std::string tcont=content;
+	for(int i=0;i<10;i++)
+		str[i]=0x0;
+	sprintf(str, "%d", lcdcount);
+	std::string tcont(&str[0]);
 	tcont+=" ";
-	tcont+=lcdcount;*/
-	tmp = ConvertInput(content.c_str(), MY_ENCODING);
+	tcont+=content;
+	//std::wstring wtcont(tcont.begin(),tcont.end());
+	//tmp = ConvertInput(content.c_str(), MY_ENCODING);
+	tmp = ConvertInput(tcont.c_str(), MY_ENCODING);
 	xmlNewProp(node, BAD_CAST "content", BAD_CAST tmp);
 
 	sprintf(str, "%d", lcdswitch);
@@ -545,10 +551,14 @@ void WebSim::GetSound(int soundcount,const std::string& content,const bool& soun
 
 		xmlNewProp(node, BAD_CAST "Type", BAD_CAST "nonpva");
 
-		/*std::string tcont=content;
+		for(int i=0;i<10;i++)
+				str[i]=0x0;
+		sprintf(str, "%d", soundcount);
+		std::string tcont(&str[0]);
 		tcont+=" ";
-		tcont+=soundcount;*/
-		tmp = ConvertInput(content.c_str(), MY_ENCODING);
+		tcont+=content;
+		//tmp = ConvertInput(content.c_str(), MY_ENCODING);
+		tmp = ConvertInput(tcont.c_str(), MY_ENCODING);
 		xmlNewProp(node, BAD_CAST "content", BAD_CAST tmp);
 
 		sprintf(str, "%d", soundswitch);

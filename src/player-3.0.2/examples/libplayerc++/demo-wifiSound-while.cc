@@ -208,33 +208,12 @@ int main(int argc, char *argv[]) {
 	cyzxLaserProxy cyzxic(&robot, gIndex);
 
 	while(1){
-		int i;
-		std::cin>>i;
-		switch(i){
-		case 1:{
-			cyzxic.WifiSetWeibo("192.168.1.105:8888");
-			break;
+		
+			cyzxic.WifiSetSound("play","192.168.1.101:7666");
+			//cyzxic.WifiSetLCD("weather\t成都\t192.168.0.99\t8888\t\0","192.168.1.101:7666");
+			
+			sleep(3);
 		}
-		case 2:{
-			cyzxic.WifiSetLCD("weather\t成都\t192.168.1.105\t8888\t\0","192.168.1.106:8800");
-			break;
-		}
-		case 3:{
-			cyzxic.WifiSetSound("play","192.168.1.105:8888");
-			break;
-		}
-		case 4:{
-			cyzxic.WifiSetSound("stop","192.168.1.105:8888");
-			break;
-		}
-		case 5:{
-			std::string returncontent;
-			cyzxic.WifiGetWeibo(returncontent,"hello","192.168.1.101:7666");
-			std::cout<<returncontent<<std::endl;
-			break;
-		}
-		}
-	}
 
 }
 

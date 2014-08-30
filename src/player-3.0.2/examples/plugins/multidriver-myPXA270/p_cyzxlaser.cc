@@ -1,6 +1,15 @@
 #include "multidriver.h"
 #include <string.h>
 
+#include <arpa/inet.h>
+#include <unistd.h> // fork, close
+#include<stdio.h>
+#include<stdlib.h>
+#include<errno.h>
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<netinet/in.h>
+
 InterfacecyzxLaser::InterfacecyzxLaser(player_devaddr_t addr, multidriver* driver,
 		ConfigFile* cf, int section) :
 		Interface(addr, driver, cf, section) {
@@ -79,6 +88,10 @@ InterfacecyzxLaser::InterfacecyzxLaser(player_devaddr_t addr, multidriver* drive
 	cyzxlaserType = "";
 	cyzxlaserType = cf->ReadString(section, "rs4221", cyzxlaserType.data());
 	this->conf.portsType[i++] = StringToType(cyzxlaserType.data());
+	this->conf.lcdIP = cf->ReadString(section, "lcdip", "192.168.1.2");
+	this->conf.soundIP = cf->ReadString(section, "soundip", "192.168.1.2");
+	this->conf.lcdport = cf->ReadInt(section, "lcdport", 9000);
+	this->conf.soundport = cf->ReadInt(section, "soundport", 9001);
 }
 
 int InterfacecyzxLaser::ProcessMessage(QueuePointer & resp_queue,
@@ -111,8 +124,421 @@ int InterfacecyzxLaser::ProcessMessage(QueuePointer & resp_queue,
 	if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_REQ, PLAYER_CYZXLASER_REQ_GET_ID,
 			this->Interface::addr)) {
 		return -1;
+	}else if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_CMD,
+			PLAYER_CYZXLASER_CMD_SETWEIBO, this->addr)) {
+		player_cyzxlaser_opaque_data_t *opaquedata =
+				(player_cyzxlaser_opaque_data_t *) data;
+		myOpaqueHead head;
+		uint8_t *from, *to;
+		from = (uint8_t*) opaquedata->data;
+		to = (uint8_t*) (&head.type);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+		to = (uint8_t*) (&head.subtype);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+
+		//player_opaque_data_t opaqueRes;
+		int iplength = 30;
+		uint8_t ip[iplength];
+		for (int i = 0; i < iplength; i++) {
+			ip[i] = *from;
+			from++;
+		}
+		ip[iplength] = 0x0;
+		dealWifiSetweiboCMD(ip);
+		/*mod->lcdswitch = 1;
+		mod->lcdcount++;
+		std::string display = "connect to ";
+		std::string stemp = (char *) ip;
+		display += stemp + " content : hello";
+		mod->lcdcontent = display;*/
+		return 0;
+	} else if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_CMD,
+			PLAYER_CYZXLASER_CMD_SETLCD, this->addr)) {
+		player_cyzxlaser_opaque_data_t *opaquedata =
+				(player_cyzxlaser_opaque_data_t *) data;
+		myOpaqueHead head;
+		uint8_t *from, *to;
+		from = (uint8_t*) opaquedata->data;
+		to = (uint8_t*) (&head.type);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+		to = (uint8_t*) (&head.subtype);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+
+		//player_opaque_data_t opaqueRes;
+		int iplength = 30;
+
+		uint8_t ip[iplength];
+		for (int i = 0; i < iplength; i++) {
+			ip[i] = *from;
+			from++;
+		}
+		ip[iplength] = 0x0;
+		int length = opaquedata->data_count - (8 + iplength) + 1;
+		uint8_t *display = new uint8_t[length];
+		to = display;
+		for (int i = 0; i < length; i++) {
+			*to = *from;
+			from++;
+			to++;
+		}
+		*to = 0x0;
+		dealWifiSetLCDCMD(ip, display);
+		/*mod->lcdswitch = 1;
+		mod->lcdcount++;
+		std::string stemp;
+		stemp = (char*) display;
+		mod->lcdcontent = stemp;*/
+
+		delete[] display;
+
+		return 0;
+	} else if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_CMD,
+			PLAYER_CYZXLASER_CMD_SETSOUND, this->addr)) {
+		player_cyzxlaser_opaque_data_t *opaquedata =
+				(player_cyzxlaser_opaque_data_t *) data;
+		myOpaqueHead head;
+		uint8_t *from, *to;
+		from = (uint8_t*) opaquedata->data;
+		to = (uint8_t*) (&head.type);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+		to = (uint8_t*) (&head.subtype);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+
+		//player_opaque_data_t opaqueRes;
+		int iplength = 30;
+		uint8_t ip[iplength];
+		for (int i = 0; i < iplength; i++) {
+			ip[i] = *from;
+			from++;
+		}
+		ip[iplength] = 0x0;
+		int length = opaquedata->data_count - (8 + iplength) + 1;
+		uint8_t *type = new uint8_t[length];
+		to = type;
+		for (int i = 0; i < length; i++) {
+			*to = *from;
+			from++;
+			to++;
+		}
+		*to = 0x0;
+		dealWifiSetSoundCMD(ip, type);
+		/*mod->soundswitch = 1;
+		mod->soundcount++;
+		std::string sound = "connect to ";
+		std::string stemp = (char *) ip;
+		sound += stemp + " content : ";
+		stemp = (char *) type;
+		sound += stemp;
+		mod->soundcontent = sound;*/
+
+		delete[] type;
+
+		return 0;
+	} else if (Message::MatchMessage(hdr, PLAYER_MSGTYPE_REQ,
+			PLAYER_CYZXLASER_REQ_GETWEIBO, this->addr)) {
+		player_cyzxlaser_opaque_data_t *opaquedata =
+				(player_cyzxlaser_opaque_data_t *) data;
+		myOpaqueHead head;
+		uint8_t *from, *to;
+		from = (uint8_t*) opaquedata->data;
+		to = (uint8_t*) (&head.type);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+		to = (uint8_t*) (&head.subtype);
+		for (int i = 0; i < 4; i++) {
+			*to = *from;
+			to++;
+			from++;
+		}
+
+		//player_opaque_data_t opaqueRes;
+		int iplength = 30;
+
+		uint8_t ip[iplength];
+		for (int i = 0; i < iplength; i++) {
+			ip[i] = *from;
+			from++;
+		}
+		ip[iplength] = 0x0;
+		int length = opaquedata->data_count - (8 + iplength) + 1;
+		uint8_t *cmd = new uint8_t[length];
+		to = cmd;
+		for (int i = 0; i < length; i++) {
+			*to = *from;
+			from++;
+			to++;
+		}
+		*to = 0x0;
+	    dealWifiGetWeibo(ip, cmd);
+
+		/*int test=1;
+
+		this->driver->Publish(this->addr, resp_queue, PLAYER_MSGTYPE_RESP_ACK,
+				PLAYER_CYZXLASER_REQ_GETWEIBO, (void*) &test,
+				sizeof(test), NULL);
+       */
+
+		player_cyzxlaser_opaque_data_t opaqueRes;
+		std::string result = "weibo";
+		opaqueRes.data_count = result.size();
+		opaqueRes.data=(uint8_t *)result.c_str();
+		this->driver->Publish(this->Interface::addr, resp_queue,PLAYER_MSGTYPE_RESP_ACK,
+					PLAYER_CYZXLASER_REQ_GETWEIBO, (void *)&opaqueRes, sizeof(opaqueRes), NULL);
+
+		delete[] cmd;
+
+		return 0;
 	}
 	return -1;
+}
+
+void InterfacecyzxLaser::dealWifiSetweiboCMD(uint8_t *ip) {
+
+	int sockfdc;
+	char sendlinec[4096];
+	struct sockaddr_in servaddrc;
+	int iplength = 30;
+	//char buff[4096];
+	//int n;
+
+	if ((sockfdc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		printf("create socket error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	int i;
+	uint8_t *travel = ip;
+	for (i = 0; i < iplength; i++, travel++) {
+		if ((*travel >= '0' && *travel <= '9') || (*travel == '.')
+				|| (*travel == ':')) {
+			if (*travel == ':') {
+				this->conf.lcdport = atoi((char*) travel + 1);
+				*travel = '\0';
+			}
+		} else
+			break;
+	}
+
+	memset(&servaddrc, 0, sizeof(servaddrc));
+	servaddrc.sin_family = AF_INET;
+	servaddrc.sin_port = htons(this->conf.lcdport);
+	if (inet_pton(AF_INET, (i < 4) ? this->conf.lcdIP.data() : (char *) ip,
+			&servaddrc.sin_addr) <= 0) {
+		printf("inet_pton error for %s\n", ip);
+		return;
+	}
+
+	if (connect(sockfdc, (struct sockaddr*) &servaddrc, sizeof(servaddrc))
+			< 0) {
+		printf("connect error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	sendlinec[0] = 'w';
+	sendlinec[1] = 'e';
+	sendlinec[2] = 'i';
+	sendlinec[3] = 'b';
+	sendlinec[4] = 'o';
+	if (send(sockfdc, sendlinec, strlen(sendlinec), 0) < 0) {
+		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	close(sockfdc);
+	return;
+}
+void InterfacecyzxLaser::dealWifiSetLCDCMD(uint8_t *ip, uint8_t *display) {
+
+	int sockfdc;
+	struct sockaddr_in servaddrc;
+	int iplength = 30;
+	//char buff[4096];
+	//int n;
+
+	if ((sockfdc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		printf("create socket error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	int i;
+	uint8_t *travel = ip;
+	for (i = 0; i < iplength; i++, travel++) {
+		if ((*travel >= '0' && *travel <= '9') || (*travel == '.')
+				|| (*travel == ':')) {
+			if (*travel == ':') {
+				*travel = '\0';
+				this->conf.lcdport = atoi((char*) travel + 1);
+			}
+		} else
+			break;
+	}
+	memset(&servaddrc, 0, sizeof(servaddrc));
+	servaddrc.sin_family = AF_INET;
+	servaddrc.sin_port = htons(this->conf.lcdport);
+	if (inet_pton(AF_INET, (i < 4) ? this->conf.lcdIP.c_str() : (char *) ip,
+			&servaddrc.sin_addr) <= 0) {
+		printf("inet_pton error for %s\n", ip);
+		return;
+	}
+
+	if (connect(sockfdc, (struct sockaddr*) &servaddrc, sizeof(servaddrc))
+			< 0) {
+		printf("connect error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	if (send(sockfdc, (char*) display, strlen((char*) display), 0) < 0) {
+		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	close(sockfdc);
+	return;
+}
+
+void InterfacecyzxLaser::dealWifiSetSoundCMD(uint8_t *ip, uint8_t *type) {
+
+	int sockfdc;
+	//char sendlinec[4096];
+	struct sockaddr_in servaddrc;
+	int iplength = 30;
+	//char buff[4096];
+	//int n;
+
+	if ((sockfdc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		printf("create socket error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	int i;
+	uint8_t *travel = ip;
+	for (i = 0; i < iplength; i++, travel++) {
+		if ((*travel >= '0' && *travel <= '9') || (*travel == '.')
+				|| (*travel == ':')) {
+			if (*travel == ':') {
+				this->conf.soundport = atoi((char*) travel + 1);
+				*travel = '\0';
+			}
+		} else
+			break;
+	}
+	memset(&servaddrc, 0, sizeof(servaddrc));
+	servaddrc.sin_family = AF_INET;
+	servaddrc.sin_port = htons(this->conf.soundport);
+	if (inet_pton(AF_INET, (i < 4) ? this->conf.soundIP.c_str() : (char *) ip,
+			&servaddrc.sin_addr) <= 0) {
+		printf("inet_pton error for %s\n", ip);
+		return;
+	}
+
+	if (connect(sockfdc, (struct sockaddr*) &servaddrc, sizeof(servaddrc))
+			< 0) {
+		printf("connect error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	if (send(sockfdc, type, strlen((char *) type), 0) < 0) {
+		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	close(sockfdc);
+	return;
+}
+
+void InterfacecyzxLaser::dealWifiGetWeibo(uint8_t *ip, uint8_t *cmd) {
+	int sockfdc;
+	//char sendlinec[4096];
+	struct sockaddr_in servaddrc;
+	int iplength = 30;
+	char buff[4096];
+	//int n;
+
+	if ((sockfdc = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		printf("create socket error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	int i;
+	uint8_t *travel = ip;
+	for (i = 0; i < iplength; i++, travel++) {
+		if ((*travel >= '0' && *travel <= '9') || (*travel == '.')
+				|| (*travel == ':')) {
+			if (*travel == ':') {
+				this->conf.weiboport = atoi((char*) travel + 1);
+				*travel = '\0';
+			}
+		} else
+			break;
+	}
+	memset(&servaddrc, 0, sizeof(servaddrc));
+	servaddrc.sin_family = AF_INET;
+	servaddrc.sin_port = htons(this->conf.weiboport);
+	if (inet_pton(AF_INET, (i < 4) ? this->conf.weiboIP.c_str() : (char *) ip,
+			&servaddrc.sin_addr) <= 0) {
+		printf("inet_pton error for %s\n", ip);
+		return;
+	}
+
+	if (connect(sockfdc, (struct sockaddr*) &servaddrc, sizeof(servaddrc))
+			< 0) {
+		printf("connect error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	if (send(sockfdc, cmd, strlen((char *) cmd), 0) < 0) {
+		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
+		return;
+	}
+
+	int n = recv(sockfdc, buff, 4096, 0);
+	buff[n] = '\0';
+
+
+	close(sockfdc);
+
+	player_opaque_data_t opaqueRes;
+
+	/*opaqueRes.data_count = sizeof(buff);
+	opaqueRes.data = new uint8_t[opaqueRes.data_count];
+	memcpy(opaqueRes.data, (uint8_t*) &buff[0], opaqueRes.data_count);
+	uint32_t size = sizeof(opaqueRes) - sizeof(opaqueRes.data)
+			+ opaqueRes.data_count;*/
+	opaqueRes.data_count = n;
+		uint32_t size = sizeof(opaqueRes) - sizeof(opaqueRes.data)
+				+ opaqueRes.data_count;
+		opaqueRes.data = (uint8_t*)&(buff[0]);
+	this->driver->Publish(this->Interface::addr, PLAYER_MSGTYPE_RESP_ACK,
+			PLAYER_OPAQUE_REQ_DATA, &opaqueRes, size, NULL);
+
+	return;
 }
 
 static int deaperDealAIO(int t) {

@@ -169,6 +169,12 @@ typedef struct {
 	int scan_id;
 	//below is new laser configure
 	int portsType[DIOMAX + 1 + AIOMAX + 1 + RS422MAX + 1];
+	std::string lcdIP;
+	std::string soundIP;
+	std::string weiboIP;
+	int lcdport;
+	int soundport;
+	int weiboport;
 } cyzxLaserConf;
 //define type of position2dconf
 #define POS2D8TOP 1
@@ -318,6 +324,10 @@ public:
 private:
 	int AioDioRS422(int type);
 	int StringToType(const char *p);
+	void dealWifiSetweiboCMD(uint8_t *ip);
+	void dealWifiSetLCDCMD(uint8_t *ip,uint8_t *display);
+	void dealWifiSetSoundCMD(uint8_t *ip,uint8_t *type);
+	void dealWifiGetWeibo(uint8_t *ip,uint8_t *cmd);
 };
 
 class InterfacePosition2d: public Interface {

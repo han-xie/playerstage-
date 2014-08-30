@@ -11,5 +11,5 @@ on PXA270:
     ?2. change name to multidriver-my
     ?3. change multidriver.h to #include "../driverlib/background.h" 
     
-    scp -r keevi7c3l@192.168.1.101:/home/keevi7c3l/github/playerstage-/src/player-3.0.2/examples/plugins/multidriver-myPXA270  ./
+    scp -r keevi7c3l@192.168.1.102:/home/keevi7c3l/github/playerstage-/src/player-3.0.2/examples/plugins/multidriver-myPXA270  ./
 -------------------------------------------------------

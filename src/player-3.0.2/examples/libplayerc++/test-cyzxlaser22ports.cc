@@ -104,6 +104,7 @@ main(int argc, char *argv[])
   cyzxLaserProxy      lp(&robot,0);
   Position2dProxy pp(&robot,0);
 
+
   char i;
 
   for(;;)
@@ -118,32 +119,14 @@ main(int argc, char *argv[])
     robot.Read();
     printf("--\n");
 
-    printf("--------------\n");
-    //std::cout<< lp<< std::endl;
-    std::cout<<lp.GetCount() << "\t";
-    for(unsigned int j=0;j<lp.GetCount();j++)
-      std::cout << lp.GetRange(j) << "\t";
-    printf("--------------\n");
-
-    /*
-    // print out sonars for fun
-    std::cout << sp << std::endl;
-
-    // do simple collision avoidance
-    if((sp[0] + sp[1]) < (sp[6] + sp[7]))
-      turnrate = dtor(-20); // turn 20 degrees per second
-    else
-      turnrate = dtor(20);
-
-    if(sp[3] < 0.500)
-      speed = 0;
-    else
-      speed = 0.100;*/
-
-    // command the motors
-    /*speed=-1;
-    turnrate =1;
-    pp.SetSpeed(speed, turnrate);*/
+    if(lp.GetCount()==22){
+		printf("--------------\n");
+		//std::cout<< lp<< std::endl;
+		std::cout<<lp.GetCount() << "\t";
+		for(unsigned int j=0;j<lp.GetCount();j++)
+		  std::cout << lp.GetRange(j) << "\t";
+		printf("--------------\n");
+    }else continue;
   }
 }
 

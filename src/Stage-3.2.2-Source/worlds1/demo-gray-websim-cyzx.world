@@ -18,9 +18,9 @@ window
 
 floorplan
 ( 
-  bitmap "bitmaps/blank.png" 
+  bitmap "bitmaps/blank2.png" 
   map_resolution 0.02
-  size [16.000 16.000 0.800] 
+  size [15.000 15.000 0.800] 
   name "cave"
   color "gray50"
   gui_grid 1
@@ -29,7 +29,7 @@ floorplan
 
 
 model( 
-  bitmap "bitmaps/hall-railway.png" 
+  bitmap "bitmaps/hall-railway2.png" 
 	pose [0 0 0 0 ] 
 	color "cyan"   
 	size [ 15.0 15.0 0.01 ]
@@ -43,7 +43,7 @@ position(
   size [0.330 0.280 0.25]
   color "red"
   name "robot1"
-  pose [-2.64 -7.01 0 0]
+  pose [-2.67 -7.14 0 0]
 
 
 	cyzxlaser
