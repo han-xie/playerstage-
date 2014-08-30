@@ -1,0 +1,79 @@
+resolution     0.02
+
+include "pioneer.inc"
+include "irobot.inc"
+include "map.inc"
+include "demo-sick-wander-cyzx.inc"
+
+
+window
+(
+  size [ 490.000 490.000 ] # in pixels
+  scale 70.0   # pixels per meter
+  center [ -0.019  -0.282 ]
+  rotate [ 0  0 ]		
+  show_data 1              # 1=on 0=off
+)
+
+floorplan
+( 
+  bitmap "bitmaps/blank.png" 
+  map_resolution 0.02
+  size [7.000 7.000 0.800] 
+  name "cave"
+  color "gray"
+  gui_grid 1
+  gui_outline 1
+)
+
+define trickedoutpioneer pioneer2dx
+(
+#size [0.44 0.38 0.22]
+#a0 ["infrDistSen" 130 140 0 0.6]
+#a1 ["infrDistSen" 175 185 0 0.6]
+#a2 ["infrDistSen" 220 230 0 0.6]
+	cyzxlaser
+	(
+	  range_max 0.01
+	  range_min 0
+	  fov 1
+	  samples 1
+	  color "blue"	
+	  size [0.01 0.01 0.01]
+	  pose [0 0 -0.2 0]
+	  alwayson 1
+	  #tempsen ["a0" 0 0 0 180]
+	)
+  infrDistSen(
+	   pose [0.2 -0.18 -0.12 -45]  
+	   alwayson 1 
+	   port "a0"
+	   name "left")
+
+  infrDistSen(
+  	  name "middle"
+	  pose [0.23 0 -0.12 0 ]  
+	  alwayson 1 
+	  port "a1")
+
+  infrDistSen( 
+	  pose [0.2 0.18 -0.12 45 ]  
+	  alwayson 1 
+	  port "a2"
+	  name "right")
+
+  #fiducial_return 17
+  gripper_return 0
+  localization "gps"
+  localization_origin [ 0 0 0 0 ]
+  #bitmap "bitmaps/car.png"
+)
+
+
+trickedoutpioneer
+(
+  name "robot1"
+  pose [-0.5 -0.5 0 -90]
+)
+
+

@@ -1,0 +1,83 @@
+resolution     0.02
+
+include "pioneer.inc"
+include "irobot.inc"
+include "map.inc"
+include "demo-sick-light.inc"
+
+
+window
+(
+  size [ 635.000 666.000 ] # in pixels
+  scale 37.481   # pixels per meter
+  center [ -0.019  -0.282 ]
+  rotate [ 0  0 ]
+  			
+  show_data 1              # 1=on 0=off
+)
+
+floorplan
+( 
+  bitmap "bitmaps/lightMap.png" 
+  map_resolution 0.02
+  size [16.000 16.000 0.800] 
+  name "cave"
+  color "gray50"
+  gui_grid 1
+  gui_outline 1
+)
+
+
+zone( 
+  bitmap "bitmaps/light3.jpg" 
+	pose [-6.50 2.57 0 0 ] 
+	color "red"   
+	size [ 0.80 0.80 0.100 ]
+	light_return 1
+)
+
+
+# extend the pioneer2dx definition from pioneer.inc
+#
+define trickedoutpioneer pioneer2dx
+(
+	ranger( alwayson 0 )
+
+  sicklaser( pose [0.030 0 0 0 ]  alwayson 1 )
+
+  fiducial( range_max 8 range_max_id 5 ) 
+
+  fiducial_return 17
+  gripper_return 0
+
+  localization "gps"
+  localization_origin [ 0 0 0 0 ]
+)
+
+
+trickedoutpioneer
+(
+  name "robot1"
+  pose [6.0 5.0 0 180]
+
+  #gripper( pose [0.23 0.000 -0.20 0.000] color "gray" )
+
+  lightsensor( 
+	range 2 
+	fov 30
+	pose [0.23 0.1500 0 60]
+        colors_count 6 
+        colors [ "red" "blue" "green" "cyan" "yellow" "magenta" ]  
+		  alwayson 1
+    )
+
+  lightsensor( 
+	range 2 
+	fov 30
+	pose [0.23 -0.1500 0 -60]
+        colors_count 6 
+        colors [ "red" "blue" "green" "cyan" "yellow" "magenta" ]  
+		  alwayson 1
+  )
+
+)

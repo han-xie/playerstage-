@@ -1,0 +1,83 @@
+resolution     0.02
+
+include "pioneer.inc"
+include "irobot.inc"
+include "map.inc"
+include "demo-sick-hall.inc"
+
+
+window
+(
+  size [ 635.000 666.000 ] # in pixels
+  scale 37.481   # pixels per meter
+  center [ -0.019  -0.282 ]
+  rotate [ 0  0 ]
+  			
+  show_data 1              # 1=on 0=off
+)
+
+floorplan
+( 
+  bitmap "bitmaps/blank.png" 
+  map_resolution 0.02
+  size [16.000 16.000 0.800] 
+  name "cave"
+  color "gray50"
+  gui_grid 1
+  gui_outline 1
+)
+
+
+model( 
+  bitmap "bitmaps/hall-railway.png" 
+	pose [0 0 0 0 ] 
+	color "cyan"   
+	size [ 15.0 15.0 0.01 ]
+	hall_return 1
+	obstacle_return 0
+)
+
+position(
+  localization "gps"
+  localization_origin [ 0 0 0 0 ]
+  size [0.330 0.280 0.25]
+  color "red"
+  name "robot1"
+  pose [-2.64 -7.01 0 0]
+  sicklaser( 
+	pose [0.075 0 0 0 ] 
+        alwayson 1)
+
+  #gripper( pose [0.23 0.000 -0.20 0.000] color "gray" )
+
+  hallsensor( 
+	range 0.2 
+	fov 180
+	pose [0.175 0.0600 0 90]
+        colors_count 1 
+        colors ["cyan"]  
+	alwayson 1
+	port "a0"
+    )
+
+  hallsensor( 
+	range 0.2 
+	fov 180
+	pose [0.175 -0.0600 0 -90]
+        colors_count 1 
+        colors ["cyan"]  
+	alwayson 1
+	port "a1"
+  )
+
+  hallsensor( 
+	range 0.2 
+	fov 180
+	pose [0.175 0 0 0]
+        colors_count 1 
+        colors ["cyan"]  
+	alwayson 1
+	port "a2"
+  )
+)
+
