@@ -1,5 +1,7 @@
-﻿<!doctype html>
+<!doctype html>
         <head>
+		<!--link rel="stylesheet" type="text/css" href="../css/index.css"-->  
+		<link rel="stylesheet" type="text/css" >  
         		<meta charset="utf-8">
                 <title>webstage v1.0</title>
                 <style type="text/css">
@@ -15,7 +17,7 @@
 						-o-background-size: 100% 100%;
 						-webkit-background-size: 100% 100%;
 						background-size: 100% 100%;
-						-moz-border-image: url('pic/cave_compact.png') 0;
+						
 						background-repeat:no-repeat\9;
 						background-image:none\9;
 						filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='pic/cave_compact.png', sizingMethod='scale')\9;
@@ -26,11 +28,13 @@
                 <!--link href="car.js" rel="stylesheet" type="text/javascript" /-->  
 
 <?php
-//$tfurl = $_GET['httpport'] ;
-$tfurl = "8000";
+$tfurl = $_GET['httpport'];
+//$tfurl = "8000";
 //$imageUrl = $_GET['map'];
 $pre="car";
+//$userId=$_GET['userid'];
 $userId="worlds1";
+//echo $userId;
 ?>
 
     <script type="text/javascript">
@@ -82,6 +86,7 @@ $userId="worlds1";
 		
 		var lcd_flag=new Array();
 		var lcd_content=new Array();
+		var lcd_view=new Array();
 		var lcd_left=new Array();			///< recode the lcd(div) distance(left)
 		var lcd_top=new Array();			///< recode the lcd(div) distance(top)
 		
@@ -89,19 +94,20 @@ $userId="worlds1";
 		var pre="<?php echo $pre ?>";
 		var userId="<?php echo $userId ?>";
 		window.onload = function(){
-    		//alert("0000");
+    		
 			newxmlHttpRequest();
 			getMap();
 			for(var s=0;s<position.length;++s)
 			{
 				sound_flag[s]=false;
 				lcd_flag[s]=false;
-				sound_content[s]="null";
-				lcd_content[s]="null";
+				sound_content[s]="0 ";
+				lcd_content[s]="0 ";
 			}
         	drawMap();
-			drawCar();	
-			simulate();	
+			drawCar();
+			try{	
+			simulate();	}catch(e){alert(e.name);}
 			for(var i=0;i<position.length;++i)
 				drag(i);
         }
@@ -158,7 +164,16 @@ $userId="worlds1";
 					if(getMap_model[i].getAttribute("modeltype")=="model"){
 						model[j]=getMap_model[i].getAttribute("Name");
 						//alert("cave?"+j+"="+model[j]);
-						modelMap[j]=getMap_model[i].getAttribute("bitmap");
+						modelMap[j]="";
+						var mMap=getMap_model[i].getAttribute("bitmap");
+						for(var x=0;x<mMap.length;++x)
+						{
+							if(mMap[x]!='.')
+								modelMap[j]+=mMap[x];
+							else
+								modelMap[j]+='2'+mMap[x];								
+						}
+
 						modelWidth[j]="";
 						modelHeight[j]="";
 						var modelSize=getMap_model[i].getAttribute("geometry");
@@ -362,11 +377,11 @@ $userId="worlds1";
 				//alert("top:"+top+"top="+parseFloat(top));
 				//newDis =scale*heiY+parseFloat(top);
 				
-				var bac_image="../"+pre+"/"+userId+"/"+modelMap[maxModel_index[j]];
+				var bac_image="http://localhost/"+pre+"/"+userId+"/"+modelMap[maxModel_index[j]];
 					
 				
-				var style1="width:"+scale*widX+"px;height:"+scale*heiY+"px;margin-left:"+left+";margin-top:"+top+";background:url("+bac_image+") no-repeat";				
-				var style2="width:"+scale*widX+"px;height:"+scale*heiY+"px;margin-left:"+left+";margin-top:"+top+";background-color:rgb("+parseFloat(modelColor_R[j])*255+","+parseFloat(modelColor_G[j])*255+","+parseFloat(modelColor_B[j])*255+")";
+				var style1="width:"+scale*widX+"px;height:"+scale*heiY+"px;margin-left:"+left+";margin-top:"+top+";background-size:100% 100%;background-image:url("+bac_image+")";				
+				var style2="width:"+scale*widX+"px;height:"+scale*heiY+"px;margin-left:"+left+";margin-top:20;background-color:rgb("+parseFloat(modelColor_R[j])*255+","+parseFloat(modelColor_G[j])*255+","+parseFloat(modelColor_B[j])*255+")";
 							
 				if(modelMap[maxModel_index[j]]!="")
 					newNode.setAttribute("style",style1);
@@ -427,7 +442,7 @@ $userId="worlds1";
 				
 				var soundImg=document.createElement("img");
 				soundImg.setAttribute("id","soundImg"+j);
-				soundImg.src="../user/fcc/bitmaps/sound.png";		
+				soundImg.src="../images/sound.png";		
 				document.getElementById("sound"+j).appendChild(soundImg);
 			}
 		}
@@ -435,6 +450,7 @@ $userId="worlds1";
 		///Fifth:start simulating,the small car(position) in the map will move or rotate!
 		function simulate(){
         if(simtime == 0) simtime=100;
+	
             timer = setInterval(function(){  
 			for(var s=0;s<position.length;++s)
 			{
@@ -443,7 +459,9 @@ $userId="worlds1";
 				if(lcd_flag[s]==true)
 					counter_l++;
 			}
+			
 				getAllPVANodeSim();
+			
                	for(var i=0;i<position.length;i++){
                 	move(i);
                 	rotate(i);
@@ -455,18 +473,28 @@ $userId="worlds1";
         }       
 		function getAllPVANodeSim(){
         	if(xmlHttp!=null){
+			
         		xmlHttp.onreadystatechange = pvaAll_Change;
+			
+			
         		xmlHttp.open("POST", "getAllPVANodeTick.php", false);
         		xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
         		//xmlHttp.send(null);
 				xmlHttp.send("wsport="+webserverport);
+			
 				
         	}
+		
         }
 		function pvaAll_Change(){
         	if (xmlHttp.readyState == 4) {
 				var str = xmlHttp.responseText;
 				document.getElementById('show').innerHTML = str;
+				if(str=="end")
+				{
+					endsimulate();
+					alert("simulate end!");
+				}
 				//alert(str);
 				var getPva_xmlDoc = createXml(xmlHttp.responseText);
 				var getPva_model = getPva_xmlDoc.getElementsByTagName("Model");
@@ -487,7 +515,6 @@ $userId="worlds1";
 										if(child_pva.getAttribute("content")!=sound_content[s])
 										{
 											//alert("sss");
-											
 											sound_content[s]=child_pva.getAttribute("content");
 											
 											sound_flag[s]=true;
@@ -504,9 +531,9 @@ $userId="worlds1";
 								{
 									if(position[l]==getPva_model[i].getAttribute("Name"))
 									{
-										if(child_pva.getAttribute("content")!=lcd_content[l] && child_pva.getAttribute("content")!="0 ")
+										if(child_pva.getAttribute("content")!=lcd_content[l] )
 										{
-											lcd_content[l]="";
+											lcd_content[l]=child_pva.getAttribute("content");
 											var str=child_pva.getAttribute("content");
 											var s;
 											for(var g=0;g<str.length;++g)
@@ -517,9 +544,10 @@ $userId="worlds1";
 													break;
 												}
 											}
+											lcd_view[l]="";
 											for(var f=s;f<str.length;++f)
-												lcd_content[l] +=str[f];
-											lcd_content[l]=lcd_content[l].substr(0,lcd_content[l].length-2);
+												lcd_view[l] +=str[f];
+											lcd_view[l]=lcd_view[l].substr(0,lcd_view[l].length-2);
 											lcd_flag[l]=true;
 											break;
 										}
@@ -579,10 +607,13 @@ $userId="worlds1";
 					}
 					if(lcd_flag[s]==true)
 					{						
-						if(counter_l<50){
-							lcd.innerHTML="<textarea style='width:100px;height:50px'>"+lcd_content[s]+"</textarea>";
+						if(counter_l<26){
+							if(lcd.style.display=="none")
+							{
+							lcd.innerHTML="<textarea style='width:100px;height:70px'>"+lcd_view[s]+"</textarea>";
 							lcd.style.wordBreak="break-all";
 							lcd.style.display ="block";
+							}
 						}
 						else
 						{
@@ -594,7 +625,7 @@ $userId="worlds1";
 				}
 			}
         }
-		///Seventh_bind_second:car moving
+ 	///Seventh_bind_second:car moving
 		function move(i){
 				var element = document.getElementById("car"+i);
 				var sound_ele=document.getElementById("sound"+i);
@@ -748,14 +779,15 @@ $userId="worlds1";
 
         </head>
         
-        <body background="">
-        <div class="map" id="map">&nbsp;</div>
+        <!--body background="../img/bodybg.png"-->
+        <body>
+                <div class="map" id="map">&nbsp;</div>
 		<hr />
-		<input type="button" id="btn" value="开始/暂停" onClick="start_pause()">    </input>
+		<input type="button" id="btn" class="online" style="margin-left:240px"  value="开始/暂停" onClick="start_pause()">    </input>
        
 		<!--input type="button" id="reset" value="重新开始" -->
-		<input type="button" id="upSpeed" value="speedUp" onClick="upSpeed()">    </input>
-		<input type="button" id="downSpeed" value="speedDown" onClick="downSpeed()"></input>
+		<input type="button" id="upSpeed" class="online"  style="margin-left:50px"  value="加速" onClick="upSpeed()">    </input>
+		<input type="button" id="downSpeed" class="online"   style="margin-left:50px" value="减速" onClick="downSpeed()"></input>
        
         <br />
 		<hr />

@@ -1,0 +1,12 @@
+cd /home/keevi7c3l/github/playerstage-/src/Stage-3.2.2-Source/worlds1
+player demo-walkRoom-websim-cyzx.cfg
+	player demo-walkRoom-web-cyzx.cfg  --->no simulation
+
+cd /home/keevi7c3l/github/playerstage-/src/player-3.0.2/examples/libplayerc++
+./demo-walkRoom-cyzx-real.o
+
+http://127.0.0.1/car/webstage.php?httpport=8000
+	--> want to see the simulation on web , must use 2 kind picture , one for player , another for web
+
+across compile in VirtualBox
+worksdone.docx
