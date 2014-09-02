@@ -345,14 +345,14 @@ int main(int argc, char **argv) {
 		{
 			if(distance<MINDIS){
 				pp->SetSpeed(0,0);
-				std::cout<<"@ mete obstacle"<<std::endl;
+				std::cout<<"@ mete obstacle :"<<distance<<std::endl;
 				sleep(4);
 			}else if(hall == 1){
 				pp->SetSpeed(0,0);
 				counttime=COUNTTIMEFORHALL;
 				switchhall = 0;
 				std::cout<<"@ mete hall"<<std::endl;
-				sleep(1);
+				sleep(4);
 			}
 			goto backtofor;
 		}
